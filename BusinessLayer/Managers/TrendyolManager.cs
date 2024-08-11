@@ -10,7 +10,7 @@ namespace BusinessLayer.Managers
 {
     public class TrendyolManager : ITrendyolService
     {
-        public async Task<List<ProductDto>> GetProductAndComments(GetProductAndCommentsDto request)
+        public async Task<List<ProductDto>> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
             //options.AddArgument("--headless");
@@ -98,7 +98,7 @@ namespace BusinessLayer.Managers
             }
         }
 
-        public async Task<string> GetTrendyolCategories()
+        public async Task<string> GetTrendyolCategoriesAsync()
         {
             using (HttpClient client = new HttpClient())
             {

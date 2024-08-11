@@ -10,7 +10,7 @@ namespace BusinessLayer.IServices
 {
     public interface ITrendyolService
     {
-        public Task<List<ProductDto>> GetProductAndComments(GetProductAndCommentsDto request);
-        public Task<string> GetTrendyolCategories();
+        public Task<List<ProductDto>> GetProductAndCommentsAsync(GetProductAndCommentsDto request);
+        public Task<string> GetTrendyolCategoriesAsync();
     }
 }

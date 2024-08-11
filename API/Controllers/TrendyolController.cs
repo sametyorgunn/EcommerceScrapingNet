@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.IServices;
+using EntityLayer.Dto.RequestDto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +16,16 @@ namespace API.Controllers
             _trendyolService = trendyolService;
         }
         [HttpGet]
-        public IActionResult GetTrendyolCategories()
+        public async Task<IActionResult> GetTrendyolCategories()
         {
-            var categories = _trendyolService.GetTrendyolCategories().Result;
+            var categories = await _trendyolService.GetTrendyolCategoriesAsync();
             return Ok(categories);
+        }
+        [HttpPost("GetProductsAndComments")]
+        public async Task<IActionResult> GetProductAndComments(GetProductAndCommentsDto request)
+        {
+            var productAndComments = await _trendyolService.GetProductAndCommentsAsync(request);
+            return Ok(productAndComments);
         }
     }
 }
