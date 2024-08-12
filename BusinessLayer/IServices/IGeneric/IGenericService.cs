@@ -11,6 +11,7 @@ namespace BusinessLayer.IServices.IGeneric
     {
         Task TAddAsync(T t);
         Task<bool> TAddRangeAsync(List<T> t);
+        Task<bool> TUpdateRangeAsync(List<T> t);
         Task TDeleteAsync(T t);
         Task TUpdateAsync(T t);
         Task<List<T>> GetListAsync();

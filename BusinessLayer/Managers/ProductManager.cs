@@ -7,6 +7,7 @@ using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,9 +27,21 @@ namespace BusinessLayer.Managers
             return await _productRepository.GetListAllAsync();
         }
 
+        public async Task<List<Product>> GetListByFilterAsync(Expression<Func<Product, bool>> filter)
+        {
+           var result = await _productRepository.GetListAllAsync(filter);
+           return result;
+        }
+
         public async Task TAddAsync(Product t)
         {
             await _productRepository.InsertAsync(t);
+        }
+
+        public async Task<bool> TAddRangeAsync(List<Product> t)
+        {
+           var result = await _productRepository.InsertManyAsync(t);
+           return result;
         }
 
         public async Task TDeleteAsync(Product t)
@@ -46,10 +59,9 @@ namespace BusinessLayer.Managers
             await _productRepository.UpdateAsync(t);
         }
 
-        async Task<bool> IGenericService<Product>.TAddRangeAsync(List<Product> t)
+        public Task<bool> TUpdateRangeAsync(List<Product> t)
         {
-           var result =  await _productRepository.InsertManyAsync(t);
-           return result;
+            throw new NotImplementedException();
         }
     }
 }

@@ -13,6 +13,7 @@ namespace DataAccessLayer.IRepositories.IGeneric
         Task<bool> InsertManyAsync(List<T> t);
         Task DeleteAsync(T t);
         Task UpdateAsync(T t);
+        Task<bool> TUpdateRangeAsync(List<T> t);
         Task<T> GetByIdAsync(int id);
         Task<List<T>> GetListAllAsync();
         Task<List<T>> GetListAllAsync(Expression<Func<T, bool>> filter);

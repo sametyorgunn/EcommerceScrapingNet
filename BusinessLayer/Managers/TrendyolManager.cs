@@ -3,6 +3,7 @@ using BusinessLayer.IServices;
 using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
@@ -14,16 +15,18 @@ namespace BusinessLayer.Managers
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
-        public TrendyolManager(IProductService productService, IMapper mapper)
+        private readonly ICategoryService _categoryService;
+        public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService)
         {
             _productService = productService;
             _mapper = mapper;
+            _categoryService = categoryService;
         }
 
         public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
-            options.AddArgument("--headless");
+            //options.AddArgument("--headless");
             using (IWebDriver driver = new ChromeDriver(options))
             {
                 driver.Navigate().GoToUrl("https://www.trendyol.com/");
@@ -32,13 +35,24 @@ namespace BusinessLayer.Managers
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
                 Thread.Sleep(1000);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(1).ToList();
-                List<ProductDto> ProductList = new List<ProductDto>();
+
+                var catName = request.CategoryName;
+                var SelectedCategory = driver.FindElements(By.CssSelector("div.fltr-item-text")).Where(x => x.Text == catName).FirstOrDefault();
+                SelectedCategory.Click();
+
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
+                List<Product> ProductList = new List<Product>();
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 var count = 0;
                 foreach (var Sp in ScrapeProduct)
                 {
                     var ProductId = Sp.GetAttribute("data-id");
+                    var ProdId = Convert.ToInt32(ProductId);
+                    var productControl = await _productService.GetListByFilterAsync(x => x.ProductId == ProdId);
+                    if (productControl.Count > 0)
+                    {
+                        continue;
+                    }
                     string originalWindow = driver.CurrentWindowHandle;
                     try
                     {
@@ -74,33 +88,32 @@ namespace BusinessLayer.Managers
                         IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
                         Thread.Sleep(1000);
                         rating.Click();
-
-                        var elements = driver.FindElements(By.ClassName("comment-text"));
-                        ProductDto productDto = new ProductDto
+                        List<ProductProperty> propertiesList = properties.Select(kv => new ProductProperty
                         {
-                            Id = ProductId,
+                            PropertyTitle = kv.Key,
+                            PropertyText = kv.Value,
+                            ProductId = ProdId
+                        }).ToList();
+                        var elements = driver.FindElements(By.ClassName("comment-text"));
+                        Product product = new Product
+                        {
+                            ProductId = ProdId,
                             ProductBrand = ProductBrand,
                             ProductName = ProductName,
                             ProductImage = ProductImage,
                             ProductPrice = ProductPrice,
-                            ProductProperties = properties,
+                            ProductProperty = propertiesList,
                             ProductRating = ProductRating,
-                            Comment = new List<CommentDto>()
+                            Comment = new List<Comment>()
                         };
                         foreach (var element in elements)
                         {
-                            productDto.Comment.Add(new CommentDto { CommentText = element.Text });
+                            product.Comment.Add(new Comment { CommentText = element.Text });
                         }
-                        var productControl = _productService.GetListByFilterAsync(x=>x.Id == productDto.Id).Result;
-                        if(productControl != null)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            ProductList.Add(productDto);
-                            count++;
-                        }
+                       
+                        ProductList.Add(product);
+                        count++;
+                        
                     }
                     catch (NoSuchElementException)
                     {
@@ -110,7 +123,9 @@ namespace BusinessLayer.Managers
                     driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
+               
                 var payload = _mapper.Map<List<Product>>(ProductList);
+               
                 var result = await _productService.TAddRangeAsync(payload);
                 return result;
             }
@@ -125,8 +140,6 @@ namespace BusinessLayer.Managers
                 if (response.IsSuccessStatusCode)
                 {
                     string responseData = await response.Content.ReadAsStringAsync();
-                    //CategoryResponseDto categoryResponse = JsonConvert.DeserializeObject<CategoryResponseDto>(responseData);
-                    //return categoryResponse.Categories;
                     return responseData;
                 }
                 else
@@ -136,5 +149,7 @@ namespace BusinessLayer.Managers
                 }
             }
         }
+
+       
     }
 }

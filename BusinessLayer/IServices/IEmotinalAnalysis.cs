@@ -10,6 +10,6 @@ namespace BusinessLayer.IServices
 {
     public interface IEmotinalAnalysis
     {
-        public Task<List<SentimentPredictionDto>> GetEmotionalAnalysis(List<Comment>comments);
+        public Task<List<SentimentPredictionDto>> GetEmotionalAnalysis(List<CommentDto>comments);
     }
 }

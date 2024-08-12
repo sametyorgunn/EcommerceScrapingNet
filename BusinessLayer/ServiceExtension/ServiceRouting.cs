@@ -15,10 +15,13 @@ namespace BusinessLayer.ServiceExtension
             service.AddScoped<IEmotinalAnalysis, EmotionalAnalysis>();
             service.AddScoped<IProductService, ProductManager>();
             service.AddScoped<IProductRepository, ProductRepository>();
+            service.AddScoped<ICategoryService, CategoryManager>();
+            service.AddScoped<ICategoryRepository, CategoryRepository>();
         }
         public static void AddMappingServices(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(ProductProfile)); // AutoMapper'ı kaydetme
+            services.AddAutoMapper(typeof(ProductProfile));
+            services.AddAutoMapper(typeof(CategoryProfile));
         }
     }
 }

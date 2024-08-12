@@ -13,7 +13,6 @@ namespace EntityLayer.Entity
         public int? ParentId { get; set; }
         public List<Category> SubCategories { get; set; }
     }
-
     public class CategoryResponse
     {
         public List<Category> Categories { get; set; }

@@ -10,10 +10,12 @@ namespace API.Controllers
     public class TrendyolController : ControllerBase
     {
         private readonly ITrendyolService _trendyolService;
+        private readonly ICategoryService _categoryService;
 
-        public TrendyolController(ITrendyolService trendyolService)
+        public TrendyolController(ITrendyolService trendyolService, ICategoryService categoryService)
         {
             _trendyolService = trendyolService;
+            _categoryService = categoryService;
         }
         [HttpGet]
         public async Task<IActionResult> GetTrendyolCategories()
@@ -26,6 +28,12 @@ namespace API.Controllers
         {
             var productAndComments = await _trendyolService.GetProductAndCommentsAsync(request);
             return Ok(productAndComments);
+        }
+        [HttpGet("UpdateTrendyolCategories")]
+        public async Task<IActionResult> UpdateTrendyolCategories()
+        {
+            var result = await _categoryService.UpdateTrendyolCategories();
+            return Ok(result);
         }
     }
 }

@@ -11,6 +11,16 @@ namespace DataAccessLayer.Repositories.Generic
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
+        public async Task<bool> TUpdateRangeAsync(List<T> t)
+        {
+            using (AppDbContext c = new AppDbContext())
+            {
+                c.UpdateRange(t);
+                c.SaveChanges();
+                return true;
+            }
+        }
+
         async Task IGenericRepository<T>.DeleteAsync(T t)
         {
             using (AppDbContext c = new AppDbContext())

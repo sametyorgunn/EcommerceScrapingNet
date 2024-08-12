@@ -9,9 +9,8 @@ namespace EntityLayer.Entity
 {
     public class Comment
     {
-        [LoadColumn(0)]
+        public int Id { get; set; }
+        public int ProductId { get; set; }
         public string CommentText { get; set; }
-        [LoadColumn(1)]
-        public bool Label { get; set; }
     }
 }
