@@ -1,6 +1,8 @@
-﻿using BusinessLayer.IServices;
+﻿using AutoMapper;
+using BusinessLayer.IServices;
 using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.ResponseDto;
+using EntityLayer.Entity;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
@@ -10,10 +12,18 @@ namespace BusinessLayer.Managers
 {
     public class TrendyolManager : ITrendyolService
     {
-        public async Task<List<ProductDto>> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+        private readonly IProductService _productService;
+        private readonly IMapper _mapper;
+        public TrendyolManager(IProductService productService, IMapper mapper)
+        {
+            _productService = productService;
+            _mapper = mapper;
+        }
+
+        public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
-            //options.AddArgument("--headless");
+            options.AddArgument("--headless");
             using (IWebDriver driver = new ChromeDriver(options))
             {
                 driver.Navigate().GoToUrl("https://www.trendyol.com/");
@@ -66,7 +76,6 @@ namespace BusinessLayer.Managers
                         rating.Click();
 
                         var elements = driver.FindElements(By.ClassName("comment-text"));
-
                         ProductDto productDto = new ProductDto
                         {
                             Id = ProductId,
@@ -82,19 +91,28 @@ namespace BusinessLayer.Managers
                         {
                             productDto.Comment.Add(new CommentDto { CommentText = element.Text });
                         }
-                        ProductList.Add(productDto);
-                        count++;
+                        var productControl = _productService.GetListByFilterAsync(x=>x.Id == productDto.Id).Result;
+                        if(productControl != null)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            ProductList.Add(productDto);
+                            count++;
+                        }
                     }
                     catch (NoSuchElementException)
                     {
-                        Console.WriteLine("Değerlendirme bağlantısı bulunamadı.");
+                        return false;
                     }
 
                     driver.Close();
                     driver.SwitchTo().Window(originalWindow);
-
                 }
-                return ProductList;
+                var payload = _mapper.Map<List<Product>>(ProductList);
+                var result = await _productService.TAddRangeAsync(payload);
+                return result;
             }
         }
 

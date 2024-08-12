@@ -9,11 +9,12 @@ namespace DataAccessLayer.IRepositories.IGeneric
 {
     public interface IGenericRepository<T> where T : class
     {
-        void Insert(T t);
-        void Delete(T t);
-        void Update(T t);
-        T GetById(int id);
-        List<T> GetListAll();
-        List<T> GetListAll(Expression<Func<T, bool>> filter);
+        Task InsertAsync(T t);
+        Task<bool> InsertManyAsync(List<T> t);
+        Task DeleteAsync(T t);
+        Task UpdateAsync(T t);
+        Task<T> GetByIdAsync(int id);
+        Task<List<T>> GetListAllAsync();
+        Task<List<T>> GetListAllAsync(Expression<Func<T, bool>> filter);
     }
 }

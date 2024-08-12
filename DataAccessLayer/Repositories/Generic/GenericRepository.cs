@@ -11,7 +11,7 @@ namespace DataAccessLayer.Repositories.Generic
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        public void Delete(T t)
+        async Task IGenericRepository<T>.DeleteAsync(T t)
         {
             using (AppDbContext c = new AppDbContext())
             {
@@ -20,7 +20,7 @@ namespace DataAccessLayer.Repositories.Generic
             }
         }
 
-        public T GetById(int id)
+        async Task<T> IGenericRepository<T>.GetByIdAsync(int id)
         {
             using (AppDbContext c = new AppDbContext())
             {
@@ -28,7 +28,7 @@ namespace DataAccessLayer.Repositories.Generic
             }
         }
 
-        public List<T> GetListAll()
+        async Task<List<T>> IGenericRepository<T>.GetListAllAsync()
         {
             using (AppDbContext c = new AppDbContext())
             {
@@ -36,7 +36,7 @@ namespace DataAccessLayer.Repositories.Generic
             }
         }
 
-        public List<T> GetListAll(Expression<Func<T, bool>> filter)
+        async Task<List<T>> IGenericRepository<T>.GetListAllAsync(Expression<Func<T, bool>> filter)
         {
             using (AppDbContext c = new AppDbContext())
             {
@@ -44,7 +44,7 @@ namespace DataAccessLayer.Repositories.Generic
             }
         }
 
-        public void Insert(T t)
+        async Task IGenericRepository<T>.InsertAsync(T t)
         {
             using (AppDbContext c = new AppDbContext())
             {
@@ -53,7 +53,17 @@ namespace DataAccessLayer.Repositories.Generic
             }
         }
 
-        public void Update(T t)
+        async Task<bool> IGenericRepository<T>.InsertManyAsync(List<T> t)
+        {
+            using (AppDbContext c = new AppDbContext())
+            {
+                c.AddRange(t);
+                c.SaveChanges();
+                return true;
+            }
+        }
+
+        async Task IGenericRepository<T>.UpdateAsync(T t)
         {
             using (AppDbContext c = new AppDbContext())
             {
