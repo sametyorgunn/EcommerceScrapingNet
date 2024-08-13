@@ -1,49 +1,119 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - UI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/UI.styles.css" asp-append-version="true" />
+	@await Html.PartialAsync("~/Views/Shared/FrontPartials/Partials/_HeadContent.cshtml")
+	@await Html.PartialAsync("~/Views/Shared/FrontPartials/Css/_Css.cshtml")
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UI</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - UI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed toolbar-tablet-and-mobile-fixed aside-enabled aside-fixed" style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
+	<div class="d-flex flex-column flex-root">
+		<div class="page d-flex flex-row flex-column-fluid">
+			<div id="kt_aside" class="aside aside-dark aside-hoverable" data-kt-drawer="true" data-kt-drawer-name="aside" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_aside_mobile_toggle">
+				<div class="aside-logo flex-column-auto" id="kt_aside_logo">
+					<a href="../../demo13/dist/index.html">
+						<img alt="Logo" src="assets/media/logos/logo-demo13.svg" class="h-15px logo" />
+					</a>
+					<div id="kt_aside_toggle" class="btn btn-icon w-auto px-0 btn-active-color-primary aside-toggle" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="aside-minimize">
+						<span class="svg-icon svg-icon-1 rotate-180">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+								<path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="black" />
+							</svg>
+						</span>
+					</div>
+				</div>
+				<div class="aside-menu flex-column-fluid">
+					<div class="hover-scroll-overlay-y my-2 py-5 py-lg-8" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="0">
+						<div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true">
+							<div class="menu-item">
+								<div class="menu-content pb-2">
+									<span class="menu-section text-muted text-uppercase fs-8 ls-1">Dashboard</span>
+								</div>
+							</div>
+							<div class="menu-item">
+								<a class="menu-link active" href="../../demo13/dist/index.html">
+									<span class="menu-icon">
+										<i class="bi bi-grid fs-3"></i>
+									</span>
+									<span class="menu-title">Anasayfa</span>
+								</a>
+							</div>
+							<div class="menu-item">
+								<a class="menu-link" href="../../demo13/dist/index.html">
+									<span class="menu-icon">
+										<i class="bi bi-grid fs-3"></i>
+									</span>
+									<span class="menu-title">Default</span>
+								</a>
+							</div>
+							<div class="menu-item">
+								<a class="menu-link" href="../../demo13/dist/index.html">
+									<span class="menu-icon">
+										<i class="bi bi-grid fs-3"></i>
+									</span>
+									<span class="menu-title">Ürün</span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
+				<div id="kt_header" style="" class="header align-items-stretch">
+					<div class="container-fluid d-flex align-items-stretch justify-content-between">
+						<div class="d-flex align-items-center d-lg-none ms-n3 me-1" title="Show aside menu">
+							<div class="btn btn-icon btn-active-color-white" id="kt_aside_mobile_toggle">
+								<i class="bi bi-list fs-1"></i>
+							</div>
+						</div>
+						<div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
+							<a href="../../demo13/dist/index.html" class="d-lg-none">
+								<img alt="Logo" src="assets/media/logos/logo-demo13-compact.svg" class="h-25px" />
+							</a>
+						</div>
+						<div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1">
+							<div class="d-flex align-items-stretch" id="kt_header_nav">
+								<div class="header-menu align-items-stretch" data-kt-drawer="true" data-kt-drawer-name="header-menu" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_header_menu_mobile_toggle" data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_body', lg: '#kt_header_nav'}">
+									<div class="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch" id="#kt_header_menu" data-kt-menu="true">
+										<div class="menu-item me-lg-1">
+											<a class="menu-link active py-3" href="../../demo13/dist/index.html">
+												<span class="menu-title">Dashboard</span>
+											</a>
+										</div>
+										<div data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start" class="menu-item menu-lg-down-accordion me-lg-1">
+											<span class="menu-link py-3">
+												<span class="menu-title">Crafted</span>
+												<span class="menu-arrow d-lg-none"></span>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+					<div class="toolbar" id="kt_toolbar">
+						<div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+							<div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+								<h1 class="d-flex align-items-center text-dark fw-bolder fs-3 my-1">
+									Dashboard
+									<span class="h-20px border-gray-200 border-start ms-3 mx-2"></span>
+									<small class="text-muted fs-7 fw-bold my-1 ms-1">#XRS-45670</small>
+								</h1>
+							</div>
+						</div>
+					</div>
+					<div class="post d-flex flex-column-fluid" id="kt_post">
+						<div id="kt_content_container" class="container-xxl">
+							
+								  @RenderBody()
+								
+						</div>
+					</div>
+				</div>
+			@await Html.PartialAsync("~/Views/Shared/FrontPartials/Partials/_Footer.cshtml")
+			</div>
+		</div>
+	</div>
+	@await Html.PartialAsync("~/Views/Shared/FrontPartials/Js/_Js.cshtml")
 </body>
 </html>
