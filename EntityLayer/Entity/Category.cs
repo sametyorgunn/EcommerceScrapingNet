@@ -11,7 +11,7 @@ namespace EntityLayer.Entity
         public int Id { get; set; }
         public string Name { get; set; }
         public int? ParentId { get; set; }
-        public int Platform { get; set; }
+        public int PlatformId { get; set; }
 		public List<Category> SubCategories { get; set; }
     }
     public class CategoryResponse

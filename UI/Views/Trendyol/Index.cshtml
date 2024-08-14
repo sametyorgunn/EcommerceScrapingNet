@@ -89,11 +89,15 @@
 							</div>
 						</div>
 						<div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
-							<form id="kt_modal_add_user_form" class="form fv-plugins-bootstrap5 fv-plugins-framework" action="#">
+							<form method="post" id="kt_modal_add_user_form" class="form fv-plugins-bootstrap5 fv-plugins-framework" action="/Trendyol/ScrapeProduct">
 								<div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header" data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px" style="max-height: 127px;">
 									<div class="fv-row mb-7 fv-plugins-icon-container">
 										<label class="required fw-bold fs-6 mb-2">Kategori</label>
-										@await Component.InvokeAsync("TrendyolCategories")
+
+
+ 										@await Component.InvokeAsync("TrendyolCategories")
+ 
+
 										<div class="fv-plugins-message-container invalid-feedback"></div>
 										<br />
 										<label class="required fw-bold fs-6 mb-2">Ürün Adı</label>

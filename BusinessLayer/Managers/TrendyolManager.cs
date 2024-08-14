@@ -3,6 +3,7 @@ using BusinessLayer.IServices;
 using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
+using EntityLayer.Enums;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -37,9 +38,12 @@ namespace BusinessLayer.Managers
                 Thread.Sleep(1000);
 
                 var catName = request.CategoryName;
-                var SelectedCategory = driver.FindElements(By.CssSelector("div.fltr-item-text")).Where(x => x.Text == catName).FirstOrDefault();
-                SelectedCategory.Click();
+				var elementKategori = driver.FindElements(By.CssSelector("div.fltr-item-text"));
+				var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains("iPhone IOS Cep Telefonları", StringComparison.OrdinalIgnoreCase));
 
+				//var SelectedCategory = driver.FindElements(By.CssSelector("div.fltr-item-text")).Contains(catName).FirstOrDefault();
+				SelectedCategory.Click();
+                Thread.Sleep(1000);
                 var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
                 List<Product> ProductList = new List<Product>();
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
@@ -48,8 +52,8 @@ namespace BusinessLayer.Managers
                 {
                     var ProductId = Sp.GetAttribute("data-id");
                     var ProdId = Convert.ToInt32(ProductId);
-                    var productControl = await _productService.GetListByFilterAsync(x => x.ProductId == ProdId);
-                    if (productControl.Count > 0)
+                    var productControl = await _productService.GetProductById(new GetProductById { Id = ProdId});
+                    if (productControl != null)
                     {
                         continue;
                     }
@@ -104,6 +108,7 @@ namespace BusinessLayer.Managers
                             ProductPrice = ProductPrice,
                             ProductProperty = propertiesList,
                             ProductRating = ProductRating,
+                            PlatformId = (int)EntityLayer.Enums.Platform.trendyol,
                             Comment = new List<Comment>()
                         };
                         foreach (var element in elements)

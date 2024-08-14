@@ -10,5 +10,7 @@ namespace DataAccessLayer.IRepositories
 {
     public interface IProductRepository:IGenericRepository<Product>
     {
-    }
+        Task<List<Product>> GetListAllByPlatformIdAsync(int platformId);
+
+	}
 }

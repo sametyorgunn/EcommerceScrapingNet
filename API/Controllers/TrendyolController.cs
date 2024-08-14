@@ -23,7 +23,7 @@ namespace API.Controllers
             var categories = await _trendyolService.GetTrendyolCategoriesAsync();
             return Ok(categories);
         }
-        [HttpPost("GetProductsAndComments")]
+        [HttpPost("ScrapeProductTrendyol")]
         public async Task<IActionResult> GetProductAndComments(GetProductAndCommentsDto request)
         {
             var productAndComments = await _trendyolService.GetProductAndCommentsAsync(request);

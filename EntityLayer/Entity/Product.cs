@@ -17,6 +17,7 @@ namespace EntityLayer.Entity
         public string ProductRating { get; set; }
         public string ProductPrice { get; set; }
         public string ProductImage { get; set; }
+        public int PlatformId { get; set; }
         public List<ProductProperty> ProductProperty { get; set; }
         public List<Comment> Comment { get; set; }
     }
