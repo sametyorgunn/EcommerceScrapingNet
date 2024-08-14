@@ -124,8 +124,7 @@ namespace BusinessLayer.Managers
                     driver.SwitchTo().Window(originalWindow);
                 }
                
-                var payload = _mapper.Map<List<Product>>(ProductList);
-               
+                var payload = _mapper.Map<List<ProductDto>>(ProductList);
                 var result = await _productService.TAddRangeAsync(payload);
                 return result;
             }

@@ -17,11 +17,11 @@ namespace BusinessLayer.ServiceExtension
             service.AddScoped<IProductRepository, ProductRepository>();
             service.AddScoped<ICategoryService, CategoryManager>();
             service.AddScoped<ICategoryRepository, CategoryRepository>();
-        }
-        public static void AddMappingServices(this IServiceCollection services)
-        {
-            services.AddAutoMapper(typeof(ProductProfile));
-            services.AddAutoMapper(typeof(CategoryProfile));
-        }
+
+
+			service.AddAutoMapper(typeof(ProductProfile));
+			service.AddAutoMapper(typeof(CategoryProfile));
+		}
+       
     }
 }

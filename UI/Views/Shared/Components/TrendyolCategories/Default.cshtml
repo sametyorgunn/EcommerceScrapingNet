@@ -1,0 +1,8 @@
+﻿@using EntityLayer.Entity
+@model List<Category>
+<select name="CategoryName" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Kategori">
+	@foreach(var i in Model)
+	{
+		<option value="@i.Name">@i.Name</option>
+	}
+</select>

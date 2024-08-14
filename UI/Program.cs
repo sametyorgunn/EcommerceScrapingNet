@@ -1,7 +1,10 @@
+using BusinessLayer.ServiceExtension;
+using EntityLayer.MappingProfiles;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddServiceRouting();
 
 var app = builder.Build();
 

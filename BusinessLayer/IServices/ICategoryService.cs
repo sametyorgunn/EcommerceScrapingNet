@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.IServices.IGeneric;
+using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,5 @@ namespace BusinessLayer.IServices
     {
         public Task<bool> UpdateTrendyolCategories();
 
-    }
+	}
 }

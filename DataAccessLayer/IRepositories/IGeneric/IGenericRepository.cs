@@ -16,6 +16,6 @@ namespace DataAccessLayer.IRepositories.IGeneric
         Task<bool> TUpdateRangeAsync(List<T> t);
         Task<T> GetByIdAsync(int id);
         Task<List<T>> GetListAllAsync();
-        Task<List<T>> GetListAllAsync(Expression<Func<T, bool>> filter);
+        Task<List<T>> GetListAllFilterAsync(Expression<Func<T, bool>> filter);
     }
 }

@@ -1,6 +1,8 @@
-﻿using BusinessLayer.IServices;
+﻿using AutoMapper;
+using BusinessLayer.IServices;
 using BusinessLayer.IServices.IGeneric;
 using DataAccessLayer.IRepositories;
+using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using Microsoft.VisualBasic;
 using OpenQA.Selenium.Internal;
@@ -16,50 +18,64 @@ namespace BusinessLayer.Managers
     public class ProductManager : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
-        public ProductManager(IProductRepository productRepository)
+		public ProductManager(IProductRepository productRepository, IMapper mapper)
+		{
+			_productRepository = productRepository;
+			_mapper = mapper;
+		}
+
+		public async Task<List<ProductDto>> GetListAsync()
         {
-            _productRepository = productRepository;
+            var products =  await _productRepository.GetListAllAsync();
+            var payload = _mapper.Map<List<ProductDto>>(products);
+            return payload;
+		}
+
+		public async Task<List<ProductDto>> GetListByFilterAsync(Expression<Func<ProductDto, bool>> filter)
+		{
+			var productFilter = _mapper.Map<Expression<Func<Product, bool>>>(filter);
+			var products = await _productRepository.GetListAllFilterAsync(productFilter);
+			var payload = _mapper.Map<List<ProductDto>>(products);
+			return payload;
+		}
+
+
+		public async Task TAddAsync(ProductDto t)
+        {
+			var product = _mapper.Map<Product>(t);
+			await _productRepository.InsertAsync(product);
         }
 
-        public async Task<List<Product>> GetListAsync()
+        public async Task<bool> TAddRangeAsync(List<ProductDto> t)
         {
-            return await _productRepository.GetListAllAsync();
+			var payload = _mapper.Map<List<Product>>(t);
+		    var result = await _productRepository.InsertManyAsync(payload);
+            return result;
         }
 
-        public async Task<List<Product>> GetListByFilterAsync(Expression<Func<Product, bool>> filter)
+        public async Task TDeleteAsync(ProductDto t)
         {
-           var result = await _productRepository.GetListAllAsync(filter);
-           return result;
+			var payload = _mapper.Map<Product>(t);
+			await _productRepository.DeleteAsync(payload);
         }
 
-        public async Task TAddAsync(Product t)
+        public async Task<ProductDto> TGetByIdAsync(int id)
         {
-            await _productRepository.InsertAsync(t);
-        }
+			var result = await _productRepository.GetByIdAsync(id);
+			var payload = _mapper.Map<ProductDto>(result);
+            return payload; 
 
-        public async Task<bool> TAddRangeAsync(List<Product> t)
+		}
+
+		public async Task TUpdateAsync(ProductDto t)
         {
-           var result = await _productRepository.InsertManyAsync(t);
-           return result;
-        }
+			var payload = _mapper.Map<Product>(t);
+			await _productRepository.UpdateAsync(payload);
+		}
 
-        public async Task TDeleteAsync(Product t)
-        {
-            await _productRepository.DeleteAsync(t);
-        }
-
-        public async Task<Product> TGetByIdAsync(int id)
-        {
-            return await _productRepository.GetByIdAsync(id);
-        }
-
-        public async Task TUpdateAsync(Product t)
-        {
-            await _productRepository.UpdateAsync(t);
-        }
-
-        public Task<bool> TUpdateRangeAsync(List<Product> t)
+        public Task<bool> TUpdateRangeAsync(List<ProductDto> t)
         {
             throw new NotImplementedException();
         }

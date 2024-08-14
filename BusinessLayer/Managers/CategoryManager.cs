@@ -30,8 +30,9 @@ namespace BusinessLayer.Managers
 
         public Task<List<Category>> GetListByFilterAsync(Expression<Func<Category, bool>> filter)
         {
-            throw new NotImplementedException();
-        }
+            var categories = _categoryRepository.GetListAllFilterAsync(filter);
+            return categories;
+		}
 
         public Task TAddAsync(Category t)
         {

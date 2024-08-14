@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.IServices.IGeneric;
+using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.IServices
 {
-    public interface IProductService:IGenericService<Product>
+    public interface IProductService:IGenericService<ProductDto>
     {
     }
 }

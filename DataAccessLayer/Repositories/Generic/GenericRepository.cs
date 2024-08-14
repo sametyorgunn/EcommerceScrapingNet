@@ -46,7 +46,7 @@ namespace DataAccessLayer.Repositories.Generic
             }
         }
 
-        async Task<List<T>> IGenericRepository<T>.GetListAllAsync(Expression<Func<T, bool>> filter)
+        async Task<List<T>> IGenericRepository<T>.GetListAllFilterAsync(Expression<Func<T, bool>> filter)
         {
             using (AppDbContext c = new AppDbContext())
             {
