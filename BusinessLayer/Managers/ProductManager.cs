@@ -49,6 +49,13 @@ namespace BusinessLayer.Managers
 			return payload;
 		}
 
+		public async Task<ProductDto> GetProductByProductId(GetProductByProductId request)
+		{
+			var product = await _productRepository.GetProductByProductId(request);
+			var payload = _mapper.Map<ProductDto>(product);
+			return payload;
+		}
+
 		public async Task<List<ProductDto>> GetProductsByPlatformId(GetProductsByPlatformId request)
 		{
 			var products = await _productRepository.GetListAllByPlatformIdAsync(request.Id);

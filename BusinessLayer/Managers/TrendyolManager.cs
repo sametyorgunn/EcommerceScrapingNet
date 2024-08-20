@@ -9,6 +9,8 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using System.Threading;
+using System.Xml.Linq;
 
 namespace BusinessLayer.Managers
 {
@@ -27,49 +29,63 @@ namespace BusinessLayer.Managers
         public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
-            //options.AddArgument("--headless");
-            using (IWebDriver driver = new ChromeDriver(options))
-            {
-                driver.Navigate().GoToUrl("https://www.trendyol.com/");
-                Thread.Sleep(1000);
+			//options.AddArgument("--headless");
+
+			using (IWebDriver driver = new ChromeDriver(options))
+			{
+				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+				driver.Navigate().GoToUrl("https://www.trendyol.com/");
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
                 Thread.Sleep(1000);
 
                 var catName = request.CategoryName;
+                string[] splitCatName = catName.Split(" ");
 				var elementKategori = driver.FindElements(By.CssSelector("div.fltr-item-text"));
-				var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains("iPhone IOS Cep Telefonları", StringComparison.OrdinalIgnoreCase));
-
-				//var SelectedCategory = driver.FindElements(By.CssSelector("div.fltr-item-text")).Contains(catName).FirstOrDefault();
-				SelectedCategory.Click();
-                Thread.Sleep(1000);
+				var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
+                if(SelectedCategory != null)
+                {
+					SelectedCategory.Click();
+				}
+                else
+                {
+					 SelectedCategory = elementKategori.FirstOrDefault(element =>
+					{
+						return splitCatName.Any(word => element.Text.Contains(word, StringComparison.OrdinalIgnoreCase));
+					});
+					SelectedCategory.Click();
+				}
+				Thread.Sleep(1000);
                 var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
                 List<Product> ProductList = new List<Product>();
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 var count = 0;
                 foreach (var Sp in ScrapeProduct)
                 {
                     var ProductId = Sp.GetAttribute("data-id");
                     var ProdId = Convert.ToInt32(ProductId);
-                    var productControl = await _productService.GetProductById(new GetProductById { Id = ProdId});
-                    if (productControl != null)
-                    {
-                        continue;
-                    }
-                    string originalWindow = driver.CurrentWindowHandle;
+					var productControl = await _productService.GetProductByProductId(new GetProductByProductId { ProductId = ProdId });
+					if (productControl != null)
+					{
+						continue;
+					}
+					string originalWindow = driver.CurrentWindowHandle;
                     try
                     {
                         Sp.Click();
-                    }
+						var windowHandles = driver.WindowHandles;
+						driver.SwitchTo().Window(windowHandles[1]);
+					}
                     catch (Exception ex)
                     {
                         Actions actions = new Actions(driver);
                         actions.MoveByOffset(10, 100).Click().Perform();
                         Sp.Click();
-                    }
-                    var windowHandles = driver.WindowHandles;
-                    driver.SwitchTo().Window(windowHandles[1]);
+						var windowHandles = driver.WindowHandles;
+						driver.SwitchTo().Window(windowHandles[1]);
+					}
+                   
                     try
                     {
                         Thread.Sleep(1000);
@@ -91,8 +107,7 @@ namespace BusinessLayer.Managers
                         }
                         IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
                         Thread.Sleep(1000);
-                        rating.Click();
-                        List<ProductProperty> propertiesList = properties.Select(kv => new ProductProperty
+						List<ProductProperty> propertiesList = properties.Select(kv => new ProductProperty
                         {
                             PropertyTitle = kv.Key,
                             PropertyText = kv.Value,
@@ -122,10 +137,14 @@ namespace BusinessLayer.Managers
                     }
                     catch (NoSuchElementException)
                     {
-                        return false;
-                    }
+						Actions actions = new Actions(driver);
+						actions.MoveByOffset(10, 100).Click().Perform();
+						IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
+						Thread.Sleep(1000);
+						rating.Click();
+					}
 
-                    driver.Close();
+					driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
                

@@ -1,6 +1,8 @@
 ﻿using DataAccessLayer.Contexts;
 using DataAccessLayer.IRepositories;
+using DataAccessLayer.Migrations;
 using DataAccessLayer.Repositories.Generic;
+using EntityLayer.Dto.RequestDto;
 using EntityLayer.Entity;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,15 @@ namespace DataAccessLayer.Repositories
 			{
 				var products = c.products.Where(x=>x.PlatformId == platformId).ToList();
 				return products;
+			};
+		}
+
+		public async Task<Product> GetProductByProductId(GetProductByProductId request)
+		{
+			using (var c = new AppDbContext())
+			{
+				var product = c.products.Where(x => x.ProductId == request.ProductId).FirstOrDefault();
+				return product;
 			};
 		}
 	}

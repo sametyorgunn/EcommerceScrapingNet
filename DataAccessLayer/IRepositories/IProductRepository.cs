@@ -1,4 +1,6 @@
 ﻿using DataAccessLayer.IRepositories.IGeneric;
+using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ namespace DataAccessLayer.IRepositories
     public interface IProductRepository:IGenericRepository<Product>
     {
         Task<List<Product>> GetListAllByPlatformIdAsync(int platformId);
+		Task<Product> GetProductByProductId(GetProductByProductId request);
 
 	}
 }
