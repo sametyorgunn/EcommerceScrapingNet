@@ -1,7 +1,7 @@
 ﻿@using EntityLayer.Dto.ResponseDto
 @using EntityLayer.Entity
 @model List<CategoryDto>
-<select name="CategoryName" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Kategori">
+<select id="CategoryName" name="CategoryName" class="form-control selectpicker form-control-solid mb-3 mb-lg-0" data-live-search="true" placeholder="Kategori">
 	@foreach(var i in Model)
 	{
 		<option value="@i.Name">@i.Name</option>

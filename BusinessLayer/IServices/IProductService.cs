@@ -15,5 +15,6 @@ namespace BusinessLayer.IServices
         Task<ProductDto> GetProductById(GetProductById request);
         Task<ProductDto> GetProductByProductId(GetProductByProductId request);
 		Task<List<ProductDto>> GetProductsByPlatformId(GetProductsByPlatformId request);
+		Task<List<ProductDto>> GetLastFiveProducts();
 	}
 }

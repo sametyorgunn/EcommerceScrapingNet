@@ -3,6 +3,7 @@ using DataAccessLayer.IRepositories;
 using DataAccessLayer.Migrations;
 using DataAccessLayer.Repositories.Generic;
 using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,15 @@ namespace DataAccessLayer.Repositories
 {
 	public class ProductRepository : GenericRepository<Product>, IProductRepository
 	{
+		public async Task<List<Product>> GetLastFiveProducts()
+		{
+			using (var c = new AppDbContext())
+			{
+				var products = c.products.OrderByDescending(x => x.Id).Take(5).ToList();
+				return products;
+			};
+		}
+
 		public async Task<List<Product>> GetListAllByPlatformIdAsync(int platformId)
 		{
 			using(var c = new AppDbContext())

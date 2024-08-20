@@ -14,6 +14,8 @@ namespace DataAccessLayer.IRepositories
     {
         Task<List<Product>> GetListAllByPlatformIdAsync(int platformId);
 		Task<Product> GetProductByProductId(GetProductByProductId request);
+		Task<List<Product>> GetLastFiveProducts();
+
 
 	}
 }

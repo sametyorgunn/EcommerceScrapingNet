@@ -22,5 +22,11 @@ namespace API.Controllers
 			var result = await _productService.GetProductsByPlatformId(new GetProductsByPlatformId { Id = (int)Platform.trendyol });
 			return Ok(result);
 		}
+		[HttpGet("GetLastFiveProducts")]
+		public async Task<IActionResult> GetLastFiveProducts()
+		{
+			var result = await _productService.GetLastFiveProducts();
+			return Ok(result);
+		}
 	}
 }

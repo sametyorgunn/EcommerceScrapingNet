@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.Generic;
 using System.Threading;
 using System.Xml.Linq;
 
@@ -40,22 +41,47 @@ namespace BusinessLayer.Managers
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
                 Thread.Sleep(1000);
-
                 var catName = request.CategoryName;
                 string[] splitCatName = catName.Split(" ");
 				var elementKategori = driver.FindElements(By.CssSelector("div.fltr-item-text"));
+				Thread.Sleep(1000);
+
 				var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
-                if(SelectedCategory != null)
+                if(SelectedCategory?.Text == catName)
                 {
 					SelectedCategory.Click();
 				}
                 else
                 {
-					 SelectedCategory = elementKategori.FirstOrDefault(element =>
+					string bestMatch = null;
+					int highestMatchCount = 0;
+                    IWebElement cat = null;
+					foreach (var item in elementKategori)
 					{
-						return splitCatName.Any(word => element.Text.Contains(word, StringComparison.OrdinalIgnoreCase));
-					});
-					SelectedCategory.Click();
+						int matchCount = GetMatchCount(catName, item.Text);
+						if (matchCount > highestMatchCount)
+						{
+							highestMatchCount = matchCount;
+							bestMatch = item.Text;
+                            cat = item;
+						}
+					}
+					static int GetMatchCount(string str1, string str2)
+					{
+						var words1 = str1.Split(' ');
+						var words2 = str2.Split(' ');
+
+						// Her iki stringdeki kelimeleri kümelere dönüştür
+						var set1 = new HashSet<string>(words1);
+						var set2 = new HashSet<string>(words2);
+
+						// Ortak kelimeleri say
+						set1.IntersectWith(set2);
+						return set1.Count;
+					}
+                    
+                    cat.Click();
+					
 				}
 				Thread.Sleep(1000);
                 var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
@@ -150,7 +176,7 @@ namespace BusinessLayer.Managers
                
                 var payload = _mapper.Map<List<ProductDto>>(ProductList);
                 var result = await _productService.TAddRangeAsync(payload);
-                return result;
+                return true;
             }
         }
 
