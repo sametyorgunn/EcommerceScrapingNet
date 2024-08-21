@@ -28,5 +28,20 @@ namespace API.Controllers
 			var result = await _productService.GetLastFiveProducts();
 			return Ok(result);
 		}
+		[HttpDelete("DeleteProduct/{id}")]
+		public async Task<IActionResult> DeleteProduct(int id) 
+		{
+			GetProductById req = new GetProductById { Id = id };
+			var product = await _productService.GetProductById(req);
+			var result = _productService.TDeleteAsync(product);
+			if(result.IsCompletedSuccessfully)
+			{
+				return Ok("ürün silindi");
+			}
+			else
+			{
+				return Ok("ürün silinemedi");
+			}
+		}
 	}
 }

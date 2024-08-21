@@ -43,46 +43,49 @@ namespace BusinessLayer.Managers
                 Thread.Sleep(1000);
                 var catName = request.CategoryName;
                 string[] splitCatName = catName.Split(" ");
-				var elementKategori = driver.FindElements(By.CssSelector("div.fltr-item-text"));
+				var elementKategori = driver.FindElements(By.CssSelector("div.fltrs div.fltr-item-text"));
 				Thread.Sleep(1000);
-
-				var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
-                if(SelectedCategory?.Text == catName)
+                if(elementKategori.Count() != 1)
                 {
-					SelectedCategory.Click();
-				}
-                else
-                {
-					string bestMatch = null;
-					int highestMatchCount = 0;
-                    IWebElement cat = null;
-					foreach (var item in elementKategori)
+					var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
+					if (SelectedCategory?.Text == catName)
 					{
-						int matchCount = GetMatchCount(catName, item.Text);
-						if (matchCount > highestMatchCount)
+						SelectedCategory.Click();
+					}
+					else
+					{
+						string bestMatch = null;
+						int highestMatchCount = 0;
+						IWebElement cat = null;
+						foreach (var item in elementKategori)
 						{
-							highestMatchCount = matchCount;
-							bestMatch = item.Text;
-                            cat = item;
+							int matchCount = GetMatchCount(catName, item.Text);
+							if (matchCount > highestMatchCount)
+							{
+								highestMatchCount = matchCount;
+								bestMatch = item.Text;
+								cat = item;
+							}
 						}
-					}
-					static int GetMatchCount(string str1, string str2)
-					{
-						var words1 = str1.Split(' ');
-						var words2 = str2.Split(' ');
+						static int GetMatchCount(string str1, string str2)
+						{
+							var words1 = str1.Split(' ');
+							var words2 = str2.Split(' ');
 
-						// Her iki stringdeki kelimeleri kümelere dönüştür
-						var set1 = new HashSet<string>(words1);
-						var set2 = new HashSet<string>(words2);
+							// Her iki stringdeki kelimeleri kümelere dönüştür
+							var set1 = new HashSet<string>(words1);
+							var set2 = new HashSet<string>(words2);
 
-						// Ortak kelimeleri say
-						set1.IntersectWith(set2);
-						return set1.Count;
+							// Ortak kelimeleri say
+							set1.IntersectWith(set2);
+							return set1.Count;
+						}
+
+						cat.Click();
+
 					}
-                    
-                    cat.Click();
-					
 				}
+			
 				Thread.Sleep(1000);
                 var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
                 List<Product> ProductList = new List<Product>();
@@ -110,14 +113,27 @@ namespace BusinessLayer.Managers
                         Sp.Click();
 						var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
+                        Console.WriteLine(ex.Message);
 					}
                    
                     try
                     {
-                        Thread.Sleep(1000);
-                        var ProductBrand = driver.FindElement(By.CssSelector("a.product-brand-name-with-link")).Text;
-                        var ProductName = driver.FindElement(By.CssSelector("h1.pr-new-br span")).Text;
-                        var ProductRating = driver.FindElement(By.CssSelector("div.rating-line-count")).Text;
+                        Thread.Sleep(2000);
+                        string Brand = null;
+                        string ProductName;
+						var ProductBrand = driver.FindElements(By.CssSelector("a.product-brand-name-with-link"));
+                        if(ProductBrand.Count() == 0) 
+                        { 
+                            ProductBrand = driver.FindElements(By.CssSelector("span.product-brand-name-without-link"));
+                            Brand = ProductBrand.FirstOrDefault().Text;
+							ProductName = driver.FindElement(By.CssSelector("h1.pr-new-br span:nth-of-type(2)")).Text;
+						}
+						else
+                        {
+                            Brand = ProductBrand.FirstOrDefault().Text;
+						    ProductName = driver.FindElement(By.CssSelector("h1.pr-new-br span")).Text;
+						}
+						var ProductRating = driver.FindElement(By.CssSelector("div.rating-line-count")).Text;
                         var ProductPrice = driver.FindElement(By.CssSelector("span.prc-dsc")).Text;
                         var ProductImage = driver.FindElement(By.CssSelector("div.base-product-image img")).GetAttribute("src");
                         var ProductProperties = driver.FindElements(By.ClassName("attribute-item"));
@@ -131,19 +147,38 @@ namespace BusinessLayer.Managers
                             string attributeValue = attributeValueElement.Text;
                             properties.Add(attributeName, attributeValue);
                         }
-                        IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
-                        Thread.Sleep(1000);
 						List<ProductProperty> propertiesList = properties.Select(kv => new ProductProperty
                         {
                             PropertyTitle = kv.Key,
                             PropertyText = kv.Value,
                             ProductId = ProdId
                         }).ToList();
-                        var elements = driver.FindElements(By.ClassName("comment-text"));
-                        Product product = new Product
+
+                        IList<IWebElement> elements;
+                        try
+                        {
+							wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete");
+
+							IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
+							rating.Click();
+							elements = driver.FindElements(By.ClassName("comment-text"));
+                        }
+                        catch(Exception ex)
+                        {
+							Actions actions = new Actions(driver);
+							actions.MoveByOffset(10, 100).Click().Perform();
+                            Thread.Sleep(1000);
+							IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
+							Thread.Sleep(1000);
+							rating.Click();
+							elements = driver.FindElements(By.ClassName("comment-text"));
+							Console.WriteLine(ex.Message);
+						}
+
+						Product product = new Product
                         {
                             ProductId = ProdId,
-                            ProductBrand = ProductBrand,
+                            ProductBrand = Brand,
                             ProductName = ProductName,
                             ProductImage = ProductImage,
                             ProductPrice = ProductPrice,
@@ -161,13 +196,14 @@ namespace BusinessLayer.Managers
                         count++;
                         
                     }
-                    catch (NoSuchElementException)
+                    catch (Exception ex)
                     {
 						Actions actions = new Actions(driver);
 						actions.MoveByOffset(10, 100).Click().Perform();
 						IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
 						Thread.Sleep(1000);
 						rating.Click();
+						Console.WriteLine(ex.Message);
 					}
 
 					driver.Close();

@@ -148,7 +148,8 @@
             type: "POST",
             data: data,
             success: function (response) {
-                if (response.success) {
+				debugger
+                if (response == true) {
 					toastr.success("ürünler Başarıyla çekildi.")
                 } else {
 					toastr.error("ürünler çekilemedi.")
