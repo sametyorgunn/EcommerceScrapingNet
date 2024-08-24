@@ -12,6 +12,12 @@ using OpenQA.Selenium.Support.UI;
 using System.Collections.Generic;
 using System.Threading;
 using System.Xml.Linq;
+using SeleniumExtras.WaitHelpers;
+using System.CodeDom.Compiler;
+using OpenQA.Selenium.Support.Extensions;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Edge;
+
 
 namespace BusinessLayer.Managers
 {
@@ -29,12 +35,16 @@ namespace BusinessLayer.Managers
 
         public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
-            var options = new ChromeOptions();
-			//options.AddArgument("--headless");
+            //var options = new EdgeDriver();
+			//options.AddArgument("--headless=new");
+   //         options.AddArgument("--window-size=1920,1080");
+   //         options.AddArgument("--ignore-certificate-errors");
+   //         options.AddArgument("--allow-running-insecure-content");
 
-			using (IWebDriver driver = new ChromeDriver(options))
+			using (IWebDriver driver = new FirefoxDriver())
 			{
 				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+				var jsExecutor = (IJavaScriptExecutor)driver;
 
 				driver.Navigate().GoToUrl("https://www.trendyol.com/");
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
@@ -44,7 +54,6 @@ namespace BusinessLayer.Managers
                 var catName = request.CategoryName;
                 string[] splitCatName = catName.Split(" ");
 				var elementKategori = driver.FindElements(By.CssSelector("div.fltrs div.fltr-item-text"));
-				Thread.Sleep(1000);
                 if(elementKategori.Count() != 1)
                 {
 					var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
@@ -54,35 +63,8 @@ namespace BusinessLayer.Managers
 					}
 					else
 					{
-						string bestMatch = null;
-						int highestMatchCount = 0;
-						IWebElement cat = null;
-						foreach (var item in elementKategori)
-						{
-							int matchCount = GetMatchCount(catName, item.Text);
-							if (matchCount > highestMatchCount)
-							{
-								highestMatchCount = matchCount;
-								bestMatch = item.Text;
-								cat = item;
-							}
-						}
-						static int GetMatchCount(string str1, string str2)
-						{
-							var words1 = str1.Split(' ');
-							var words2 = str2.Split(' ');
-
-							// Her iki stringdeki kelimeleri kümelere dönüştür
-							var set1 = new HashSet<string>(words1);
-							var set2 = new HashSet<string>(words2);
-
-							// Ortak kelimeleri say
-							set1.IntersectWith(set2);
-							return set1.Count;
-						}
-
-						cat.Click();
-
+                        var catResult = AnalyseBestCagory.bestMatch(elementKategori, catName);
+						catResult.Click();
 					}
 				}
 			
@@ -153,25 +135,23 @@ namespace BusinessLayer.Managers
                             PropertyText = kv.Value,
                             ProductId = ProdId
                         }).ToList();
-
-                        IList<IWebElement> elements;
-                        try
-                        {
+						IList<IWebElement> Comments = new List<IWebElement>();
+						try
+						{
+							var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
+                            if (overlay.Count()>0) 
+                            {
+								Actions actions = new Actions(driver);
+								actions.MoveByOffset(10, 100).Click().Perform();
+								Thread.Sleep(1000);
+							}
 							wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete");
-
 							IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
-							rating.Click();
-							elements = driver.FindElements(By.ClassName("comment-text"));
+                            rating.Click();
+							Comments = driver.FindElements(By.ClassName("comment-text"));
                         }
                         catch(Exception ex)
                         {
-							Actions actions = new Actions(driver);
-							actions.MoveByOffset(10, 100).Click().Perform();
-                            Thread.Sleep(1000);
-							IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
-							Thread.Sleep(1000);
-							rating.Click();
-							elements = driver.FindElements(By.ClassName("comment-text"));
 							Console.WriteLine(ex.Message);
 						}
 
@@ -187,7 +167,7 @@ namespace BusinessLayer.Managers
                             PlatformId = (int)EntityLayer.Enums.Platform.trendyol,
                             Comment = new List<Comment>()
                         };
-                        foreach (var element in elements)
+                        foreach (var element in Comments)
                         {
                             product.Comment.Add(new Comment { CommentText = element.Text });
                         }
@@ -198,11 +178,6 @@ namespace BusinessLayer.Managers
                     }
                     catch (Exception ex)
                     {
-						Actions actions = new Actions(driver);
-						actions.MoveByOffset(10, 100).Click().Perform();
-						IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
-						Thread.Sleep(1000);
-						rating.Click();
 						Console.WriteLine(ex.Message);
 					}
 
@@ -235,6 +210,39 @@ namespace BusinessLayer.Managers
             }
         }
 
-       
-    }
+        public static class AnalyseBestCagory
+        {
+            public static IWebElement bestMatch(IList<IWebElement>elementKategori,string catName)
+            {
+				string bestMatch = null;
+				int highestMatchCount = 0;
+				IWebElement cat = null;
+				foreach (var item in elementKategori)
+				{
+					int matchCount = GetMatchCount(catName, item.Text);
+					if (matchCount > highestMatchCount)
+					{
+						highestMatchCount = matchCount;
+						bestMatch = item.Text;
+						cat = item;
+					}
+				}
+                return cat;
+			}
+			static int GetMatchCount(string str1, string str2)
+			{
+				var words1 = str1.Split(' ');
+				var words2 = str2.Split(' ');
+
+				// Her iki stringdeki kelimeleri kümelere dönüştür
+				var set1 = new HashSet<string>(words1);
+				var set2 = new HashSet<string>(words2);
+
+				// Ortak kelimeleri say
+				set1.IntersectWith(set2);
+				return set1.Count;
+			}
+		}
+
+	}
 }
