@@ -6,7 +6,6 @@ using EntityLayer.Entity;
 using EntityLayer.Enums;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System.Collections.Generic;
@@ -15,8 +14,7 @@ using System.Xml.Linq;
 using SeleniumExtras.WaitHelpers;
 using System.CodeDom.Compiler;
 using OpenQA.Selenium.Support.Extensions;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Chrome;
 
 
 namespace BusinessLayer.Managers
@@ -35,13 +33,11 @@ namespace BusinessLayer.Managers
 
         public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
-            //var options = new EdgeDriver();
-			//options.AddArgument("--headless=new");
-   //         options.AddArgument("--window-size=1920,1080");
-   //         options.AddArgument("--ignore-certificate-errors");
-   //         options.AddArgument("--allow-running-insecure-content");
 
-			using (IWebDriver driver = new FirefoxDriver())
+            var options = new ChromeOptions();
+            //options.AddArgument("--headless");
+
+            using (IWebDriver driver = new ChromeDriver())
 			{
 				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 				var jsExecutor = (IJavaScriptExecutor)driver;
@@ -84,6 +80,13 @@ namespace BusinessLayer.Managers
 					string originalWindow = driver.CurrentWindowHandle;
                     try
                     {
+                        var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
+                        if (overlay.Count() > 0)
+                        {
+                            Actions actions = new Actions(driver);
+                            actions.MoveByOffset(10, 100).Click().Perform();
+                            Thread.Sleep(1000);
+                        }
                         Sp.Click();
 						var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
@@ -100,7 +103,13 @@ namespace BusinessLayer.Managers
                    
                     try
                     {
-                        Thread.Sleep(2000);
+                        var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
+                        if (overlay.Count() > 0)
+                        {
+                            Actions actions = new Actions(driver);
+                            actions.MoveByOffset(10, 100).Click().Perform();
+                            Thread.Sleep(1000);
+                        }
                         string Brand = null;
                         string ProductName;
 						var ProductBrand = driver.FindElements(By.CssSelector("a.product-brand-name-with-link"));
@@ -138,8 +147,8 @@ namespace BusinessLayer.Managers
 						IList<IWebElement> Comments = new List<IWebElement>();
 						try
 						{
-							var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
-                            if (overlay.Count()>0) 
+							var overlay2 = driver.FindElements(By.CssSelector(".dark-overlay"));
+                            if (overlay2.Count()>0) 
                             {
 								Actions actions = new Actions(driver);
 								actions.MoveByOffset(10, 100).Click().Perform();
@@ -187,7 +196,14 @@ namespace BusinessLayer.Managers
                
                 var payload = _mapper.Map<List<ProductDto>>(ProductList);
                 var result = await _productService.TAddRangeAsync(payload);
-                return true;
+                if(result == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 

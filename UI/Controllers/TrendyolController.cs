@@ -38,7 +38,14 @@ namespace UI.Controllers
 			response.EnsureSuccessStatusCode();
 
 			string responseBody = await response.Content.ReadAsStringAsync();
-			return Ok();
-		}
+			if(responseBody == "true")
+			{
+                return Ok(true);
+			}
+			else
+			{
+                return Ok(false);
+            }
+        }
     }
 }

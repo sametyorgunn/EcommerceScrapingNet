@@ -1,9 +1,34 @@
 ﻿@using EntityLayer.Dto.ResponseDto
 @using EntityLayer.Entity
 @model List<CategoryDto>
-<select id="CategoryName" name="CategoryName" class="form-control selectpicker form-control-solid mb-3 mb-lg-0" data-live-search="true" placeholder="Kategori">
-	@foreach(var i in Model)
-	{
-		<option value="@i.Name">@i.Name</option>
-	}
-</select>
+
+
+
+        <input type="text" placeholder="Search.." class="form-control" id="myInput" onkeyup="filterFunction()">
+        <select id="CategoryName" size="5" name="CategoryName" class="dropdown-content form-control">
+            @foreach (var category in Model)
+            {
+                <option value="@category.Name">@category.Name</option>
+            }
+        </select>
+
+        <script>
+            function filterFunction() {
+                const input = document.getElementById("myInput");
+                const filter = input.value.toUpperCase();
+                const select = document.getElementById("CategoryName");
+                const options = select.getElementsByTagName("option");
+
+                for (let i = 0; i < options.length; i++) {
+                    const txtValue = options[i].textContent || options[i].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        options[i].style.display = "";
+                    } else {
+                        options[i].style.display = "none";
+                    }
+                }
+            }
+        </script>
+        
+    
+
