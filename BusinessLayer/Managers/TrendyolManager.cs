@@ -155,8 +155,10 @@ namespace BusinessLayer.Managers
 								Thread.Sleep(1000);
 							}
 							wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete");
-							IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
-                            rating.Click();
+							//IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
+                            IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
+
+                            ratings.Click();
 							Comments = driver.FindElements(By.ClassName("comment-text"));
                         }
                         catch(Exception ex)
