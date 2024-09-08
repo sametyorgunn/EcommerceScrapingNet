@@ -18,7 +18,7 @@ namespace DataAccessLayer.Repositories
             {
                 foreach (var item in category)
                 {
-                    var existingCategory = c.categories.FirstOrDefault(x => x.Id == item.Id);
+                    var existingCategory = c.categories.FirstOrDefault(x => x.Id == item.Id && x.PlatformId == 0);
                     if (existingCategory != null && existingCategory.Name != item.Name)
                     {
                         existingCategory.Name = item.Name;

@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.IServices
 {
-    public interface ICategoryService:IGenericService<Category>
+    public interface ICategoryService:IGenericService<CategoryDto>
     {
         public Task<bool> UpdateTrendyolCategories();
-
 	}
 }

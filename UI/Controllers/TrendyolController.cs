@@ -47,5 +47,27 @@ namespace UI.Controllers
                 return Ok(false);
             }
         }
+		public async Task<IActionResult> Categories(int page = 1, int pageSize = 10)
+		{
+			return View();
+		}
+		public async Task<IActionResult> CategoriesUpdate()
+		{
+			using var httpClient = new HttpClient();
+
+			HttpResponseMessage response = await httpClient.GetAsync("https://localhost:7260/api/Trendyol/UpdateTrendyolCategories");
+
+			response.EnsureSuccessStatusCode();
+
+			string responseBody = await response.Content.ReadAsStringAsync();
+			if (responseBody == "true")
+			{
+				return Ok(true);
+			}
+			else
+			{
+				return Ok(false);
+			}
+		}
     }
 }

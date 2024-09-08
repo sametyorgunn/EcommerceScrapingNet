@@ -65,7 +65,7 @@ namespace BusinessLayer.Managers
 				}
 			
 				Thread.Sleep(1000);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(15).ToList();
                 List<Product> ProductList = new List<Product>();
                 var count = 0;
                 foreach (var Sp in ScrapeProduct)

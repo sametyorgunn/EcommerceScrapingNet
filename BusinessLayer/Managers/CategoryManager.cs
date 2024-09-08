@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLayer.IServices;
 using DataAccessLayer.IRepositories;
+using DataAccessLayer.Repositories;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using Newtonsoft.Json;
@@ -23,43 +24,48 @@ namespace BusinessLayer.Managers
             _mapper = mapper;
         }
 
-        public Task<List<Category>> GetListAsync()
+        public async Task<List<CategoryDto>> GetListAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Category>> GetListByFilterAsync(Expression<Func<Category, bool>> filter)
-        {
-            var categories = _categoryRepository.GetListAllFilterAsync(filter);
-            return categories;
+			var categories = await _categoryRepository.GetListAllAsync();
+			var payload = _mapper.Map<List<CategoryDto>>(categories);
+			return payload;
 		}
 
-        public Task TAddAsync(Category t)
+		public async Task<List<CategoryDto>> GetListByFilterAsync(Expression<Func<Category, bool>> filter)
+		{
+			var Filter = _mapper.Map<Expression<Func<Category, bool>>>(filter);
+			var categories =await _categoryRepository.GetListAllFilterAsync(Filter);
+			var payload = _mapper.Map<List<CategoryDto>>(categories);
+
+			return payload;
+		}
+
+		public Task TAddAsync(CategoryDto t)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> TAddRangeAsync(List<Category> t)
+        public Task<bool> TAddRangeAsync(List<CategoryDto> t)
         {
             throw new NotImplementedException();
         }
 
-        public Task TDeleteAsync(Category t)
+        public Task TDeleteAsync(CategoryDto t)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Category> TGetByIdAsync(int id)
+        public Task<CategoryDto> TGetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task TUpdateAsync(Category t)
+        public Task TUpdateAsync(CategoryDto t)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> TUpdateRangeAsync(List<Category> t)
+        public Task<bool> TUpdateRangeAsync(List<CategoryDto> t)
         {
             throw new NotImplementedException();
         }
