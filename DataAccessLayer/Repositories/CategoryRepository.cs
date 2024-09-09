@@ -1,7 +1,9 @@
 ﻿using DataAccessLayer.Contexts;
 using DataAccessLayer.IRepositories;
 using DataAccessLayer.Repositories.Generic;
+using EntityLayer.Dto.RequestDto.Category;
 using EntityLayer.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +14,23 @@ namespace DataAccessLayer.Repositories
 {
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-        public async Task<bool> UpdateTrendyolCategories(List<Category> category)
+		public async Task<List<Category>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
+		{
+			using (var c = new AppDbContext())
+			{
+				var categories =await c.categories.Where(x=>x.PlatformId == request.PlatformId)
+                    .ToListAsync();
+                return categories;
+			}
+		}
+
+		public async Task<bool> UpdateTrendyolCategories(List<Category> category)
         {
             using (var c = new AppDbContext())
             {
                 foreach (var item in category)
                 {
-                    var existingCategory = c.categories.FirstOrDefault(x => x.Id == item.Id && x.PlatformId == 0);
+                    var existingCategory = c.categories.FirstOrDefault(x => x.Name == item.Name && x.PlatformId == 0);
                     if (existingCategory != null && existingCategory.Name != item.Name)
                     {
                         existingCategory.Name = item.Name;

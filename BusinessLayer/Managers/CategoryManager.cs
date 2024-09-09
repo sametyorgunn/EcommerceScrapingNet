@@ -2,6 +2,7 @@
 using BusinessLayer.IServices;
 using DataAccessLayer.IRepositories;
 using DataAccessLayer.Repositories;
+using EntityLayer.Dto.RequestDto.Category;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using Newtonsoft.Json;
@@ -31,14 +32,26 @@ namespace BusinessLayer.Managers
 			return payload;
 		}
 
-		public async Task<List<CategoryDto>> GetListByFilterAsync(Expression<Func<Category, bool>> filter)
+		public Task<List<CategoryDto>> GetListByFilterAsync(Expression<Func<CategoryDto, bool>> filter)
 		{
-			var Filter = _mapper.Map<Expression<Func<Category, bool>>>(filter);
-			var categories =await _categoryRepository.GetListAllFilterAsync(Filter);
-			var payload = _mapper.Map<List<CategoryDto>>(categories);
+			throw new NotImplementedException();
+		}
 
+		public async Task<List<CategoryDto>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
+		{
+			var categories = await _categoryRepository.GetTrendyolCategoriesByPlatform(request);
+			var payload = _mapper.Map<List<CategoryDto>>(categories);
 			return payload;
 		}
+
+		//public async Task<List<CategoryDto>> GetListByFilterAsync(Expression<Func<Category, bool>> filter)
+		//{
+		//	var Filter = _mapper.Map<Expression<Func<Category, bool>>>(filter);
+		//	var categories =await _categoryRepository.GetListAllFilterAsync(Filter);
+		//	var payload = _mapper.Map<List<CategoryDto>>(categories);
+
+		//	return payload;
+		//}
 
 		public Task TAddAsync(CategoryDto t)
         {

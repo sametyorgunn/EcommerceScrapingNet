@@ -1,5 +1,7 @@
 ﻿using DataAccessLayer.IRepositories.IGeneric;
 using DataAccessLayer.Repositories.Generic;
+using EntityLayer.Dto.RequestDto.Category;
+using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
 using System.Collections.Generic;
@@ -12,5 +14,7 @@ namespace DataAccessLayer.IRepositories
     public interface ICategoryRepository:IGenericRepository<Category>
     {
         Task<bool> UpdateTrendyolCategories(List<Category> category);
-    }
+		public Task<List<Category>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request);
+
+	}
 }

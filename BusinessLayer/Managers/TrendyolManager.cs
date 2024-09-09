@@ -15,6 +15,7 @@ using SeleniumExtras.WaitHelpers;
 using System.CodeDom.Compiler;
 using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Chrome;
+using DataAccessLayer.IRepositories;
 
 
 namespace BusinessLayer.Managers
@@ -24,18 +25,20 @@ namespace BusinessLayer.Managers
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
-        public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService)
-        {
-            _productService = productService;
-            _mapper = mapper;
-            _categoryService = categoryService;
-        }
+        private readonly ICategoryRepository _categoryrepository;
+		public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService, ICategoryRepository categoryrepository)
+		{
+			_productService = productService;
+			_mapper = mapper;
+			_categoryService = categoryService;
+			_categoryrepository = categoryrepository;
+		}
 
-        public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+		public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 
             var options = new ChromeOptions();
-            //options.AddArgument("--headless");
+            options.AddArgument("--headless");
 
             using (IWebDriver driver = new ChromeDriver())
 			{
@@ -65,7 +68,7 @@ namespace BusinessLayer.Managers
 				}
 			
 				Thread.Sleep(1000);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(15).ToList();
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
                 List<Product> ProductList = new List<Product>();
                 var count = 0;
                 foreach (var Sp in ScrapeProduct)
@@ -80,22 +83,16 @@ namespace BusinessLayer.Managers
 					string originalWindow = driver.CurrentWindowHandle;
                     try
                     {
-                        var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
-                        if (overlay.Count() > 0)
-                        {
-                            Actions actions = new Actions(driver);
-                            actions.MoveByOffset(10, 100).Click().Perform();
-                            Thread.Sleep(1000);
-                        }
-                        Sp.Click();
+                        OverlayControl(driver);
+						Sp.Click();
+                        OverlayControl(driver);
 						var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
 					}
                     catch (Exception ex)
                     {
-                        Actions actions = new Actions(driver);
-                        actions.MoveByOffset(10, 100).Click().Perform();
-                        Sp.Click();
+						OverlayControl(driver);
+						Sp.Click();
 						var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
                         Console.WriteLine(ex.Message);
@@ -103,14 +100,8 @@ namespace BusinessLayer.Managers
                    
                     try
                     {
-                        var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
-                        if (overlay.Count() > 0)
-                        {
-                            Actions actions = new Actions(driver);
-                            actions.MoveByOffset(10, 100).Click().Perform();
-                            Thread.Sleep(1000);
-                        }
-                        string Brand = null;
+                        OverlayControl(driver);
+						string Brand = null;
                         string ProductName;
 						var ProductBrand = driver.FindElements(By.CssSelector("a.product-brand-name-with-link"));
                         if(ProductBrand.Count() == 0) 
@@ -147,17 +138,9 @@ namespace BusinessLayer.Managers
 						IList<IWebElement> Comments = new List<IWebElement>();
 						try
 						{
-							var overlay2 = driver.FindElements(By.CssSelector(".dark-overlay"));
-                            if (overlay2.Count()>0) 
-                            {
-								Actions actions = new Actions(driver);
-								actions.MoveByOffset(10, 100).Click().Perform();
-								Thread.Sleep(1000);
-							}
+							OverlayControl(driver);
 							wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete");
-							//IWebElement rating = driver.FindElement(By.ClassName("rvw-cnt-tx"));
                             IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
-
                             ratings.Click();
 							Comments = driver.FindElements(By.ClassName("comment-text"));
                         }
@@ -261,6 +244,69 @@ namespace BusinessLayer.Managers
 				return set1.Count;
 			}
 		}
+        public static void OverlayControl(IWebDriver driver)
+        {
+			var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
+			if (overlay.Count() > 0)
+			{
+				Actions actions = new Actions(driver);
+				actions.MoveByOffset(10, 100).Click().Perform();
+				Thread.Sleep(1000);
+			}
+		}
 
+        public async Task<string> ScrapeTrendyolCategoriesAsync()
+        {
+            var options = new ChromeOptions();
+            //options.AddArgument("--headless");
+
+            using (IWebDriver driver = new ChromeDriver())
+            {
+				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+				var jsExecutor = (IJavaScriptExecutor)driver;
+
+				driver.Navigate().GoToUrl("https://www.trendyol.com/");
+				IWebElement cat = wait.Until(ExpectedConditions.ElementExists(By.ClassName("category-header")));
+
+				var categories = driver.FindElements(By.ClassName("category-header"));
+                var elektronik = categories.FirstOrDefault(x => x.Text == "Elektronik");
+				IWebElement elkt = wait.Until(ExpectedConditions.ElementToBeClickable(elektronik));
+				List<CategoryDto> listCategory = new List<CategoryDto>();
+
+				try
+				{
+                    elkt.Click();
+					var items = driver.FindElements(By.ClassName("item"));
+					foreach (var item in items)
+					{
+						CategoryDto dt = new CategoryDto();
+						dt.Name = item.Text;
+						dt.PlatformId = 0;
+						listCategory.Add(dt);
+					}
+					var payload = _mapper.Map<List<Category>>(listCategory);
+					await _categoryrepository.UpdateTrendyolCategories(payload);
+				}
+                catch
+                {
+					Actions actions = new Actions(driver);
+					actions.MoveByOffset(10, 100).Click().Perform();
+                    Thread.Sleep(1000);
+                    elkt.Click();
+					var items = driver.FindElements(By.ClassName("item"));
+					foreach (var item in items)
+					{
+						CategoryDto dt = new CategoryDto();
+						dt.Name = item.Text;
+						dt.PlatformId = 0;
+						listCategory.Add(dt);
+					}
+                    var payload = _mapper.Map<List<Category>>(listCategory);
+                    await _categoryrepository.UpdateTrendyolCategories(payload);
+                }
+                return "a";
+
+            }
+        }
 	}
 }

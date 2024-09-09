@@ -12,5 +12,6 @@ namespace BusinessLayer.IServices
     {
         public Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request);
         public Task<string> GetTrendyolCategoriesAsync();
-    }
+        public Task<string> ScrapeTrendyolCategoriesAsync();
+	}
 }

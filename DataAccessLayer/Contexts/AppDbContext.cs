@@ -12,7 +12,7 @@ namespace DataAccessLayer.Contexts
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("server=SAMET;Initial Catalog=ScrapingDb;Integrated Security=True;Pooling=False");
+            optionsBuilder.UseSqlServer("server=DESKTOP-SF9ROO0;Initial Catalog=ScrapingDb;Integrated Security=True;Pooling=False");
         }
         public DbSet<Category> categories { get; set; }
         public DbSet<Comment> comments { get; set; }

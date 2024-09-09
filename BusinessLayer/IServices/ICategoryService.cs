@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.IServices.IGeneric;
+using EntityLayer.Dto.RequestDto.Category;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
@@ -12,5 +13,6 @@ namespace BusinessLayer.IServices
     public interface ICategoryService:IGenericService<CategoryDto>
     {
         public Task<bool> UpdateTrendyolCategories();
+        public Task<List<CategoryDto>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request);
 	}
 }

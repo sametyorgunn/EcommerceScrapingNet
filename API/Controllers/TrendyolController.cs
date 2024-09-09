@@ -35,5 +35,11 @@ namespace API.Controllers
             var result = await _categoryService.UpdateTrendyolCategories();
             return Ok(result);
         }
+        [HttpGet("ScrapeTrendyolCategory")]
+        public async Task<IActionResult> ScrapeTrendyolCategories()
+        {
+            var result = await _trendyolService.ScrapeTrendyolCategoriesAsync();
+            return Ok(result);
+        }
     }
 }
