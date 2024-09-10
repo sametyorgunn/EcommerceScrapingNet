@@ -1,26 +1,20 @@
 ﻿using AutoMapper;
 using BusinessLayer.IServices;
+using DataAccessLayer.IRepositories;
 using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
-using EntityLayer.Enums;
-using Newtonsoft.Json;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-using System.Collections.Generic;
-using System.Threading;
-using System.Xml.Linq;
+using PuppeteerSharp;
 using SeleniumExtras.WaitHelpers;
-using System.CodeDom.Compiler;
-using OpenQA.Selenium.Support.Extensions;
-using OpenQA.Selenium.Chrome;
-using DataAccessLayer.IRepositories;
 
 
 namespace BusinessLayer.Managers
 {
-    public class TrendyolManager : ITrendyolService
+	public class TrendyolManager : ITrendyolService
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
@@ -37,10 +31,15 @@ namespace BusinessLayer.Managers
 		public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 
-            var options = new ChromeOptions();
-            options.AddArgument("--headless");
+			var options = new ChromeOptions();
+			//options.AddArgument("--headless");
+			options.AddArgument("--disable-gpu"); 
+			options.AddArgument("--window-size=1920,1080");
+			options.AddArgument("--no-sandbox");
+			options.AddArgument("--disable-dev-shm-usage");
 
-            using (IWebDriver driver = new ChromeDriver())
+
+			using (IWebDriver driver = new ChromeDriver(options))
 			{
 				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 				var jsExecutor = (IJavaScriptExecutor)driver;
@@ -52,8 +51,11 @@ namespace BusinessLayer.Managers
                 Thread.Sleep(1000);
                 var catName = request.CategoryName;
                 string[] splitCatName = catName.Split(" ");
+				wait.Until(driver => driver.FindElement(By.CssSelector("div.fltrs div.fltr-item-text")).Displayed);
+
 				var elementKategori = driver.FindElements(By.CssSelector("div.fltrs div.fltr-item-text"));
-                if(elementKategori.Count() != 1)
+
+				if (elementKategori.Count() != 1)
                 {
 					var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
 					if (SelectedCategory?.Text == catName)
@@ -83,15 +85,16 @@ namespace BusinessLayer.Managers
 					string originalWindow = driver.CurrentWindowHandle;
                     try
                     {
-                        OverlayControl(driver);
+						OverlayControl(driver);
 						Sp.Click();
-                        OverlayControl(driver);
+						Thread.Sleep(1000);
+						OverlayControl(driver);
 						var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
 					}
                     catch (Exception ex)
                     {
-						OverlayControl(driver);
+					    OverlayControl(driver);
 						Sp.Click();
 						var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
@@ -138,7 +141,7 @@ namespace BusinessLayer.Managers
 						IList<IWebElement> Comments = new List<IWebElement>();
 						try
 						{
-							OverlayControl(driver);
+						    OverlayControl(driver);
 							wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete");
                             IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
                             ratings.Click();
@@ -244,24 +247,33 @@ namespace BusinessLayer.Managers
 				return set1.Count;
 			}
 		}
-        public static void OverlayControl(IWebDriver driver)
+        public async void OverlayControl(IWebDriver driver)
         {
-			var overlay = driver.FindElements(By.CssSelector(".dark-overlay"));
+			var overlay = driver.FindElements(By.ClassName("dark-overlay"));
 			if (overlay.Count() > 0)
 			{
+				Thread.Sleep(2000);
+
+				//Actions actions = new Actions(driver);
+				//actions.MoveByOffset(10, 100).Click().Perform();
+				int windowHeight = driver.Manage().Window.Size.Height;
+				int windowWidth = driver.Manage().Window.Size.Width;
+
+				int centerX = windowWidth / 2;
+				int centerY = windowHeight / 2;
 				Actions actions = new Actions(driver);
-				actions.MoveByOffset(10, 100).Click().Perform();
-				Thread.Sleep(1000);
+				Thread.Sleep(2000);
+				actions.MoveByOffset(centerX, centerY).Click().Perform();
 			}
 		}
 
-        public async Task<string> ScrapeTrendyolCategoriesAsync()
-        {
+		public async Task<string> ScrapeTrendyolCategoriesAsync()
+		{
             var options = new ChromeOptions();
-            //options.AddArgument("--headless");
+			//options.AddArgument("--headless");
 
-            using (IWebDriver driver = new ChromeDriver())
-            {
+			using (IWebDriver driver = new ChromeDriver())
+			{
 				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 				var jsExecutor = (IJavaScriptExecutor)driver;
 
@@ -269,13 +281,28 @@ namespace BusinessLayer.Managers
 				IWebElement cat = wait.Until(ExpectedConditions.ElementExists(By.ClassName("category-header")));
 
 				var categories = driver.FindElements(By.ClassName("category-header"));
-                var elektronik = categories.FirstOrDefault(x => x.Text == "Elektronik");
+				var elektronik = categories.FirstOrDefault(x => x.Text == "Elektronik");
 				IWebElement elkt = wait.Until(ExpectedConditions.ElementToBeClickable(elektronik));
 				List<CategoryDto> listCategory = new List<CategoryDto>();
 
 				try
 				{
-                    elkt.Click();
+					elkt.Click();
+					var items = driver.FindElements(By.ClassName("item"));
+					foreach (var item in items)
+					{
+						CategoryDto dt = new CategoryDto();
+						dt.Name = item.Text;
+						dt.PlatformId = 0;
+						listCategory.Add(dt);
+					}
+				}
+				catch
+				{
+					Actions actions = new Actions(driver);
+					actions.MoveByOffset(10, 100).Click().Perform();
+					Thread.Sleep(1000);
+					elkt.Click();
 					var items = driver.FindElements(By.ClassName("item"));
 					foreach (var item in items)
 					{
@@ -287,26 +314,8 @@ namespace BusinessLayer.Managers
 					var payload = _mapper.Map<List<Category>>(listCategory);
 					await _categoryrepository.UpdateTrendyolCategories(payload);
 				}
-                catch
-                {
-					Actions actions = new Actions(driver);
-					actions.MoveByOffset(10, 100).Click().Perform();
-                    Thread.Sleep(1000);
-                    elkt.Click();
-					var items = driver.FindElements(By.ClassName("item"));
-					foreach (var item in items)
-					{
-						CategoryDto dt = new CategoryDto();
-						dt.Name = item.Text;
-						dt.PlatformId = 0;
-						listCategory.Add(dt);
-					}
-                    var payload = _mapper.Map<List<Category>>(listCategory);
-                    await _categoryrepository.UpdateTrendyolCategories(payload);
-                }
-                return "a";
-
-            }
-        }
+				return "a";
+			}
+		}
 	}
 }

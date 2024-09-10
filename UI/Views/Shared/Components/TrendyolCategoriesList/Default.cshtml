@@ -8,9 +8,9 @@
 					<input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_table_users .form-check-input" value="1">
 				</div>
 			</th>
-			<th class="min-w-125px sorting" tabindex="0" aria-controls="kt_table_users" rowspan="1" colspan="1" aria-label="User: activate to sort column ascending" style="width: 239.6px;">Ürün</th>
-			<th class="min-w-125px sorting" tabindex="0" aria-controls="kt_table_users" rowspan="1" colspan="1" aria-label="Two-step: activate to sort column ascending" style="width: 134.137px;">Fiyat</th>
-			<th class="min-w-125px sorting" tabindex="0" aria-controls="kt_table_users" rowspan="1" colspan="1" aria-label="Joined Date: activate to sort column ascending" style="width: 143.312px;">Puanı</th>
+			<th class="min-w-125px sorting" tabindex="0" aria-controls="kt_table_users" rowspan="1" colspan="1" aria-label="User: activate to sort column ascending" style="width: 239.6px;">Kategori</th>
+			<th class="min-w-125px sorting" tabindex="0" aria-controls="kt_table_users" rowspan="1" colspan="1" aria-label="Two-step: activate to sort column ascending" style="width: 134.137px;">Üst Kategori</th>
+			<th class="min-w-125px sorting" tabindex="0" aria-controls="kt_table_users" rowspan="1" colspan="1" aria-label="Joined Date: activate to sort column ascending" style="width: 143.312px;">Durum</th>
 			<th class="text-end min-w-100px sorting_disabled" rowspan="1" colspan="1" aria-label="Actions" style="width: 106.125px;">Eylemler</th>
 		</tr>
 	</thead>
@@ -29,13 +29,13 @@
 					</div>
 					<div class="d-flex flex-column">
 						<a href="../../demo13/dist/apps/user-management/users/view.html" class="text-gray-800 text-hover-primary mb-1">@i.Name</a>
-						<span>#</span>
+						<span></span>
 					</div>
 				</td>
-				<td>#</td>
+				<td>@i.ParentId</td>
 
 				<td>
-					<div class="badge badge-light-success fw-bolder">#</div>
+					<div class="badge badge-light-success fw-bolder">Aktif</div>
 				</td>
 				<td class="text-end">
 					<a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">

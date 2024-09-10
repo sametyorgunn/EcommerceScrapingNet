@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
-	@await Html.PartialAsync("~/Views/Shared/FrontPartials/Partials/_HeadContent.cshtml")
-	@await Html.PartialAsync("~/Views/Shared/FrontPartials/Css/_Css.cshtml")
+	@await Html.PartialAsync("~/Views/Shared/AdminPartials/Partials/_HeadContent.cshtml")
+	@await Html.PartialAsync("~/Views/Shared/AdminPartials/Css/_Css.cshtml")
 </head>
 <body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed toolbar-tablet-and-mobile-fixed aside-enabled aside-fixed" style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
 	<div class="d-flex flex-column flex-root">
@@ -45,7 +45,7 @@
 								</a>
 							</div>
 							<div class="menu-item">
-								<a class="menu-link" href="../../demo13/dist/index.html">
+								<a class="menu-link" href="#">
 									<span class="menu-icon">
 										<i class="bi bi-grid fs-3"></i>
 									</span>
@@ -110,11 +110,11 @@
 						</div>
 					</div>
 				</div>
-			@await Html.PartialAsync("~/Views/Shared/FrontPartials/Partials/_Footer.cshtml")
+				@await Html.PartialAsync("~/Views/Shared/AdminPartials/Partials/_Footer.cshtml")
 			</div>
 		</div>
 	</div>
-	@await Html.PartialAsync("~/Views/Shared/FrontPartials/Js/_Js.cshtml")
+	@await Html.PartialAsync("~/Views/Shared/AdminPartials/Js/_Js.cshtml")
 	@RenderSection("scripts", required: false)
 </body>
 </html>
