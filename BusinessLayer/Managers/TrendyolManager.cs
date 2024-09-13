@@ -85,26 +85,20 @@ namespace BusinessLayer.Managers
 					string originalWindow = driver.CurrentWindowHandle;
                     try
                     {
-						OverlayControl(driver);
 						Sp.Click();
-						Thread.Sleep(1000);
-						OverlayControl(driver);
-						var windowHandles = driver.WindowHandles;
+                        var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
 					}
                     catch (Exception ex)
                     {
-					    OverlayControl(driver);
-						Sp.Click();
+                        Sp.Click();
 						var windowHandles = driver.WindowHandles;
 						driver.SwitchTo().Window(windowHandles[1]);
-                        Console.WriteLine(ex.Message);
 					}
                    
                     try
                     {
-                        OverlayControl(driver);
-						string Brand = null;
+                        string Brand = null;
                         string ProductName;
 						var ProductBrand = driver.FindElements(By.CssSelector("a.product-brand-name-with-link"));
                         if(ProductBrand.Count() == 0) 
@@ -141,8 +135,7 @@ namespace BusinessLayer.Managers
 						IList<IWebElement> Comments = new List<IWebElement>();
 						try
 						{
-						    OverlayControl(driver);
-							wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete");
+							OverlayControl(driver);
                             IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
                             ratings.Click();
 							Comments = driver.FindElements(By.ClassName("comment-text"));
@@ -249,10 +242,10 @@ namespace BusinessLayer.Managers
 		}
         public async void OverlayControl(IWebDriver driver)
         {
-			var overlay = driver.FindElements(By.ClassName("dark-overlay"));
-			if (overlay.Count() > 0)
+            var overlay = driver.FindElements(By.ClassName("dark-overlay"));
+			var overlay2 = driver.FindElements(By.ClassName("overlay"));
+            if (overlay.Count() > 0 || overlay2.Count() > 0)
 			{
-				Thread.Sleep(2000);
 
 				//Actions actions = new Actions(driver);
 				//actions.MoveByOffset(10, 100).Click().Perform();
@@ -262,7 +255,6 @@ namespace BusinessLayer.Managers
 				int centerX = windowWidth / 2;
 				int centerY = windowHeight / 2;
 				Actions actions = new Actions(driver);
-				Thread.Sleep(2000);
 				actions.MoveByOffset(centerX, centerY).Click().Perform();
 			}
 		}
