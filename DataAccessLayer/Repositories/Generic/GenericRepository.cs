@@ -11,75 +11,58 @@ namespace DataAccessLayer.Repositories.Generic
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
+        private readonly AppDbContext _appDbContext;
+
+        public GenericRepository(AppDbContext appDbContext)
+        {
+            _appDbContext = appDbContext;
+        }
+
         public async Task<bool> TUpdateRangeAsync(List<T> t)
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                c.UpdateRange(t);
-                c.SaveChanges();
-                return true;
-            }
+            _appDbContext.UpdateRange(t);
+            _appDbContext.SaveChanges();
+            return true;
         }
 
         async Task IGenericRepository<T>.DeleteAsync(T t)
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                c.Remove(t);
-                c.SaveChanges();
-            }
+            _appDbContext.Remove(t);
+            _appDbContext.SaveChanges();
         }
 
         async Task<T> IGenericRepository<T>.GetByIdAsync(int id)
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                return c.Set<T>().Find(id);
-            }
+            return _appDbContext.Set<T>().Find(id);
         }
 
         async Task<List<T>> IGenericRepository<T>.GetListAllAsync()
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                return c.Set<T>().ToList();
-            }
+            return _appDbContext.Set<T>().ToList();
         }
 
         async Task<List<T>> IGenericRepository<T>.GetListAllFilterAsync(Expression<Func<T, bool>> filter)
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                return c.Set<T>().Where(filter).ToList();
-            }
+            return _appDbContext.Set<T>().Where(filter).ToList();
         }
 
         async Task IGenericRepository<T>.InsertAsync(T t)
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                c.Add(t);
-                c.SaveChanges();
-            }
+            _appDbContext.Add(t);
+            _appDbContext.SaveChanges();
         }
 
         async Task<bool> IGenericRepository<T>.InsertManyAsync(List<T> t)
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                c.AddRange(t);
-                c.SaveChanges();
-                return true;
-            }
+            _appDbContext.AddRange(t);
+            _appDbContext.SaveChanges();
+            return true;
         }
 
         async Task IGenericRepository<T>.UpdateAsync(T t)
         {
-            using (AppDbContext c = new AppDbContext())
-            {
-                c.Update(t);
-                c.SaveChanges();
-            }
+            _appDbContext.Update(t);
+            _appDbContext.SaveChanges();
         }
     }
 }

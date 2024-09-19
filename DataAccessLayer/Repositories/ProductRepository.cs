@@ -15,31 +15,31 @@ namespace DataAccessLayer.Repositories
 {
 	public class ProductRepository : GenericRepository<Product>, IProductRepository
 	{
-		public async Task<List<Product>> GetLastFiveProducts()
+		private readonly AppDbContext _appDbContext;
+
+        public ProductRepository(AppDbContext appDbContext) : base(appDbContext)
+        {
+            _appDbContext = appDbContext;
+        }
+
+        public async Task<List<Product>> GetLastFiveProducts()
 		{
-			using (var c = new AppDbContext())
-			{
-				var products = c.products.OrderByDescending(x => x.Id).Take(5).ToList();
-				return products;
-			};
+			
+			var products = _appDbContext.products.OrderByDescending(x => x.Id).Take(5).ToList();
+			return products;
+			
 		}
 
 		public async Task<List<Product>> GetListAllByPlatformIdAsync(int platformId)
 		{
-			using(var c = new AppDbContext())
-			{
-				var products = c.products.Where(x=>x.PlatformId == platformId).ToList();
-				return products;
-			};
+			var products = _appDbContext.products.Where(x=>x.PlatformId == platformId).ToList();
+			return products;
 		}
 
 		public async Task<Product> GetProductByProductId(GetProductByProductId request)
 		{
-			using (var c = new AppDbContext())
-			{
-				var product = c.products.Where(x => x.ProductId == request.ProductId).FirstOrDefault();
-				return product;
-			};
+			var product = _appDbContext.products.Where(x => x.ProductId == request.ProductId).FirstOrDefault();
+			return product;
 		}
 	}
 }

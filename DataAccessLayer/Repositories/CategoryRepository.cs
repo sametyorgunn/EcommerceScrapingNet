@@ -14,36 +14,43 @@ namespace DataAccessLayer.Repositories
 {
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-		public async Task<List<Category>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
+
+		private readonly AppDbContext _appDbContext;
+
+        public CategoryRepository(AppDbContext appDbContext) : base(appDbContext)
+        {
+            _appDbContext = appDbContext;
+        }
+
+
+        public async Task<List<Category>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
 		{
-			using (var c = new AppDbContext())
-			{
-				var categories =await c.categories.Where(x=>x.PlatformId == request.PlatformId)
+			
+				var categories =await _appDbContext.categories.Where(x=>x.PlatformId == request.PlatformId)
                     .ToListAsync();
                 return categories;
-			}
+			
 		}
 
 		public async Task<bool> UpdateTrendyolCategories(List<Category> category)
         {
-            using (var c = new AppDbContext())
-            {
+            
                 foreach (var item in category)
                 {
-                    var existingCategory = c.categories.FirstOrDefault(x => x.Name == item.Name && x.PlatformId == 0);
+                    var existingCategory = _appDbContext.categories.FirstOrDefault(x => x.Name == item.Name && x.PlatformId == 0);
                     if (existingCategory != null && existingCategory.Name != item.Name)
                     {
                         existingCategory.Name = item.Name;
-                        c.categories.Update(existingCategory);
+                        _appDbContext.categories.Update(existingCategory);
                     }
                     else if (existingCategory == null)
                     {
-                        c.categories.Add(item);
+                        _appDbContext.categories.Add(item);
                     }
                 }
 
-                await c.SaveChangesAsync();
-            }
+                await _appDbContext.SaveChangesAsync();
+            
             return true;
         }
 		//public async Task<bool> UpdateTrendyolCategories(List<Category> category)

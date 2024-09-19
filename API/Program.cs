@@ -1,4 +1,5 @@
 using BusinessLayer.ServiceExtension;
+using DataAccessLayer.Contexts;
 using EntityLayer.MappingProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddServiceRouting();
 builder.Services.AddAutoMapper(typeof(ProductProfile));
-
+builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
