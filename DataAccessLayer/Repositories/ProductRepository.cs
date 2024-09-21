@@ -1,6 +1,5 @@
 ﻿using DataAccessLayer.Contexts;
 using DataAccessLayer.IRepositories;
-using DataAccessLayer.Migrations;
 using DataAccessLayer.Repositories.Generic;
 using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.ResponseDto;

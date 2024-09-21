@@ -5,7 +5,7 @@
 
 
         <input type="text" placeholder="Search.." class="form-control" id="myInput" onkeyup="filterFunction()">
-        <select id="CategoryName" size="5" name="CategoryName" class="dropdown-content form-control">
+        <select id="CategoryName" size="5" name="TrendyolCategoryName" class="dropdown-content form-control">
             @foreach (var category in Model)
             {
                 <option value="@category.Name">@category.Name</option>

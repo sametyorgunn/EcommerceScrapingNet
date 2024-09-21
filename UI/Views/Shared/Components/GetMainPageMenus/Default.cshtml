@@ -1,0 +1,34 @@
+﻿@using EntityLayer.Dto.ResponseDto
+@model List<CategoryDto>
+@{
+    void Menus(int? parentId)
+    {
+        var categories = Model.Where(x => x.ParentId == parentId).ToList();
+        if (categories.Any())
+        {
+            <ul class="dropdown-menu">
+                @foreach (var category in categories)
+                {
+                    <li class=""> 
+                        <a class="dropdown-item" href="#">@category.Name</a>
+                        @{
+                            Menus(category.Id);
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    }
+}
+
+<ul class="nav nav-pills" id="mainNav">
+    @foreach (var category in Model.Where(x => x.ParentId == 0))
+    {
+        <li class="dropdown">
+            <a class="dropdown-item dropdown-toggle active" href="#">@category.Name</a>
+            @{
+                Menus(category.Id);
+            }
+        </li>
+    }
+</ul>

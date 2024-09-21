@@ -1,0 +1,28 @@
+﻿@using EntityLayer.Dto.ResponseDto
+@model List<CategoryDto>
+
+<div class="row">
+	@foreach(var i in Model)
+	{
+		
+	
+	<div class="col-sm-6 col-lg-4 p-0 m-0">
+		<div class="portfolio-item m-0 p-0">
+			<a href="portfolio-single-wide-slider.html">
+				<span class="thumb-info thumb-info-no-borders thumb-info-lighten thumb-info-bottom-info thumb-info-bottom-info-dark thumb-info-bottom-info-show-more thumb-info-no-zoom border-radius-0">
+					<span class="thumb-info-wrapper">
+						<img src="~/Front/img/project-portfolio-4-2.jpg" class="img-fluid" alt="">
+						<span class="thumb-info-title bg-transparent p-4">
+							<span class="thumb-info-inner line-height-1 text-4 font-weight-bold">@i.Name</span>
+							<span class="thumb-info-type opacity-6">#</span>
+							<span class="thumb-info-show-more-content pe-3">
+								<span class="d-inline-flex align-items-center mt-2 border-0 btn btn-light text-color-dark font-weight-bold px-2 btn-py-1 text-1 rounded"><span class="text-2 py-1 ps-2">VIEW MORE</span> <i class="fa fa-arrow-right ms-2 me-2 ps-4 text-3"></i></span>
+							</span>
+						</span>
+					</span>
+				</span>
+			</a>
+		</div>
+	</div>
+	}
+</div>

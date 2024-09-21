@@ -19,7 +19,8 @@ namespace EntityLayer.Entity
         public string ProductImage { get; set; }
         public int PlatformId { get; set; }
         public int CategoryId { get; set; }
-        public List<ProductProperty> ProductProperty { get; set; }
+        public Category Category { get; set; }
+		public List<ProductProperty> ProductProperty { get; set; }
         public List<Comment> Comment { get; set; }
     }
 }

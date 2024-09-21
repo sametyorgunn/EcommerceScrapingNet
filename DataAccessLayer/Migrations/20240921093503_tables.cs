@@ -4,7 +4,7 @@
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class prodcategorycommentprodProper : Migration
+    public partial class tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,16 +15,11 @@ namespace DataAccessLayer.Migrations
                     Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ParentId = table.Column<int>(type: "int", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                    PlatformId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_categories_categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "categories",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -38,11 +33,19 @@ namespace DataAccessLayer.Migrations
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductRating = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductPrice = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlatformId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_products_categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,11 +90,6 @@ namespace DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_categories_CategoryId",
-                table: "categories",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_comments_ProductId",
                 table: "comments",
                 column: "ProductId");
@@ -100,13 +98,15 @@ namespace DataAccessLayer.Migrations
                 name: "IX_productproperty_ProductId",
                 table: "productproperty",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_CategoryId",
+                table: "products",
+                column: "CategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "categories");
-
             migrationBuilder.DropTable(
                 name: "comments");
 
@@ -115,6 +115,9 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "products");
+
+            migrationBuilder.DropTable(
+                name: "categories");
         }
     }
 }

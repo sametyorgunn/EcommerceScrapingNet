@@ -49,14 +49,14 @@ namespace BusinessLayer.Managers
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
                 Thread.Sleep(1000);
-                var catName = request.CategoryName;
-                string[] splitCatName = catName.Split(" ");
+				var catName = request.TrendyolCategoryName;
+				string[] splitCatName = catName.Split(" ");
 				wait.Until(driver => driver.FindElement(By.CssSelector("div.fltrs div.fltr-item-text")).Displayed);
 
 				var elementKategori = driver.FindElements(By.CssSelector("div.fltrs div.fltr-item-text"));
 
 				if (elementKategori.Count() != 1)
-                {
+				{
 					var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
 					if (SelectedCategory?.Text == catName)
 					{
@@ -64,11 +64,11 @@ namespace BusinessLayer.Managers
 					}
 					else
 					{
-                        var catResult = AnalyseBestCagory.bestMatch(elementKategori, catName);
+						var catResult = AnalyseBestCagory.bestMatch(elementKategori, catName);
 						catResult.Click();
 					}
 				}
-			
+
 				Thread.Sleep(1000);
                 var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
                 List<Product> ProductList = new List<Product>();
@@ -154,6 +154,7 @@ namespace BusinessLayer.Managers
                             ProductPrice = ProductPrice,
                             ProductProperty = propertiesList,
                             ProductRating = ProductRating,
+							CategoryId = request.CategoryId,
                             PlatformId = (int)EntityLayer.Enums.Platform.trendyol,
                             Comment = new List<Comment>()
                         };

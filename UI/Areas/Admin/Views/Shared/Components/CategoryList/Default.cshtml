@@ -1,0 +1,66 @@
+﻿@using EntityLayer.Dto.ResponseDto
+@model List<CategoryDto>
+
+
+<input type="text" placeholder="Search.." class="form-control" id="myInputCategory" onkeyup="filterFunctionCategory()">
+<select id="CategoryName" size="5" name="TrendyolCategoryName" class="dropdown-content form-control">
+    @foreach (var category in Model)
+    {
+        <option value="@category.Id">@category.Name</option>
+    }
+</select>
+
+<script>
+    function filterFunctionCategory() {
+        const input = document.getElementById("myInputCategory");
+        const filter = input.value.toUpperCase();
+        const select = document.getElementById("CategoryName");
+        const options = select.getElementsByTagName("option");
+
+        for (let i = 0; i < options.length; i++) {
+            const txtValue = options[i].textContent || options[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                options[i].style.display = "";
+            } else {
+                options[i].style.display = "none";
+            }
+        }
+    }
+</script>
+
+@* <div id="subCategoryContainer"></div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('#mainCategory').change(function () {
+                debugger
+                var categoryId = $(this).val();
+                if (categoryId) {
+                    $.ajax({
+                        url: '@Url.Action("GetSubCategories", "Category")',
+                        type: 'GET',
+                        data: { parentId: categoryId },
+                        success: function (subCategories) {
+                            if (subCategories.length > 0) {
+                                debugger
+                                var subCategorySelect = '<select id="subCategory"><option value="">Alt Kategori Seçin</option>';
+                                $.each(subCategories, function (index, category) {
+                                    subCategorySelect += '<option value="' + category.id + '">' + category.name + '</option>';
+                                });
+                                subCategorySelect += '</select>';
+
+                                $('#subCategoryContainer').html(subCategorySelect);
+                            } else {
+                                debugger
+                                $('#subCategoryContainer').html('');
+                            }
+                        }
+                    });
+                } else {
+                    $('#subCategoryContainer').html('');
+                }
+            });
+        });
+  
+    </script> *@

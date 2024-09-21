@@ -27,9 +27,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -41,8 +38,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("categories");
                 });
@@ -77,6 +72,9 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PlatformId")
                         .HasColumnType("int");
 
@@ -104,6 +102,8 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("products");
                 });
@@ -134,13 +134,6 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("productproperty");
                 });
 
-            modelBuilder.Entity("EntityLayer.Entity.Category", b =>
-                {
-                    b.HasOne("EntityLayer.Entity.Category", null)
-                        .WithMany("SubCategories")
-                        .HasForeignKey("CategoryId");
-                });
-
             modelBuilder.Entity("EntityLayer.Entity.Comment", b =>
                 {
                     b.HasOne("EntityLayer.Entity.Product", null)
@@ -148,6 +141,17 @@ namespace DataAccessLayer.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EntityLayer.Entity.Product", b =>
+                {
+                    b.HasOne("EntityLayer.Entity.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("EntityLayer.Entity.ProductProperty", b =>
@@ -161,7 +165,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Entity.Category", b =>
                 {
-                    b.Navigation("SubCategories");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("EntityLayer.Entity.Product", b =>

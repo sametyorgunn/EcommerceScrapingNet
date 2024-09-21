@@ -15,6 +15,9 @@ namespace DataAccessLayer.IRepositories
     {
         Task<bool> UpdateTrendyolCategories(List<Category> category);
 		public Task<List<Category>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request);
+		public Task<List<Category>> GetMainCategories();
+		public Task<List<Category>> GetSubCategories(GetCategoriesByFilterDto request);
 
-	}
+
+    }
 }

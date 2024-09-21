@@ -8,7 +8,8 @@ namespace EntityLayer.Dto.RequestDto
 {
     public class GetProductAndCommentsDto
     {
-        public string CategoryName { get; set; }
+        public string TrendyolCategoryName { get; set; }
+        public int CategoryId { get; set; }
         public string ProductName { get; set; }
     }
 }

@@ -37,7 +37,21 @@ namespace BusinessLayer.Managers
 			throw new NotImplementedException();
 		}
 
-		public async Task<List<CategoryDto>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
+		public async Task<List<CategoryDto>> GetMainCategories()
+		{
+			var categories =await _categoryRepository.GetMainCategories();
+            var payload = _mapper.Map<List<CategoryDto>>(categories);
+            return payload;
+		}
+
+        public async Task<List<CategoryDto>> GetSubCategories(GetCategoriesByFilterDto request)
+        {
+            var categories = await _categoryRepository.GetSubCategories(request);
+            var payload = _mapper.Map<List<CategoryDto>>(categories);
+            return payload;
+        }
+
+        public async Task<List<CategoryDto>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
 		{
 			var categories = await _categoryRepository.GetTrendyolCategoriesByPlatform(request);
 			var payload = _mapper.Map<List<CategoryDto>>(categories);
