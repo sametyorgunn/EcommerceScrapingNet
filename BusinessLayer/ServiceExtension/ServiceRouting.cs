@@ -17,11 +17,13 @@ namespace BusinessLayer.ServiceExtension
             service.AddScoped<IProductRepository, ProductRepository>();
             service.AddScoped<ICategoryService, CategoryManager>();
             service.AddScoped<ICategoryRepository, CategoryRepository>();
+            service.AddScoped<ITrendyolCategoriesRepository, TrendyolCategoriesRepository>();
 
 
-			service.AddAutoMapper(typeof(ProductProfile));
+            service.AddAutoMapper(typeof(ProductProfile));
 			service.AddAutoMapper(typeof(CategoryProfile));
-		}
+			service.AddAutoMapper(typeof(TrendyolCategoryProfile));
+        }
        
     }
 }

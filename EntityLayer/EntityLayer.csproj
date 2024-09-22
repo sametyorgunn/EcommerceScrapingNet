@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="Microsoft.ML" Version="3.0.1" />
+    <Compile Remove="Entity\Base\**" />
+    <EmbeddedResource Remove="Entity\Base\**" />
+    <None Remove="Entity\Base\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entity\Base\" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.ML" Version="3.0.1" />
   </ItemGroup>
 
 </Project>

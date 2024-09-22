@@ -58,15 +58,6 @@ namespace BusinessLayer.Managers
 			return payload;
 		}
 
-		//public async Task<List<CategoryDto>> GetListByFilterAsync(Expression<Func<Category, bool>> filter)
-		//{
-		//	var Filter = _mapper.Map<Expression<Func<Category, bool>>>(filter);
-		//	var categories =await _categoryRepository.GetListAllFilterAsync(Filter);
-		//	var payload = _mapper.Map<List<CategoryDto>>(categories);
-
-		//	return payload;
-		//}
-
 		public Task TAddAsync(CategoryDto t)
         {
             throw new NotImplementedException();
@@ -96,26 +87,6 @@ namespace BusinessLayer.Managers
         {
             throw new NotImplementedException();
         }
-        public async Task<bool> UpdateTrendyolCategories()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                string url = "https://api.trendyol.com/sapigw/product-categories";
-                HttpResponseMessage response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-                    CategoryResponseDto categoryResponse = JsonConvert.DeserializeObject<CategoryResponseDto>(responseData);
-                    var payload = _mapper.Map<List<Category>>(categoryResponse.Categories);
-                    var result = _categoryRepository.UpdateTrendyolCategories(payload);
-                    return await result;
-                }
-                else
-                {
-                    Console.WriteLine($"İstek başarısız oldu: {response.StatusCode}");
-                    return false;
-                }
-            }
-        }
+      
     }
 }

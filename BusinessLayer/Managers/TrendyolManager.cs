@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BusinessLayer.IServices;
 using DataAccessLayer.IRepositories;
+using DataAccessLayer.Repositories;
 using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
@@ -20,15 +22,17 @@ namespace BusinessLayer.Managers
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
         private readonly ICategoryRepository _categoryrepository;
-		public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService, ICategoryRepository categoryrepository)
-		{
-			_productService = productService;
-			_mapper = mapper;
-			_categoryService = categoryService;
-			_categoryrepository = categoryrepository;
-		}
+        private readonly ITrendyolCategoriesRepository _trendyolCategoriesRepository;
+        public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService, ICategoryRepository categoryrepository, ITrendyolCategoriesRepository trendyolCategoriesRepository)
+        {
+            _productService = productService;
+            _mapper = mapper;
+            _categoryService = categoryService;
+            _categoryrepository = categoryrepository;
+            _trendyolCategoriesRepository = trendyolCategoriesRepository;
+        }
 
-		public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+        public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 
 			var options = new ChromeOptions();
@@ -189,24 +193,24 @@ namespace BusinessLayer.Managers
             }
         }
 
-        public async Task<string> GetTrendyolCategoriesAsync()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                string url = "https://api.trendyol.com/sapigw/product-categories";
-                HttpResponseMessage response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-                    return responseData;
-                }
-                else
-                {
-                    Console.WriteLine($"İstek başarısız oldu: {response.StatusCode}");
-                    return "başarısız";
-                }
-            }
-        }
+        //public async Task<string> GetTrendyolCategoriesAsync()
+        //{
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        string url = "https://api.trendyol.com/sapigw/product-categories";
+        //        HttpResponseMessage response = await client.GetAsync(url);
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            string responseData = await response.Content.ReadAsStringAsync();
+        //            return responseData;
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine($"İstek başarısız oldu: {response.StatusCode}");
+        //            return "başarısız";
+        //        }
+        //    }
+        //}
 
         public static class AnalyseBestCagory
         {
@@ -259,7 +263,6 @@ namespace BusinessLayer.Managers
 				actions.MoveByOffset(centerX, centerY).Click().Perform();
 			}
 		}
-
 		public async Task<string> ScrapeTrendyolCategoriesAsync()
 		{
             var options = new ChromeOptions();
@@ -276,7 +279,7 @@ namespace BusinessLayer.Managers
 				var categories = driver.FindElements(By.ClassName("category-header"));
 				var elektronik = categories.FirstOrDefault(x => x.Text == "Elektronik");
 				IWebElement elkt = wait.Until(ExpectedConditions.ElementToBeClickable(elektronik));
-				List<CategoryDto> listCategory = new List<CategoryDto>();
+				List<TrendyolCategoryDto> listCategory = new List<TrendyolCategoryDto>();
 
 				try
 				{
@@ -284,9 +287,8 @@ namespace BusinessLayer.Managers
 					var items = driver.FindElements(By.ClassName("item"));
 					foreach (var item in items)
 					{
-						CategoryDto dt = new CategoryDto();
-						dt.Name = item.Text;
-						dt.PlatformId = 0;
+                        TrendyolCategoryDto dt = new TrendyolCategoryDto();
+						dt.name = item.Text;
 						listCategory.Add(dt);
 					}
 				}
@@ -299,16 +301,43 @@ namespace BusinessLayer.Managers
 					var items = driver.FindElements(By.ClassName("item"));
 					foreach (var item in items)
 					{
-						CategoryDto dt = new CategoryDto();
-						dt.Name = item.Text;
-						dt.PlatformId = 0;
+                        TrendyolCategoryDto dt = new TrendyolCategoryDto();
+						dt.name = item.Text;
 						listCategory.Add(dt);
 					}
-					var payload = _mapper.Map<List<Category>>(listCategory);
-					await _categoryrepository.UpdateTrendyolCategories(payload);
+					var payload = _mapper.Map<List<TrendyolCategory>>(listCategory);
+					await _trendyolCategoriesRepository.UpdateTrendyolCategories(payload);
 				}
 				return "a";
 			}
 		}
-	}
+        public async Task<bool> UpdateTrendyolCategories()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string url = "https://api.trendyol.com/sapigw/product-categories";
+                HttpResponseMessage response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    TrendyolCategoryResponseDto categoryResponse = JsonConvert.DeserializeObject<TrendyolCategoryResponseDto>(responseData);
+                    var payload = _mapper.Map<List<TrendyolCategory>>(categoryResponse.categories);
+                    var result = await _trendyolCategoriesRepository.UpdateTrendyolCategories(payload);
+                    return result;
+                }
+                else
+                {
+                    Console.WriteLine($"İstek başarısız oldu: {response.StatusCode}");
+                    return false;
+                }
+            }
+        }
+
+        public async Task<List<TrendyolCategoryDto>> getTrendyolCategories()
+        {
+            var result = await _trendyolCategoriesRepository.GetListAllAsync();
+            var payload = _mapper.Map<List<TrendyolCategoryDto>>(result);
+            return payload;
+        }
+    }
 }

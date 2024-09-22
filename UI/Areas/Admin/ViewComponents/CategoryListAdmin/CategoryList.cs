@@ -1,9 +1,9 @@
 ﻿using BusinessLayer.IServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UI.Areas.ViewComponents.CategoryListAdmin
+namespace UI.Areas.Admin.ViewComponents.CategoryListAdmin
 {
-    public class CategoryList:ViewComponent
+    public class CategoryList : ViewComponent
     {
         private readonly ICategoryService _categoryService;
 

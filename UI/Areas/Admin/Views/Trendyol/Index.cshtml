@@ -137,10 +137,12 @@
     $("#scrapeProd").click(function () {
 		debugger
 		toastr.success("ürünler çekiliyor lütfen bekleyiniz !!!")
-		var CategroyName = $("#CategoryName").val();
+		var TrendyolCategoryName = $("#TrendyolCategoryName").val();
+		var CategoryId = $("#CategoryName").val();
 		var ProductName = $("#ProductName").val();
 		var data = {
-            CategoryName: CategroyName,
+			TrendyolCategoryName: TrendyolCategoryName,
+			CategoryId: CategoryId,
             ProductName: ProductName
 		}
         $.ajax({

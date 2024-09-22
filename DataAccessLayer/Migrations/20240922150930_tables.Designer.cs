@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240921093503_tables")]
+    [Migration("20240922150930_tables")]
     partial class tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +27,10 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("EntityLayer.Entity.Category", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -136,6 +139,28 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("productproperty");
                 });
 
+            modelBuilder.Entity("EntityLayer.Entity.TrendyolCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TrendyolCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrendyolCategoryId");
+
+                    b.ToTable("trendyolCategories");
+                });
+
             modelBuilder.Entity("EntityLayer.Entity.Comment", b =>
                 {
                     b.HasOne("EntityLayer.Entity.Product", null)
@@ -165,6 +190,13 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("EntityLayer.Entity.TrendyolCategory", b =>
+                {
+                    b.HasOne("EntityLayer.Entity.TrendyolCategory", null)
+                        .WithMany("SubCategories")
+                        .HasForeignKey("TrendyolCategoryId");
+                });
+
             modelBuilder.Entity("EntityLayer.Entity.Category", b =>
                 {
                     b.Navigation("Products");
@@ -175,6 +207,11 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Comment");
 
                     b.Navigation("ProductProperty");
+                });
+
+            modelBuilder.Entity("EntityLayer.Entity.TrendyolCategory", b =>
+                {
+                    b.Navigation("SubCategories");
                 });
 #pragma warning restore 612, 618
         }

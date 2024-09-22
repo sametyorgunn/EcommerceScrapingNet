@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessLayer.IServices;
+using EntityLayer.Dto.RequestDto;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 
 namespace UI.Areas.Admin.Controllers
@@ -6,27 +8,21 @@ namespace UI.Areas.Admin.Controllers
 	[Area("Admin")]
 	public class ProductController : Controller
 	{
-		private readonly HttpClient _httpclient;
+		private readonly IProductService _productService;
 
-		public ProductController(HttpClient httpclient)
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
+        }
+
+        public async Task<IActionResult> DeleteProduct(int id)
 		{
-			_httpclient = httpclient;
-		}
-
-		public async Task<IActionResult> DeleteProduct(int id)
-		{
-			try
+			var product = _productService.GetProductById(new GetProductById
 			{
-				string url = $"https://localhost:7260/api/Product/DeleteProduct/{id}";
-				HttpResponseMessage response = await _httpclient.DeleteAsync(url);
-				return RedirectToAction("Index", "Trendyol");
-			}
-			catch (HttpRequestException e)
-			{
-				Console.WriteLine($"İstek yapılırken bir hata oluştu: {e.Message}");
-				return RedirectToAction("Index", "Trendyol");
-			}
-
+				Id = id
+			}).Result;
+			var result = _productService.TDeleteAsync(product);
+			return RedirectToAction("Index", "Trendyol");
 		}
 	}
 }

@@ -12,7 +12,8 @@ namespace DataAccessLayer.Migrations
                 name: "categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ParentId = table.Column<int>(type: "int", nullable: true),
                     PlatformId = table.Column<int>(type: "int", nullable: false)
@@ -20,6 +21,25 @@ namespace DataAccessLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "trendyolCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentId = table.Column<int>(type: "int", nullable: true),
+                    TrendyolCategoryId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_trendyolCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_trendyolCategories_trendyolCategories_TrendyolCategoryId",
+                        column: x => x.TrendyolCategoryId,
+                        principalTable: "trendyolCategories",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -103,6 +123,11 @@ namespace DataAccessLayer.Migrations
                 name: "IX_products_CategoryId",
                 table: "products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_trendyolCategories_TrendyolCategoryId",
+                table: "trendyolCategories",
+                column: "TrendyolCategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -112,6 +137,9 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "productproperty");
+
+            migrationBuilder.DropTable(
+                name: "trendyolCategories");
 
             migrationBuilder.DropTable(
                 name: "products");

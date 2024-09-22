@@ -12,7 +12,6 @@ namespace BusinessLayer.IServices
 {
     public interface ICategoryService:IGenericService<CategoryDto>
     {
-        public Task<bool> UpdateTrendyolCategories();
         public Task<List<CategoryDto>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request);
         public Task<List<CategoryDto>> GetMainCategories();
         public Task<List<CategoryDto>> GetSubCategories(GetCategoriesByFilterDto request);

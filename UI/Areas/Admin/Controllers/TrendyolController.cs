@@ -13,40 +13,26 @@ namespace UI.Areas.Admin.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-		private readonly HttpClient _httpclient;
+        private readonly ITrendyolService _trendyolservice;
+        private readonly HttpClient _httpclient;
 
-		public TrendyolController(ICategoryService categoryService, IProductService productService, HttpClient httpclient)
-		{
-			_categoryService = categoryService;
-			_productService = productService;
-			_httpclient = httpclient;
-		}
+        public TrendyolController(ICategoryService categoryService, IProductService productService, HttpClient httpclient, ITrendyolService trendyolservice)
+        {
+            _categoryService = categoryService;
+            _productService = productService;
+            _httpclient = httpclient;
+            _trendyolservice = trendyolservice;
+        }
 
-		public IActionResult Index()
+        public IActionResult Index()
         {
 			return View();
         }
 		[HttpPost]
 		public async Task<IActionResult> ScrapeProduct(GetProductAndCommentsDto request)
 		{
-			using var httpClient = new HttpClient();
-
-			var json = JsonSerializer.Serialize(request);
-			var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-			HttpResponseMessage response = await httpClient.PostAsync("https://localhost:7260/api/Trendyol/ScrapeProductTrendyol", content);
-
-			response.EnsureSuccessStatusCode();
-
-			string responseBody = await response.Content.ReadAsStringAsync();
-			if(responseBody == "true")
-			{
-                return Ok(true);
-			}
-			else
-			{
-                return Ok(false);
-            }
+			var result = await _trendyolservice.GetProductAndCommentsAsync(request);
+			return Ok(result);
         }
 		public async Task<IActionResult> Categories(int page = 1, int pageSize = 10)
 		{
@@ -54,21 +40,16 @@ namespace UI.Areas.Admin.Controllers
 		}
 		public async Task<IActionResult> CategoriesUpdate()
 		{
-			using var httpClient = new HttpClient();
-
-			HttpResponseMessage response = await httpClient.GetAsync("https://localhost:7260/api/Trendyol/UpdateTrendyolCategories");
-
-			response.EnsureSuccessStatusCode();
-
-			string responseBody = await response.Content.ReadAsStringAsync();
-			if (responseBody == "true")
+			var result =await _trendyolservice.UpdateTrendyolCategories();
+			if (result)
 			{
-				return Ok(true);
-			}
+                return Ok(true);
+            }
 			else
 			{
 				return Ok(false);
 			}
+			
 		}
 
     }
