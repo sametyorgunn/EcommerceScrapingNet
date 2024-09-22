@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.IServices.IGeneric;
 using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
@@ -16,5 +17,6 @@ namespace BusinessLayer.IServices
         Task<ProductDto> GetProductByProductId(GetProductByProductId request);
 		Task<List<ProductDto>> GetProductsByPlatformId(GetProductsByPlatformId request);
 		Task<List<ProductDto>> GetLastFiveProducts();
+        Task<List<ProductDto>> GetProductsByCategoryId(GetProductByFilterDto request);
 	}
 }

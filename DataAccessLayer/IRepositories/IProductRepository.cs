@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.IRepositories.IGeneric;
 using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
@@ -15,7 +16,6 @@ namespace DataAccessLayer.IRepositories
         Task<List<Product>> GetListAllByPlatformIdAsync(int platformId);
 		Task<Product> GetProductByProductId(GetProductByProductId request);
 		Task<List<Product>> GetLastFiveProducts();
-
-
+		Task<List<Product>> GetProductsByCategoryId(GetProductByFilterDto request);
 	}
 }

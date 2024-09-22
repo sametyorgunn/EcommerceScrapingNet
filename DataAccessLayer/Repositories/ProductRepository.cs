@@ -2,6 +2,7 @@
 using DataAccessLayer.IRepositories;
 using DataAccessLayer.Repositories.Generic;
 using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using System;
@@ -39,6 +40,12 @@ namespace DataAccessLayer.Repositories
 		{
 			var product = _appDbContext.products.Where(x => x.ProductId == request.ProductId).FirstOrDefault();
 			return product;
+		}
+
+		public async Task<List<Product>> GetProductsByCategoryId(GetProductByFilterDto request)
+		{
+			var products = _appDbContext.products.Where(x=>x.CategoryId == request.CategoryId).ToList();
+			return products;
 		}
 	}
 }

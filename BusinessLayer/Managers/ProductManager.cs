@@ -3,6 +3,7 @@ using BusinessLayer.IServices;
 using BusinessLayer.IServices.IGeneric;
 using DataAccessLayer.IRepositories;
 using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using Microsoft.VisualBasic;
@@ -60,6 +61,13 @@ namespace BusinessLayer.Managers
 		{
 			var product = await _productRepository.GetProductByProductId(request);
 			var payload = _mapper.Map<ProductDto>(product);
+			return payload;
+		}
+
+		public async Task<List<ProductDto>> GetProductsByCategoryId(GetProductByFilterDto request)
+		{
+			var products = await _productRepository.GetProductsByCategoryId(request);
+			var payload = _mapper.Map<List<ProductDto>>(products);
 			return payload;
 		}
 
