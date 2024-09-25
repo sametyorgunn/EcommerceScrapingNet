@@ -13,9 +13,9 @@ namespace UI.Controllers
 			_productService = productService;
 		}
 
-		public IActionResult Index(int id)
+		public async Task<IActionResult> Index(int id)
 		{
-			var products = _productService.GetProductsByCategoryId(new GetProductByFilterDto
+			var products =await _productService.GetProductsByCategoryId(new GetProductByFilterDto
 			{
 				CategoryId = id
 			});
