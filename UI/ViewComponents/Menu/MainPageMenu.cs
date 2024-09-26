@@ -1,18 +1,18 @@
 ﻿using BusinessLayer.IServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UI.ViewComponents.GetFrontMenus
+namespace UI.ViewComponents.Menu
 {
-	public class GetMainPageMenus:ViewComponent
+	public class MainPageMenu:ViewComponent
 	{
 		private readonly ICategoryService _categoryService;
 
-		public GetMainPageMenus(ICategoryService categoryService)
+		public MainPageMenu(ICategoryService categoryService)
 		{
 			_categoryService = categoryService;
 		}
 
-		public async Task <IViewComponentResult> InvokeAsync()
+		public async Task<IViewComponentResult> InvokeAsync()
 		{
 			var categories =await _categoryService.GetListAsync();
 			return View(categories);

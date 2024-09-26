@@ -25,17 +25,17 @@ namespace BusinessLayer.Managers
             _mapper = mapper;
         }
 
-        public async Task<List<CategoryDto>> GetListAsync()
+		public async Task<List<CategoryDto>> GetListAsync()
         {
 			var categories = await _categoryRepository.GetListAllAsync();
 			var payload = _mapper.Map<List<CategoryDto>>(categories);
 			return payload;
 		}
 
-		public Task<List<CategoryDto>> GetListByFilterAsync(Expression<Func<CategoryDto, bool>> filter)
-		{
-			throw new NotImplementedException();
-		}
+		//public Task<List<CategoryDto>> GetListByFilterAsync(Expression<Func<CategoryDto, bool>> filter)
+		//{
+		//	throw new NotImplementedException();
+		//}
 
 		public async Task<List<CategoryDto>> GetMainCategories()
 		{
@@ -58,9 +58,10 @@ namespace BusinessLayer.Managers
 			return payload;
 		}
 
-		public Task TAddAsync(CategoryDto t)
+		public async Task TAddAsync(CategoryDto t)
         {
-            throw new NotImplementedException();
+			var payload = _mapper.Map<Category>(t);
+            await _categoryRepository.InsertAsync(payload);
         }
 
         public Task<bool> TAddRangeAsync(List<CategoryDto> t)

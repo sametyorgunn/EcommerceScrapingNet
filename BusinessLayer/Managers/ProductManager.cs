@@ -35,6 +35,13 @@ namespace BusinessLayer.Managers
 			return payload;
 		}
 
+		public async Task<List<ProductDto>> GetLastTwelveProduct()
+		{
+			var products = await _productRepository.GetLastTwelveProduct();
+			var payload = _mapper.Map<List<ProductDto>>(products);
+			return payload;
+		}
+
 		public async Task<List<ProductDto>> GetListAsync()
         {
             var products =  await _productRepository.GetListAllAsync();
@@ -42,13 +49,13 @@ namespace BusinessLayer.Managers
             return payload;
 		}
 
-		public async Task<List<ProductDto>> GetListByFilterAsync(Expression<Func<ProductDto, bool>> filter)
-		{
-			var productFilter = _mapper.Map<Expression<Func<Product, bool>>>(filter);
-			var products = await _productRepository.GetListAllFilterAsync(productFilter);
-			var payload = _mapper.Map<List<ProductDto>>(products);
-			return payload;
-		}
+		//public async Task<List<ProductDto>> GetListByFilterAsync(Expression<Func<ProductDto, bool>> filter)
+		//{
+		//	var productFilter = _mapper.Map<Expression<Func<Product, bool>>>(filter);
+		//	var products = await _productRepository.GetListAllFilterAsync(productFilter);
+		//	var payload = _mapper.Map<List<ProductDto>>(products);
+		//	return payload;
+		//}
 
 		public async Task<ProductDto> GetProductById(GetProductById request)
 		{

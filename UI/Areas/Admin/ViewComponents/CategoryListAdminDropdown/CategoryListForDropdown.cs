@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UI.Areas.Admin.ViewComponents.CategoryListAdmin
 {
-    public class CategoryList : ViewComponent
+    public class CategoryListForDropdown : ViewComponent
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryList(ICategoryService categoryService)
+        public CategoryListForDropdown(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }

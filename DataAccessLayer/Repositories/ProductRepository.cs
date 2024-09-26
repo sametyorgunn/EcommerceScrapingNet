@@ -30,6 +30,12 @@ namespace DataAccessLayer.Repositories
 			
 		}
 
+		public async Task<List<Product>> GetLastTwelveProduct()
+		{
+			var products = _appDbContext.products.OrderByDescending(x => x.Id).Take(12).ToList();
+			return products;
+		}
+
 		public async Task<List<Product>> GetListAllByPlatformIdAsync(int platformId)
 		{
 			var products = _appDbContext.products.Where(x=>x.PlatformId == platformId).ToList();

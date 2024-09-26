@@ -15,7 +15,7 @@ namespace BusinessLayer.IServices.IGeneric
         Task TDeleteAsync(T t);
         Task TUpdateAsync(T t);
         Task<List<T>> GetListAsync();
-        Task<List<T>> GetListByFilterAsync(Expression<Func<T, bool>> filter);
+        //Task<List<T>> GetListByFilterAsync(Expression<Func<T, bool>> filter);
         Task<T> TGetByIdAsync(int id);
     }
 }

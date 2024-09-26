@@ -1,10 +1,13 @@
 ﻿using BusinessLayer.IServices;
 using EntityLayer.Dto.RequestDto.Category;
+using EntityLayer.Dto.ResponseDto;
+using EntityLayer.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UI.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -27,6 +30,23 @@ namespace UI.Areas.Admin.Controllers
                 ParentId = parentId
             });
             return Ok(categories);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(AddCategoryDto dto)
+        {
+            var result = _categoryService.TAddAsync(new CategoryDto
+            {
+                Name = dto.CategoryName,
+                ParentId = dto.CategoryId
+            });
+            return Ok(result);
+        }
+
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var category = await _categoryService.TGetByIdAsync(id);
+            var result =  _categoryService.TDeleteAsync(category);
+            return Ok(result);
         }
     }
 }

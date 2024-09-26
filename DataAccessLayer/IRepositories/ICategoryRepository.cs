@@ -16,7 +16,5 @@ namespace DataAccessLayer.IRepositories
 		public Task<List<Category>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request);
 		public Task<List<Category>> GetMainCategories();
 		public Task<List<Category>> GetSubCategories(GetCategoriesByFilterDto request);
-
-
-    }
+	}
 }

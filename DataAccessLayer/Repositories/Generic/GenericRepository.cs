@@ -41,10 +41,10 @@ namespace DataAccessLayer.Repositories.Generic
             return _appDbContext.Set<T>().ToList();
         }
 
-        async Task<List<T>> IGenericRepository<T>.GetListAllFilterAsync(Expression<Func<T, bool>> filter)
-        {
-            return _appDbContext.Set<T>().Where(filter).ToList();
-        }
+        //async Task<List<T>> IGenericRepository<T>.GetListAllFilterAsync(Expression<Func<T, bool>> filter)
+        //{
+        //    return _appDbContext.Set<T>().Where(filter).ToList();
+        //}
 
         async Task IGenericRepository<T>.InsertAsync(T t)
         {

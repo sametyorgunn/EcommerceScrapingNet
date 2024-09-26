@@ -13,9 +13,15 @@ namespace UI.Controllers
 			_productService = productService;
 		}
 
-		public async Task<IActionResult> Index(int id)
+		public async Task<IActionResult> Index()
 		{
-			var products =await _productService.GetProductsByCategoryId(new GetProductByFilterDto
+			var products = await _productService.GetLastTwelveProduct();
+			return View(products);
+		}
+		[HttpGet("ürün-listesi/{id}")]
+		public async Task<IActionResult> Products(int id)
+		{
+			var products = await _productService.GetProductsByCategoryId(new GetProductByFilterDto
 			{
 				CategoryId = id
 			});
