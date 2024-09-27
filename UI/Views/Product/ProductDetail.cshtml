@@ -1,14 +1,10 @@
 ﻿@using EntityLayer.Dto.ResponseDto
+@using System.Globalization
 @model ProductDto
 @{
     ViewData["Title"] = "ProductDetail";
     Layout = "~/Views/Shared/_FrontLayouts.cshtml";
 }
-<style>
-	.checked {
-		color: orange;
-	}
-</style>
 <div role="main" class="main">
 	<section class="page-header page-header-modern bg-color-light-scale-1 page-header-md">
 		<div class="container">
@@ -41,10 +37,18 @@
 						</div>
 						<div class="post-content ms-0">
 							<h2 class="font-weight-semi-bold"><a href="#">@Model.ProductName</a></h2>
-
-							<span class="fa fa-star checked"></span>
-						    <span class="fa fa-star"></span>
-							<span class="fa fa-star"></span>
+							@{
+								var starCount = Math.Floor(Convert.ToDouble(Model.ProductRating, CultureInfo.InvariantCulture));
+								int emptyStarCount = 5 - Convert.ToInt32(starCount);
+							}
+							@for (int i = 0; i < starCount; i++)
+							{
+								<span class="fa fa-star checked"></span>
+							}
+							@for (int i = 0; i < emptyStarCount; i++)
+							{
+								<span class="fa fa-star"></span>
+							}
 							<p>
 								<table class="table border">
 									
@@ -65,7 +69,7 @@
 								</table>
 							</p>
 
-							<div class="post-block mt-4 pt-2 post-author">
+						@* 	<div class="post-block mt-4 pt-2 post-author">
 								<h4 class="mb-3">Author</h4>
 								<div class="img-thumbnail img-thumbnail-no-borders d-block pb-3">
 									<a href="blog-post.html">
@@ -74,12 +78,12 @@
 								</div>
 								<p><strong class="name"><a href="#" class="text-4 pb-2 pt-2 d-block">John Doe</a></strong></p>
 								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae. Sed dui lorem, adipiscing in adipiscing et, interdum nec metus. Mauris ultricies, justo eu convallis placerat, felis enim ornare nisi, vitae mattis nulla ante id dui. </p>
-							</div>
+							</div> *@
 
 							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 														
 -							<div id="comments" class="post-block mt-5 post-comments">
-								<h4 class="mb-3">Yorumlar @Model.Comment.Count()</h4>
+								<h4 class="mb-3">Yorumlar (@Model.Comment.Count())</h4>
 
 								<ul class="comments">
 									@foreach(var i in Model.Comment)
@@ -93,9 +97,9 @@
 													<div class="comment-arrow"></div>
 													<span class="comment-by">
 														<strong></strong>
-														<span class="float-end">
+														@* <span class="float-end">
 															<span> <a href="#"><i class="fas fa-reply"></i> Reply</a></span>
-														</span>
+														</span> *@
 													</span>
 													<p>@i.CommentText</p>
 													<span class="date float-end"></span>

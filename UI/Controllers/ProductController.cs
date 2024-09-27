@@ -12,7 +12,6 @@ namespace UI.Controllers
 		{
 			_productService = productService;
 		}
-
 		public async Task<IActionResult> Index()
 		{
 			var products = await _productService.GetLastTwelveProduct();
