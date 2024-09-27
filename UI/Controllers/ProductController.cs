@@ -27,5 +27,14 @@ namespace UI.Controllers
 			});
 			return View(products);
 		}
+		[HttpGet("ürün-detay/{id}")]
+		public async Task<IActionResult> ProductDetail(int id)
+		{
+			var product = await _productService.GetProductWithCommentAndProperties(new GetProductByFilterDto
+			{
+				Id = id
+			});
+			return View(product);
+		}
 	}
 }

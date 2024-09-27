@@ -5,6 +5,7 @@ using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,16 @@ namespace DataAccessLayer.Repositories
 		{
 			var products = _appDbContext.products.Where(x=>x.CategoryId == request.CategoryId).ToList();
 			return products;
+		}
+
+		public async Task<Product> GetProductWithCommentAndProperties(GetProductByFilterDto request)
+		{
+			var product = _appDbContext.products.Where(x=>x.Id == request.Id)
+				.Include(x => x.Category)
+				.Include(x => x.Comment)
+				.Include(x => x.ProductProperty)
+				.FirstOrDefault();
+			return product;
 		}
 	}
 }

@@ -85,6 +85,13 @@ namespace BusinessLayer.Managers
 			return payload;
 		}
 
+		public async Task<ProductDto> GetProductWithCommentAndProperties(GetProductByFilterDto request)
+		{
+			var product = await _productRepository.GetProductWithCommentAndProperties(request);
+			var payload = _mapper.Map<ProductDto>(product);
+			return payload;
+		}
+
 		public async Task TAddAsync(ProductDto t)
         {
 			var product = _mapper.Map<Product>(t);

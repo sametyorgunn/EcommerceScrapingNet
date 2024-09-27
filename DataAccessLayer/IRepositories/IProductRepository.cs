@@ -18,6 +18,8 @@ namespace DataAccessLayer.IRepositories
 		Task<List<Product>> GetLastFiveProducts();
 		Task<List<Product>> GetProductsByCategoryId(GetProductByFilterDto request);
 		Task<List<Product>> GetLastTwelveProduct();
+		Task<Product> GetProductWithCommentAndProperties(GetProductByFilterDto request);
+
 
 	}
 }
