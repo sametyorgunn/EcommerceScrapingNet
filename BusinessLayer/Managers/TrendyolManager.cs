@@ -80,6 +80,7 @@ namespace BusinessLayer.Managers
                 foreach (var Sp in ScrapeProduct)
                 {
                     var ProductId = Sp.GetAttribute("data-id");
+                    var ProductLink = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
                     var ProdId = Convert.ToInt32(ProductId);
 					var productControl = await _productService.GetProductByProductId(new GetProductByProductId { ProductId = ProdId });
 					if (productControl != null)
@@ -158,6 +159,7 @@ namespace BusinessLayer.Managers
                             ProductPrice = ProductPrice,
                             ProductProperty = propertiesList,
                             ProductRating = ProductRating,
+                            ProductLink = ProductLink,
 							CategoryId = request.CategoryId,
                             PlatformId = (int)EntityLayer.Enums.Platform.trendyol,
                             Comment = new List<Comment>()
