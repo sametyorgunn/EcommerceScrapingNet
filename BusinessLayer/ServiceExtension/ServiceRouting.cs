@@ -18,6 +18,7 @@ namespace BusinessLayer.ServiceExtension
             service.AddScoped<ICategoryService, CategoryManager>();
             service.AddScoped<ICategoryRepository, CategoryRepository>();
             service.AddScoped<ITrendyolCategoriesRepository, TrendyolCategoriesRepository>();
+            service.AddScoped<IHbService, HBManager>();
 
 
             service.AddAutoMapper(typeof(ProductProfile));

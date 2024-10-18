@@ -14,14 +14,16 @@ namespace UI.Areas.Admin.Controllers
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly ITrendyolService _trendyolservice;
+        private readonly IHbService _hbService;
         private readonly HttpClient _httpclient;
 
-        public TrendyolController(ICategoryService categoryService, IProductService productService, HttpClient httpclient, ITrendyolService trendyolservice)
+        public TrendyolController(ICategoryService categoryService, IProductService productService, HttpClient httpclient, ITrendyolService trendyolservice, IHbService hbService)
         {
             _categoryService = categoryService;
             _productService = productService;
             _httpclient = httpclient;
             _trendyolservice = trendyolservice;
+            _hbService = hbService;
         }
 
         public IActionResult Index()
@@ -31,7 +33,9 @@ namespace UI.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ScrapeProduct(GetProductAndCommentsDto request)
 		{
-			var result = await _trendyolservice.GetProductAndCommentsAsync(request);
+            var resulthb = await _hbService.GetProductAndCommentsAsync(request);
+
+            var result = await _trendyolservice.GetProductAndCommentsAsync(request);
 			return Ok(result);
         }
 		public async Task<IActionResult> Categories(int page = 1, int pageSize = 10)
