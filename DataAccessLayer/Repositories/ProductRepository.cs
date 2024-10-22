@@ -43,11 +43,11 @@ namespace DataAccessLayer.Repositories
 			return products;
 		}
 
-		public async Task<Product> GetProductByProductId(GetProductByProductId request)
-		{
-			var product = _appDbContext.products.Where(x => x.ProductId == request.ProductId).FirstOrDefault();
-			return product;
-		}
+		//public async Task<Product> GetProductByProductId(GetProductByProductId request)
+		//{
+		//	var product = _appDbContext.products.Where(x => x.ProductId == request.ProductId).FirstOrDefault();
+		//	return product;
+		//}
 
 		public async Task<List<Product>> GetProductsByCategoryId(GetProductByFilterDto request)
 		{

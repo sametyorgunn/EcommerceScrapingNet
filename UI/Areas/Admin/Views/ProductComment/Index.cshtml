@@ -138,16 +138,16 @@
     $("#scrapeProd").click(function () {
 		debugger
 		toastr.success("ürünler çekiliyor lütfen bekleyiniz !!!")
-		var TrendyolCategoryName = $("#TrendyolCategoryName").val();
+		var StoreCategoryName = $("#StoreCategoryName").val();
 		var CategoryId = $("#CategoryName").val();
 		var ProductName = $("#ProductName").val();
 		var data = {
-			TrendyolCategoryName: TrendyolCategoryName,
+			CategoryName: StoreCategoryName,
 			CategoryId: CategoryId,
             ProductName: ProductName
 		}
         $.ajax({
-			url: "/Admin/Trendyol/ScrapeProduct",
+			url: "/Admin/ProductComment/ScrapeProduct",
             type: "POST",
             data: data,
             success: function (response) {

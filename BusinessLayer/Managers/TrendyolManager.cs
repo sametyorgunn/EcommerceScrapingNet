@@ -42,7 +42,6 @@ namespace BusinessLayer.Managers
 			options.AddArgument("--no-sandbox");
 			options.AddArgument("--disable-dev-shm-usage");
 
-
 			using (IWebDriver driver = new ChromeDriver(options))
 			{
 				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
@@ -53,7 +52,7 @@ namespace BusinessLayer.Managers
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
                 Thread.Sleep(1000);
-				var catName = request.TrendyolCategoryName;
+				var catName = request.CategoryName;
 				string[] splitCatName = catName.Split(" ");
 				wait.Until(driver => driver.FindElement(By.CssSelector("div.fltrs div.fltr-item-text")).Displayed);
 
@@ -81,12 +80,12 @@ namespace BusinessLayer.Managers
                 {
                     var ProductId = Sp.GetAttribute("data-id");
                     var ProductLink = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
-                    var ProdId = Convert.ToInt32(ProductId);
-					var productControl = await _productService.GetProductByProductId(new GetProductByProductId { ProductId = ProdId });
-					if (productControl != null)
-					{
-						continue;
-					}
+     //               var ProdId = Convert.ToInt32(ProductId);
+					//var productControl = await _productService.GetProductByProductId(new GetProductByProductId { ProductId = ProdId });
+					//if (productControl != null)
+					//{
+					//	continue;
+					//}
 					string originalWindow = driver.CurrentWindowHandle;
                     try
                     {
@@ -135,7 +134,7 @@ namespace BusinessLayer.Managers
                         {
                             PropertyTitle = kv.Key,
                             PropertyText = kv.Value,
-                            ProductId = ProdId
+                            //ProductId = ProdId
                         }).ToList();
 						IList<IWebElement> Comments = new List<IWebElement>();
 						try
@@ -152,7 +151,7 @@ namespace BusinessLayer.Managers
 
 						Product product = new Product
                         {
-                            ProductId = ProdId,
+                            //ProductId = ProdId,
                             ProductBrand = Brand,
                             ProductName = ProductName,
                             ProductImage = ProductImage,

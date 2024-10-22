@@ -14,7 +14,7 @@ namespace DataAccessLayer.IRepositories
     public interface IProductRepository:IGenericRepository<Product>
     {
         Task<List<Product>> GetListAllByPlatformIdAsync(int platformId);
-		Task<Product> GetProductByProductId(GetProductByProductId request);
+		//Task<Product> GetProductByProductId(GetProductByProductId request);
 		Task<List<Product>> GetLastFiveProducts();
 		Task<List<Product>> GetProductsByCategoryId(GetProductByFilterDto request);
 		Task<List<Product>> GetLastTwelveProduct();

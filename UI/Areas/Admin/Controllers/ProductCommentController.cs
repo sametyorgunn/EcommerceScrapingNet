@@ -9,21 +9,22 @@ using System.Text.Json;
 namespace UI.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	public class TrendyolController : Controller
+	public class ProductCommentController : Controller
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly ITrendyolService _trendyolservice;
-        private readonly IHbService _hbService;
+        private readonly IN11Service _n11Service;
         private readonly HttpClient _httpclient;
 
-        public TrendyolController(ICategoryService categoryService, IProductService productService, HttpClient httpclient, ITrendyolService trendyolservice, IHbService hbService)
+        public ProductCommentController(ICategoryService categoryService, IProductService productService, HttpClient httpclient,
+            ITrendyolService trendyolservice, IN11Service n11Service)
         {
             _categoryService = categoryService;
             _productService = productService;
             _httpclient = httpclient;
             _trendyolservice = trendyolservice;
-            _hbService = hbService;
+            _n11Service = n11Service;
         }
 
         public IActionResult Index()
@@ -33,7 +34,7 @@ namespace UI.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ScrapeProduct(GetProductAndCommentsDto request)
 		{
-            var resulthb = await _hbService.GetProductAndCommentsAsync(request);
+            var resultN11 = await _n11Service.GetProductAndCommentsAsync(request);
 
             var result = await _trendyolservice.GetProductAndCommentsAsync(request);
 			return Ok(result);

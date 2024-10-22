@@ -10,7 +10,6 @@ namespace EntityLayer.Dto.ResponseDto
     public class ProductDto
     {
 		public int Id { get; set; }
-		public int ProductId { get; set; }
 		public string ProductBrand { get; set; }
 		public string ProductName { get; set; }
 		public string ProductRating { get; set; }
@@ -19,7 +18,7 @@ namespace EntityLayer.Dto.ResponseDto
 		public int PlatformId { get; set; }
         public string ProductLink { get; set; }
         public int CategoryId { get; set; }
-        public List<ProductProperty> ProductProperty { get; set; }
+        public List<ProductProperty>? ProductProperty { get; set; }
 		public List<Comment> Comment { get; set; }
 	}
 }
