@@ -28,6 +28,15 @@ namespace BusinessLayer.Managers
 			_mapper = mapper;
 		}
 
+		public async Task<ProductDto> CreateProduct(ProductDto dto)
+		{
+			var payload = _mapper.Map<Product>(dto);
+			var result = await _productRepository.CreateProduct(payload);
+
+			var response = _mapper.Map<ProductDto>(result);
+			return response;
+		}
+
 		public async Task<List<ProductDto>> GetLastFiveProducts()
 		{
 			var products = await _productRepository.GetLastFiveProducts();

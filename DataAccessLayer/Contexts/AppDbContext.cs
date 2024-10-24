@@ -20,6 +20,7 @@ namespace DataAccessLayer.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
         public DbSet<Category> categories { get; set; }
         public DbSet<Comment> comments { get; set; }

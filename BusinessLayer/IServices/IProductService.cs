@@ -20,6 +20,7 @@ namespace BusinessLayer.IServices
         Task<List<ProductDto>> GetProductsByCategoryId(GetProductByFilterDto request);
         Task<List<ProductDto>> GetLastTwelveProduct();
         Task<ProductDto> GetProductWithCommentAndProperties(GetProductByFilterDto request);
+        Task<ProductDto> CreateProduct(ProductDto dto);
 
 	}
 }

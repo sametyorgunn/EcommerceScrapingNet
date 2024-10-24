@@ -96,8 +96,8 @@
 
 										@await Component.InvokeAsync("CategoryListForDropdown")
 										<br />
- 										@await Component.InvokeAsync("TrendyolCategories")
- 
+@*  										@await Component.InvokeAsync("TrendyolCategories")
+ *@ 
 
 										<div class="fv-plugins-message-container invalid-feedback"></div>
 										<br />
@@ -138,11 +138,9 @@
     $("#scrapeProd").click(function () {
 		debugger
 		toastr.success("ürünler çekiliyor lütfen bekleyiniz !!!")
-		var StoreCategoryName = $("#StoreCategoryName").val();
 		var CategoryId = $("#CategoryName").val();
 		var ProductName = $("#ProductName").val();
 		var data = {
-			CategoryName: StoreCategoryName,
 			CategoryId: CategoryId,
             ProductName: ProductName
 		}

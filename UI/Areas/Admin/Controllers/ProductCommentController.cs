@@ -35,7 +35,7 @@ namespace UI.Areas.Admin.Controllers
 		public async Task<IActionResult> ScrapeProduct(GetProductAndCommentsDto request)
 		{
             var resultN11 = await _n11Service.GetProductAndCommentsAsync(request);
-
+            request.ProductId = resultN11.ProductId;
             var result = await _trendyolservice.GetProductAndCommentsAsync(request);
 			return Ok(result);
         }

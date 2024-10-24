@@ -23,7 +23,14 @@ namespace DataAccessLayer.Repositories
             _appDbContext = appDbContext;
         }
 
-        public async Task<List<Product>> GetLastFiveProducts()
+		public async Task<Product> CreateProduct(Product product)
+		{
+			 _appDbContext.products.Add(product);
+		     _appDbContext.SaveChanges();
+			 return product;
+		}
+
+		public async Task<List<Product>> GetLastFiveProducts()
 		{
 			
 			var products = _appDbContext.products.OrderByDescending(x => x.Id).Take(5).ToList();

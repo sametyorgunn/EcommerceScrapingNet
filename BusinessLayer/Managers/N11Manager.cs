@@ -53,8 +53,6 @@ namespace BusinessLayer.Managers
 
 				OverlayControl(driver);
 				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
-                List<ProductDto> ProductList = new List<ProductDto>();
-
 
 				var ProductName = driver.FindElement(By.CssSelector("h3.productName")).Text;
 				//var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;
@@ -75,8 +73,6 @@ namespace BusinessLayer.Managers
 					ProductLink = ProductLink,
 					Comment = new List<Comment>()
 				};
-				ProductList.Add(dto);
-
 
 				List<Comment> CommentList = new List<Comment>();
 				foreach (var Sp in ScrapeProduct)
@@ -91,6 +87,7 @@ namespace BusinessLayer.Managers
 					var windowHandles = driver.WindowHandles;
 					wait.Until(d => d.WindowHandles.Count > 1);
 					driver.SwitchTo().Window(windowHandles[1]);
+					Thread.Sleep(1000);
 					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
 					foreach (var comment in Comments)
 					{
@@ -101,9 +98,9 @@ namespace BusinessLayer.Managers
 					driver.SwitchTo().Window(originalWindow);
 				}
 				dto.Comment = CommentList;
-				var result = _productService.TAddRangeAsync(ProductList);
+				var result = _productService.CreateProduct(dto);
 				
-				return new ScrapingResponseDto {Description = "Başarılı", ProductId = dto.Id,Status = "True" };
+				return new ScrapingResponseDto {Description = "Başarılı", ProductId = result.Result.Id,Status = "True" };
             }
         }
 		public async void OverlayControl(IWebDriver driver)

@@ -32,7 +32,7 @@ namespace BusinessLayer.Managers
             _trendyolCategoriesRepository = trendyolCategoriesRepository;
         }
 
-        public async Task<bool> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+        public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 
 			var options = new ChromeOptions();
@@ -51,167 +51,66 @@ namespace BusinessLayer.Managers
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
-                Thread.Sleep(1000);
-				var catName = request.CategoryName;
-				string[] splitCatName = catName.Split(" ");
-				wait.Until(driver => driver.FindElement(By.CssSelector("div.fltrs div.fltr-item-text")).Displayed);
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
 
-				var elementKategori = driver.FindElements(By.CssSelector("div.fltrs div.fltr-item-text"));
+				var ProductLink = driver.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
+				var ProductBrand = driver.FindElement(By.CssSelector("span.prdct-desc-cntnr-ttl")).Text;
+				var ProductName = driver.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
 
-				if (elementKategori.Count() != 1)
+				//var ProductRating = driver.FindElement(By.CssSelector("div.rating-line-count")).Text;
+				var ProductPrice = driver.FindElement(By.CssSelector("div.prc-box-dscntd")).Text;
+				var ProductImage = driver.FindElement(By.CssSelector("img.p-card-img")).GetAttribute("src");
+				//var ProductProperties = driver.FindElements(By.ClassName("attribute-item"));
+				
+				ProductDto product = new ProductDto
 				{
-					var SelectedCategory = elementKategori.FirstOrDefault(element => element.Text.Contains(catName, StringComparison.OrdinalIgnoreCase));
-					if (SelectedCategory?.Text == catName)
+					CategoryId = request.CategoryId,
+					PlatformId = 1,
+					ProductBrand = "",
+					ProductImage = ProductImage,
+					ProductPrice = ProductPrice,
+					ProductName = ProductName,
+					ProductRating = "4",
+					ProductProperty = null,
+					ProductLink = ProductLink,
+					Comment = new List<Comment>()
+				};
+				foreach (var Sp in ScrapeProduct)
+				{
+					var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
+					string originalWindow = driver.CurrentWindowHandle;
+					Sp.Click();
+                    var windowHandles = driver.WindowHandles;
+					driver.SwitchTo().Window(windowHandles[1]);
+
+					OverlayControl(driver);
+					IList<IWebElement> Comments = new List<IWebElement>();
+					OverlayControl(driver);
+					var ratingIsExist = driver.FindElements(By.ClassName("rvw-cnt-tx"));
+					if(ratingIsExist.Count > 0)
 					{
-						SelectedCategory.Click();
+						IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
+						ratings.Click();
 					}
 					else
 					{
-						var catResult = AnalyseBestCagory.bestMatch(elementKategori, catName);
-						catResult.Click();
+						driver.Close();
+						driver.SwitchTo().Window(originalWindow);
+						continue;
 					}
-				}
-
-				Thread.Sleep(1000);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
-                List<Product> ProductList = new List<Product>();
-                var count = 0;
-                foreach (var Sp in ScrapeProduct)
-                {
-                    var ProductId = Sp.GetAttribute("data-id");
-                    var ProductLink = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
-     //               var ProdId = Convert.ToInt32(ProductId);
-					//var productControl = await _productService.GetProductByProductId(new GetProductByProductId { ProductId = ProdId });
-					//if (productControl != null)
-					//{
-					//	continue;
-					//}
-					string originalWindow = driver.CurrentWindowHandle;
-                    try
+					Comments = driver.FindElements(By.ClassName("comment-text"));
+                    foreach (var element in Comments)
                     {
-						Sp.Click();
-                        var windowHandles = driver.WindowHandles;
-						driver.SwitchTo().Window(windowHandles[1]);
-					}
-                    catch (Exception ex)
-                    {
-                        Sp.Click();
-						var windowHandles = driver.WindowHandles;
-						driver.SwitchTo().Window(windowHandles[1]);
-					}
-                   
-                    try
-                    {
-                        string Brand = null;
-                        string ProductName;
-						var ProductBrand = driver.FindElements(By.CssSelector("a.product-brand-name-with-link"));
-                        if(ProductBrand.Count() == 0) 
-                        { 
-                            ProductBrand = driver.FindElements(By.CssSelector("span.product-brand-name-without-link"));
-                            Brand = ProductBrand.FirstOrDefault().Text;
-							ProductName = driver.FindElement(By.CssSelector("h1.pr-new-br span:nth-of-type(2)")).Text;
-						}
-						else
-                        {
-                            Brand = ProductBrand.FirstOrDefault().Text;
-						    ProductName = driver.FindElement(By.CssSelector("h1.pr-new-br span")).Text;
-						}
-						var ProductRating = driver.FindElement(By.CssSelector("div.rating-line-count")).Text;
-                        var ProductPrice = driver.FindElement(By.CssSelector("span.prc-dsc")).Text;
-                        var ProductImage = driver.FindElement(By.CssSelector("div.base-product-image img")).GetAttribute("src");
-                        var ProductProperties = driver.FindElements(By.ClassName("attribute-item"));
-                        Dictionary<string, string> properties = new Dictionary<string, string>();
-
-                        foreach (var item in ProductProperties)
-                        {
-                            var attributeNameElement = item.FindElement(By.CssSelector(".attribute-label.attr-name"));
-                            string attributeName = attributeNameElement.Text;
-                            var attributeValueElement = item.FindElement(By.CssSelector(".attribute-value .attr-name.attr-name-w"));
-                            string attributeValue = attributeValueElement.Text;
-                            properties.Add(attributeName, attributeValue);
-                        }
-						List<ProductProperty> propertiesList = properties.Select(kv => new ProductProperty
-                        {
-                            PropertyTitle = kv.Key,
-                            PropertyText = kv.Value,
-                            //ProductId = ProdId
-                        }).ToList();
-						IList<IWebElement> Comments = new List<IWebElement>();
-						try
-						{
-							OverlayControl(driver);
-                            IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
-                            ratings.Click();
-							Comments = driver.FindElements(By.ClassName("comment-text"));
-                        }
-                        catch(Exception ex)
-                        {
-							Console.WriteLine(ex.Message);
-						}
-
-						Product product = new Product
-                        {
-                            //ProductId = ProdId,
-                            ProductBrand = Brand,
-                            ProductName = ProductName,
-                            ProductImage = ProductImage,
-                            ProductPrice = ProductPrice,
-                            ProductProperty = propertiesList,
-                            ProductRating = ProductRating,
-                            ProductLink = ProductLink,
-							CategoryId = request.CategoryId,
-                            PlatformId = (int)EntityLayer.Enums.Platform.trendyol,
-                            Comment = new List<Comment>()
-                        };
-                        foreach (var element in Comments)
-                        {
-                            product.Comment.Add(new Comment { CommentText = element.Text });
-                        }
-                       
-                        ProductList.Add(product);
-                        count++;
-                        
-                    }
-                    catch (Exception ex)
-                    {
-						Console.WriteLine(ex.Message);
-					}
-
+                        product.Comment.Add(new Comment { CommentText = element.Text, ProductId = product.Id, ProductLink = Link });
+                    }                    
 					driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
-               
-                var payload = _mapper.Map<List<ProductDto>>(ProductList);
-                var result = await _productService.TAddRangeAsync(payload);
-                if(result == true)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
+				var result = await _productService.GetProductById(new GetProductById { Id = 1 });
+				 return new ScrapingResponseDto { Description = "Başarılı", ProductId = result.Id, Status = "True" };
 
-        //public async Task<string> GetTrendyolCategoriesAsync()
-        //{
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        string url = "https://api.trendyol.com/sapigw/product-categories";
-        //        HttpResponseMessage response = await client.GetAsync(url);
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            string responseData = await response.Content.ReadAsStringAsync();
-        //            return responseData;
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine($"İstek başarısız oldu: {response.StatusCode}");
-        //            return "başarısız";
-        //        }
-        //    }
-        //}
+			}
+		}
 
         public static class AnalyseBestCagory
         {

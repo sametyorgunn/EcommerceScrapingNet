@@ -21,8 +21,8 @@ namespace UI.Areas.Admin.Controllers
 			{
 				Id = id
 			}).Result;
-			var result = _productService.TDeleteAsync(product);
-			return RedirectToAction("Index", "Trendyol");
+			await _productService.TDeleteAsync(product);
+			return RedirectToAction("Index", "ProductComment");
 		}
 	}
 }
