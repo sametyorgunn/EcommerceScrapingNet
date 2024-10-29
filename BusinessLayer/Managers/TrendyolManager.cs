@@ -23,16 +23,20 @@ namespace BusinessLayer.Managers
         private readonly ICategoryService _categoryService;
         private readonly ICategoryRepository _categoryrepository;
         private readonly ITrendyolCategoriesRepository _trendyolCategoriesRepository;
-        public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService, ICategoryRepository categoryrepository, ITrendyolCategoriesRepository trendyolCategoriesRepository)
-        {
-            _productService = productService;
-            _mapper = mapper;
-            _categoryService = categoryService;
-            _categoryrepository = categoryrepository;
-            _trendyolCategoriesRepository = trendyolCategoriesRepository;
-        }
+		private readonly ICommentService _commentService;
+		public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService,
+			ICategoryRepository categoryrepository, ITrendyolCategoriesRepository trendyolCategoriesRepository,
+			ICommentService commentService)
+		{
+			_productService = productService;
+			_mapper = mapper;
+			_categoryService = categoryService;
+			_categoryrepository = categoryrepository;
+			_trendyolCategoriesRepository = trendyolCategoriesRepository;
+			_commentService = commentService;
+		}
 
-        public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 
 			var options = new ChromeOptions();
@@ -75,6 +79,7 @@ namespace BusinessLayer.Managers
 					ProductLink = ProductLink,
 					Comment = new List<Comment>()
 				};
+				List<CommentDto> comments = new List<CommentDto>();	
 				foreach (var Sp in ScrapeProduct)
 				{
 					var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
@@ -102,12 +107,13 @@ namespace BusinessLayer.Managers
                     foreach (var element in Comments)
                     {
                         product.Comment.Add(new Comment { CommentText = element.Text, ProductId = product.Id, ProductLink = Link });
+						comments.Add(new CommentDto { CommentText = element.Text, ProductId = (int)request.ProductId, ProductLink = Link });
                     }                    
 					driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
-				var result = await _productService.GetProductById(new GetProductById { Id = 1 });
-				 return new ScrapingResponseDto { Description = "Başarılı", ProductId = result.Id, Status = "True" };
+				 var result = await _commentService.TAddRangeAsync(comments);
+				 return new ScrapingResponseDto { Description = "Başarılı", ProductId = 0, Status = "True" };
 
 			}
 		}

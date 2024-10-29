@@ -8,6 +8,9 @@ namespace EntityLayer.Dto.ResponseDto
 {
     public class CommentDto
     {
-        public string CommentText { get; set; }
-    }
+		public int Id { get; set; }
+		public int ProductId { get; set; }
+		public string CommentText { get; set; }
+		public string? ProductLink { get; set; }
+	}
 }

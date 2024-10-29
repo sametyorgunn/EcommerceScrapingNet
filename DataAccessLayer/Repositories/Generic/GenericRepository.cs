@@ -54,9 +54,9 @@ namespace DataAccessLayer.Repositories.Generic
 
         async Task<bool> IGenericRepository<T>.InsertManyAsync(List<T> t)
         {
-            _appDbContext.AddRange(t);
-            _appDbContext.SaveChanges();
-            return true;
+           await _appDbContext.AddRangeAsync(t);
+           await _appDbContext.SaveChangesAsync();
+           return true;
         }
 
         async Task IGenericRepository<T>.UpdateAsync(T t)
