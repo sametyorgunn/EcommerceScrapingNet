@@ -14,6 +14,7 @@ namespace EntityLayer.MappingProfiles
 		public CommentProfile()
 		{
 			CreateMap<Comment, CommentDto>().ReverseMap();
+			CreateMap<CommentDto, CommentEmotionDto>().ReverseMap();
 		}
 	}
 }

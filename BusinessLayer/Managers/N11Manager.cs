@@ -52,7 +52,7 @@ namespace BusinessLayer.Managers
 				Thread.Sleep(1000);
 
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
+				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(1).ToList();
 
 				var ProductName = driver.FindElement(By.CssSelector("h3.productName")).Text;
 				//var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;

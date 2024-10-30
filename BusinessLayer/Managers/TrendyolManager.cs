@@ -24,9 +24,10 @@ namespace BusinessLayer.Managers
         private readonly ICategoryRepository _categoryrepository;
         private readonly ITrendyolCategoriesRepository _trendyolCategoriesRepository;
 		private readonly ICommentService _commentService;
+		private readonly IEmotinalAnalysis _emotinalAnalyseService;
 		public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService,
 			ICategoryRepository categoryrepository, ITrendyolCategoriesRepository trendyolCategoriesRepository,
-			ICommentService commentService)
+			ICommentService commentService, IEmotinalAnalysis emotinalAnalyseService)
 		{
 			_productService = productService;
 			_mapper = mapper;
@@ -34,6 +35,7 @@ namespace BusinessLayer.Managers
 			_categoryrepository = categoryrepository;
 			_trendyolCategoriesRepository = trendyolCategoriesRepository;
 			_commentService = commentService;
+			_emotinalAnalyseService = emotinalAnalyseService;
 		}
 
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
@@ -55,7 +57,7 @@ namespace BusinessLayer.Managers
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(1).ToList();
 
 				var ProductLink = driver.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
 				var ProductBrand = driver.FindElement(By.CssSelector("span.prdct-desc-cntnr-ttl")).Text;
@@ -112,6 +114,9 @@ namespace BusinessLayer.Managers
 					driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
+				 var mas = _mapper.Map<List<CommentEmotionDto>>(comments);
+				 List<CommentEmotionDto> commentForEmotion = mas;
+				 var analyse =await _emotinalAnalyseService.GetEmotionalAnalysis(commentForEmotion);
 				 var result = await _commentService.TAddRangeAsync(comments);
 				 return new ScrapingResponseDto { Description = "Başarılı", ProductId = 0, Status = "True" };
 
