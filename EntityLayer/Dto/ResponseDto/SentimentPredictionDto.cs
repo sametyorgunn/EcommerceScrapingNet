@@ -16,5 +16,8 @@ namespace EntityLayer.Dto.ResponseDto
         public bool Prediction { get; set; }
 
         public string CommentText { get; set; }
-    }
+		public int Id { get; set; }
+		public int ProductId { get; set; }
+		public string? ProductLink { get; set; }
+	}
 }

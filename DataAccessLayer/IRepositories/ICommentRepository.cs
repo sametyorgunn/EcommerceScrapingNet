@@ -12,5 +12,7 @@ namespace DataAccessLayer.IRepositories
 	public interface ICommentRepository:IGenericRepository<Comment>
 	{
 		public Task<Comment> InsertComment(Comment comment);
+		public Task<List<Comment>> GetCommentByPrediction(Comment comment);
+
 	}
 }

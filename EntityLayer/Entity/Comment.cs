@@ -13,5 +13,6 @@ namespace EntityLayer.Entity
         public int ProductId { get; set; }
         public string CommentText { get; set; }
         public string? ProductLink { get; set; }
+        public string? Prediction { get; set; }
     }
 }

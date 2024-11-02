@@ -12,26 +12,32 @@ namespace BusinessLayer.Managers
 {
     public class EmotionalAnalysis : IEmotinalAnalysis
     {
-        public async Task<List<SentimentPredictionDto>> GetEmotionalAnalysis(List<CommentEmotionDto> comments)
+        public async Task<List<SentimentPredictionDto>> GetEmotionalAnalysis(List<CommentDto> comments)
         {
-            var context = new MLContext();
-            var dataPath = "C:\\Users\\asame\\OneDrive\\Masaüstü\\projects\\EcommerceScrapingNet\\UI\\analyse.csv";
-            var data = context.Data.LoadFromTextFile<CommentAnalysisDto>(dataPath, separatorChar: '~', hasHeader: true);
-			//var pipeline = context.Transforms.Text.FeaturizeText("Features", "CommentText")
-			//    .Append(context.BinaryClassification.Trainers.SdcaLogisticRegression("Label", "CommentText"));
-			var pipeline = context.Transforms.Text.FeaturizeText("Features", "CommentText")
-	.Append(context.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features"));
+            try
+            {
+                var context = new MLContext();
+                var dataPath = "C:\\Users\\asame\\OneDrive\\Masaüstü\\projects\\EcommerceScrapingNet\\UI\\analyse.csv";
+                var data = context.Data.LoadFromTextFile<CommentAnalysisDto>(dataPath, separatorChar: '~', hasHeader: true);
+				var pipeline = context.Transforms.Text.FeaturizeText("Features", "CommentText")
+	            .Append(context.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features"));
+				var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.5);
+                var model = pipeline.Fit(trainTestData.TrainSet);
+                var testDataView = context.Data.LoadFromEnumerable(comments);
+                var predictions = model.Transform(testDataView);
+				//var results = context.Data.CreateEnumerable<SentimentPredictionDto>(predictions, reuseRowObject: false);
+				var results = context.Data.CreateEnumerable<SentimentPredictionDto>(predictions, reuseRowObject: false)
+	            .Select(result => {
+		            result.Prediction = result.Score >= -1; 
+		            return result;
+	            }).ToList();
 
-			var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.2);
-            var model = pipeline.Fit(trainTestData.TrainSet);
-            var metrics = context.BinaryClassification.Evaluate(model.Transform(trainTestData.TestSet), "Label");
-            //Console.WriteLine($"Accuracy: {metrics.Accuracy:P2}");
-            //Console.WriteLine($"F1 Score: {metrics.F1Score:P2}");
-            //Console.WriteLine($"AUC: {metrics.AreaUnderRocCurve:P2}");
-            var testDataView = context.Data.LoadFromEnumerable(comments);
-            var predictions = model.Transform(testDataView);
-            var results = context.Data.CreateEnumerable<SentimentPredictionDto>(predictions, reuseRowObject: false);
-            return results.ToList();
+                return results.ToList();
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new List<SentimentPredictionDto>() { };
+            }
         }
     }
 }

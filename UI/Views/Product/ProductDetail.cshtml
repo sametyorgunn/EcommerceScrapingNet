@@ -76,7 +76,7 @@
 
 							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 														
--							<div id="comments" class="post-block mt-5 post-comments">
+-						@* 	<div id="comments" class="post-block mt-5 post-comments">
 								<h4 class="mb-3">Yorumlar (@Model.Comment.Count())</h4>
 
 								<ul class="comments">
@@ -101,11 +101,81 @@
 											</div>
 										</li>
 									}
-									
 								</ul>
+							</div> *@
 
+							
+							<div class="row mb-4">
+								<div class="col">
+									<div id="description" class="tabs tabs-simple tabs-simple-full-width-line tabs-product tabs-dark mb-2">
+										<ul class="nav nav-tabs justify-content-start">
+											<li class="nav-item"><a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumluYorumlar" data-bs-toggle="tab">İyi Yorumlar</a></li>
+											<li class="nav-item"><a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumsuzYorumlar" data-bs-toggle="tab">Olumsuz Yorumlar</a></li>
+@* 											<li class="nav-item"><a class="nav-link nav-link-reviews font-weight-bold text-3 text-uppercase py-2 px-3" href="#productReviews" data-bs-toggle="tab">Reviews (2)</a></li>
+ *@										</ul>
+										<div class="tab-content p-0">
+											<div class="tab-pane px-0 py-3" id="OlumluYorumlar">
+												<ul class="comments">
+													<li>
+														<div class="comment">
+															<div class="img-thumbnail border-0 p-0 d-none d-md-block">
+																<img class="avatar rounded-circle" alt="" src="img/avatars/avatar.jpg">
+															</div>
+															<div class="comment-block">
+																<div class="comment-arrow"></div>
+																<span class="comment-by">
+																	<strong>John Doe</strong>
+																	<span class="float-end">
+																		<div class="pb-0 clearfix">
+																			<div title="Rated 3 out of 5" class="float-start">
+																				<input type="text" class="opacity-0" value="3" title="" data-plugin-star-rating="" data-plugin-options="{'displayOnly': true, 'color': 'primary', 'size':'xs'}">
+																			</div>
+
+																			<div class="review-num">
+																				<span class="count" itemprop="ratingCount">2</span> reviews
+																			</div>
+																		</div>
+																	</span>
+																</span>
+																<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra odio, gravida urna varius vitae, gravida pellentesque urna varius vitae.</p>
+															</div>
+														</div>
+													</li>
+												</ul>
+											</div>
+											<div class="tab-pane px-0 py-3" id="OlumsuzYorumlar">
+												<ul class="comments">
+													<li>
+														<div class="comment">
+															<div class="img-thumbnail border-0 p-0 d-none d-md-block">
+																<img class="avatar rounded-circle" alt="" src="img/avatars/avatar-2.jpg">
+															</div>
+															<div class="comment-block">
+																<div class="comment-arrow"></div>
+																<span class="comment-by">
+																	<strong>Jack Doe</strong>
+																	<span class="float-end">
+																		<div class="pb-0 clearfix">
+																			<div title="Rated 3 out of 5" class="float-start">
+																				<input type="text" class="opacity-0" value="3" title="" data-plugin-star-rating="" data-plugin-options="{'displayOnly': true, 'color': 'primary', 'size':'xs'}">
+																			</div>
+
+																			<div class="review-num">
+																				<span class="count" itemprop="ratingCount">2</span> reviews
+																			</div>
+																		</div>
+																	</span>
+																</span>
+																<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae, gravida pellentesque urna varius vitae.</p>
+															</div>
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-
 						</div>
 					</article>
 

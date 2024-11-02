@@ -21,6 +21,20 @@ namespace BusinessLayer.Managers
 			_mapper = mapper;
 		}
 
+		public async Task<Dictionary<string, List<CommentDto>>> GetCommentByPrediction(CommentDto comment)
+		{
+			var payload = _mapper.Map<Comment>(comment);
+			var comments = _commentRepository.GetCommentByPrediction(payload);
+				var groupedComments = comments.Result
+			   .GroupBy(c => c.Prediction.ToString()) 
+			   .ToDictionary(
+				   group => group.Key,
+				   group => _mapper.Map<List<CommentDto>>(group.ToList())
+			   );
+
+			return groupedComments;
+		}
+
 		public Task<List<CommentDto>> GetListAsync()
 		{
 			throw new NotImplementedException();
@@ -43,8 +57,8 @@ namespace BusinessLayer.Managers
 		{
 			var payload = _mapper.Map<List<Comment>>(t);
 			var result = await _commentRepository.InsertManyAsync(payload);
-			var response = _mapper.Map<List<CommentDto>>(result);
-			return true;
+			//var response = _mapper.Map<List<CommentDto>>(result);
+			return result;
 		}
 
 		public Task TDeleteAsync(CommentDto t)

@@ -7,10 +7,12 @@ namespace UI.Controllers
 	public class ProductController : Controller
 	{
 		private readonly IProductService _productService;
+		private readonly ICommentService _commentService;
 
-		public ProductController(IProductService productService)
+		public ProductController(IProductService productService, ICommentService commentService)
 		{
 			_productService = productService;
+			_commentService = commentService;
 		}
 		public async Task<IActionResult> Index()
 		{
@@ -33,6 +35,7 @@ namespace UI.Controllers
 			{
 				Id = id
 			});
+			var comments = _commentService.GetCommentByPrediction(new EntityLayer.Dto.ResponseDto.CommentDto { ProductId = id });
 			return View(product);
 		}
 	}

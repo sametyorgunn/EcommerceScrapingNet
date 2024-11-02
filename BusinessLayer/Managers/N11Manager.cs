@@ -16,6 +16,7 @@ using System.Reflection.Metadata;
 using OpenQA.Selenium.Interactions;
 using DataAccessLayer.Migrations;
 using AutoMapper;
+using System.Xml.Linq;
 
 namespace BusinessLayer.Managers
 {
@@ -23,11 +24,13 @@ namespace BusinessLayer.Managers
     {
         private readonly IProductService _productService;
 		private readonly IMapper _mapper;
+		private readonly IEmotinalAnalysis _emotinalAnalyseService;
 
-		public N11Manager(IProductService productService, IMapper mapper)
+		public N11Manager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService)
 		{
 			_productService = productService;
 			_mapper = mapper;
+			_emotinalAnalyseService = emotinalAnalyseService;
 		}
 
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
@@ -71,10 +74,9 @@ namespace BusinessLayer.Managers
 					ProductRating = "4",
 					ProductProperty = null,
 					ProductLink = ProductLink,
-					Comment = new List<Comment>()
+					Comment = new List<CommentDto>()
 				};
-
-				List<Comment> CommentList = new List<Comment>();
+				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
                 {
 					var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
@@ -92,12 +94,15 @@ namespace BusinessLayer.Managers
 					foreach (var comment in Comments)
 					{
 						var a = comment.FindElement(By.CssSelector("p")).Text;
-						CommentList.Add(new Comment { CommentText = a , ProductId = dto.Id,ProductLink = Link});
+						comments.Add(new CommentDto { CommentText = a, ProductId = dto.Id, ProductLink = Link });
 					}
 					driver.Close();
 					driver.SwitchTo().Window(originalWindow);
 				}
-				dto.Comment = CommentList;
+				var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
+
+				var res = _mapper.Map<List<CommentDto>>(analyse);
+				dto.Comment = res;
 				var result = _productService.CreateProduct(dto);
 				
 				return new ScrapingResponseDto {Description = "Başarılı", ProductId = result.Result.Id,Status = "True" };

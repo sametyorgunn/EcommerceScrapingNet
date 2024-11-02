@@ -19,6 +19,6 @@ namespace EntityLayer.Dto.ResponseDto
         public string ProductLink { get; set; }
         public int CategoryId { get; set; }
         public List<ProductProperty>? ProductProperty { get; set; }
-		public List<Comment> Comment { get; set; }
+		public List<CommentDto> Comment { get; set; }
 	}
 }

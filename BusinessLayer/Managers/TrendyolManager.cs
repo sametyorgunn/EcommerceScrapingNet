@@ -79,7 +79,7 @@ namespace BusinessLayer.Managers
 					ProductRating = "4",
 					ProductProperty = null,
 					ProductLink = ProductLink,
-					Comment = new List<Comment>()
+					Comment = new List<CommentDto>()
 				};
 				List<CommentDto> comments = new List<CommentDto>();	
 				foreach (var Sp in ScrapeProduct)
@@ -108,17 +108,16 @@ namespace BusinessLayer.Managers
 					Comments = driver.FindElements(By.ClassName("comment-text"));
                     foreach (var element in Comments)
                     {
-                        product.Comment.Add(new Comment { CommentText = element.Text, ProductId = product.Id, ProductLink = Link });
 						comments.Add(new CommentDto { CommentText = element.Text, ProductId = (int)request.ProductId, ProductLink = Link });
                     }                    
 					driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
-				 var mas = _mapper.Map<List<CommentEmotionDto>>(comments);
-				 List<CommentEmotionDto> commentForEmotion = mas;
-				 var analyse =await _emotinalAnalyseService.GetEmotionalAnalysis(commentForEmotion);
-				 var result = await _commentService.TAddRangeAsync(comments);
-				 return new ScrapingResponseDto { Description = "Başarılı", ProductId = 0, Status = "True" };
+				 var analyse =await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
+				 var res = _mapper.Map<List<CommentDto>>(analyse);
+
+				 var result = await _commentService.TAddRangeAsync(res);
+				 return new ScrapingResponseDto { Description = "Başarılı", ProductId = (int)request.ProductId, Status = "True" };
 
 			}
 		}
