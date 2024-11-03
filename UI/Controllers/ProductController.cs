@@ -36,6 +36,7 @@ namespace UI.Controllers
 				Id = id
 			});
 			var comments = _commentService.GetCommentByPrediction(new EntityLayer.Dto.ResponseDto.CommentDto { ProductId = id });
+			product.GroupsComment = comments.Result;
 			return View(product);
 		}
 	}

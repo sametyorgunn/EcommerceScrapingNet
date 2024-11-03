@@ -23,166 +23,154 @@
 
 	<div class="container py-4">
 		<div class="row">
-			<div class="col">
-				<div class="blog-posts single-post">
-					<article class="post post-large blog-single-post border-0 m-0 p-0">
-						<div class="post-image ms-0">
-							<a href="blog-post.html">
-								<img src="@Model.ProductImage" class="img-fluid img-thumbnail img-thumbnail-no-borders rounded-0" alt="" />
-							</a>
-						</div>
-						<div class="post-date ms-0">
-							<span class="day">10</span>
-							<span class="month">Jan</span>
-						</div>
-						<div class="post-content ms-0">
-							<h2 class="font-weight-semi-bold"><a href="@Model.ProductLink">@Model.ProductName</a></h2>
-							@{
-								var starCount = Math.Floor(Convert.ToDouble(Model.ProductRating, CultureInfo.InvariantCulture));
-								int emptyStarCount = 5 - Convert.ToInt32(starCount);
-							}
-							@for (int i = 0; i < starCount; i++)
-							{
-								<span class="fa fa-star checked"></span>
-							}
-							@for (int i = 0; i < emptyStarCount; i++)
-							{
-								<span class="fa fa-star"></span>
-							}
-							<p>
-								<table class="table border">
-									
-									<thead>
-										@foreach(var i in Model.ProductProperty)
-										{
-									    	<th>@i.PropertyTitle</th>
-										}
-									</thead>
-									<tbody>
-									   <tr>
-											@foreach(var j in Model.ProductProperty)
-											{
-												<td>@j.PropertyText</td>
-											}
-									   </tr>
-									</tbody>
-								</table>
-							</p>
+			<div class="col-md-5 mb-5 mb-md-0">
 
-							<div class="post-block mt-4 pt-2 post-author">
-								<h4 class="mb-3">Ürün Link</h4>
-								<p><strong class="name"><a href="@Model.ProductLink" class="text-4 pb-2 pt-2 d-block">Ürün Linkine Git</a></strong></p>
-							</div>
+				<div class="thumb-gallery-wrapper">
+					<div class="thumb-gallery-detail owl-carousel owl-theme manual nav-inside nav-style-1 nav-dark mb-3 owl-loaded owl-drag">
 
-							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-														
--						@* 	<div id="comments" class="post-block mt-5 post-comments">
-								<h4 class="mb-3">Yorumlar (@Model.Comment.Count())</h4>
-
-								<ul class="comments">
-									@foreach(var i in Model.Comment)
-									{
-										<li>
-											<div class="comment">
-												<div class="img-thumbnail img-thumbnail-no-borders d-none d-sm-block">
-													<img class="avatar" alt="" src="/demo13/src/media/avatars/blank.png">
-												</div>
-												<div class="comment-block">
-													<div class="comment-arrow"></div>
-													<span class="comment-by">
-														<strong></strong>
-														 <span class="float-end">
-															<span> <a href="@i.ProductLink"><i class="fas fa-reply"></i> Ürüne Git</a></span>
-														</span> 
-													</span>
-													<p>@i.CommentText</p>
-													<span class="date float-end"></span>
-												</div>
-											</div>
-										</li>
-									}
-								</ul>
-							</div> *@
-
-							
-							<div class="row mb-4">
-								<div class="col">
-									<div id="description" class="tabs tabs-simple tabs-simple-full-width-line tabs-product tabs-dark mb-2">
-										<ul class="nav nav-tabs justify-content-start">
-											<li class="nav-item"><a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumluYorumlar" data-bs-toggle="tab">İyi Yorumlar</a></li>
-											<li class="nav-item"><a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumsuzYorumlar" data-bs-toggle="tab">Olumsuz Yorumlar</a></li>
-@* 											<li class="nav-item"><a class="nav-link nav-link-reviews font-weight-bold text-3 text-uppercase py-2 px-3" href="#productReviews" data-bs-toggle="tab">Reviews (2)</a></li>
- *@										</ul>
-										<div class="tab-content p-0">
-											<div class="tab-pane px-0 py-3" id="OlumluYorumlar">
-												<ul class="comments">
-													<li>
-														<div class="comment">
-															<div class="img-thumbnail border-0 p-0 d-none d-md-block">
-																<img class="avatar rounded-circle" alt="" src="img/avatars/avatar.jpg">
-															</div>
-															<div class="comment-block">
-																<div class="comment-arrow"></div>
-																<span class="comment-by">
-																	<strong>John Doe</strong>
-																	<span class="float-end">
-																		<div class="pb-0 clearfix">
-																			<div title="Rated 3 out of 5" class="float-start">
-																				<input type="text" class="opacity-0" value="3" title="" data-plugin-star-rating="" data-plugin-options="{'displayOnly': true, 'color': 'primary', 'size':'xs'}">
-																			</div>
-
-																			<div class="review-num">
-																				<span class="count" itemprop="ratingCount">2</span> reviews
-																			</div>
-																		</div>
-																	</span>
-																</span>
-																<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra odio, gravida urna varius vitae, gravida pellentesque urna varius vitae.</p>
-															</div>
-														</div>
-													</li>
-												</ul>
-											</div>
-											<div class="tab-pane px-0 py-3" id="OlumsuzYorumlar">
-												<ul class="comments">
-													<li>
-														<div class="comment">
-															<div class="img-thumbnail border-0 p-0 d-none d-md-block">
-																<img class="avatar rounded-circle" alt="" src="img/avatars/avatar-2.jpg">
-															</div>
-															<div class="comment-block">
-																<div class="comment-arrow"></div>
-																<span class="comment-by">
-																	<strong>Jack Doe</strong>
-																	<span class="float-end">
-																		<div class="pb-0 clearfix">
-																			<div title="Rated 3 out of 5" class="float-start">
-																				<input type="text" class="opacity-0" value="3" title="" data-plugin-star-rating="" data-plugin-options="{'displayOnly': true, 'color': 'primary', 'size':'xs'}">
-																			</div>
-
-																			<div class="review-num">
-																				<span class="count" itemprop="ratingCount">2</span> reviews
-																			</div>
-																		</div>
-																	</span>
-																</span>
-																<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae, gravida pellentesque urna varius vitae.</p>
-															</div>
-														</div>
-													</li>
-												</ul>
-											</div>
-										</div>
+						<div class="owl-stage-outer owl-height" style="height: 451px;">
+							<div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all; width: 2305px;">
+								<div class="owl-item active" style="width: 451px; margin-right: 10px;">
+									<div>
+										<img alt="" class="img-fluid" src="@Model.ProductImage" data-zoom-image="@Model.ProductImage">
+										<div class="zoomContainer" style="-webkit-transform: translateZ(0);position:absolute;left:0px;top:0px;height:451px;width:451px;"><div class="zoomWindowContainer" style="width: 400px;"><div style="z-index: 999; overflow: hidden; margin-left: 0px; margin-top: 0px; background-position: -104px -104px; width: 451px; height: 451px; float: left; cursor: grab; background-repeat: no-repeat; position: absolute; background-image: url(&quot;img/products/product-grey-7.jpg&quot;); top: 0px; left: 0px; display: none;" class="zoomWindow">&nbsp;</div></div></div>
 									</div>
 								</div>
 							</div>
+						</div><div class="owl-nav"><button type="button" role="presentation" class="owl-prev disabled"></button><button type="button" role="presentation" class="owl-next"></button></div><div class="owl-dots disabled"></div>
+					</div>
+					<div class="thumb-gallery-thumbs owl-carousel owl-theme manual thumb-gallery-thumbs owl-loaded owl-drag">
+						<div class="owl-stage-outer">
+							<div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all; width: 583px;">
+								<div class="owl-item active selected" style="width: 101.5px; margin-right: 15px;">
+									<div class="cur-pointer">
+										<img alt="" class="img-fluid" src="@Model.ProductImage">
+									</div>
+								</div>@* <div class="owl-item active" style="width: 101.5px; margin-right: 15px;">
+									<div class="cur-pointer">
+										<img alt="" class="img-fluid" src="img/products/product-grey-7-2.jpg">
+									</div>
+								</div><div class="owl-item active" style="width: 101.5px; margin-right: 15px;">
+									<div class="cur-pointer">
+										<img alt="" class="img-fluid" src="img/products/product-grey-7-3.jpg">
+									</div>
+								</div><div class="owl-item active" style="width: 101.5px; margin-right: 15px;">
+									<div class="cur-pointer">
+										<img alt="" class="img-fluid" src="img/products/product-grey-7-4.jpg">
+									</div>
+								</div><div class="owl-item" style="width: 101.5px; margin-right: 15px;">
+									<div class="cur-pointer">
+										<img alt="" class="img-fluid" src="img/products/product-grey-7-5.jpg">
+									</div>
+								</div> *@
+							</div>
+						</div><div class="owl-nav disabled"><button type="button" role="presentation" class="owl-prev"><span aria-label="Previous">‹</span></button><button type="button" role="presentation" class="owl-next"><span aria-label="Next">›</span></button></div><div class="owl-dots disabled"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<div class="summary entry-summary position-relative">
+					<h1 class="mb-0 font-weight-bold text-7">@Model.ProductName</h1>
+					<div class="pb-0 clearfix d-flex align-items-center">
+						<div title="Rated 3 out of 5" class="float-start">
+							@{
+								var starCount1 = Math.Floor(Convert.ToDouble(Model.ProductRating, CultureInfo.InvariantCulture));
+								int emptyStarCount1 = 5 - Convert.ToInt32(starCount1);
+							}
+							@for (int i = 0; i < starCount1; i++)
+							{
+								<span class="fa fa-star checked"></span>
+							}
+							@for (int i = 0; i < emptyStarCount1; i++)
+							{
+								<span class="fa fa-star"></span>
+							}
 						</div>
-					</article>
 
+						<div class="review-num">
+							<a href="#description" class="text-decoration-none text-color-default text-color-hover-primary" data-hash="" data-hash-offset="75" data-hash-trigger-click=".nav-link-reviews" data-hash-trigger-click-delay="1000">
+								<span class="count text-color-inherit" itemprop="ratingCount">(@Model.Comment.Count()</span> Yorum)
+							</a>
+						</div>
+					</div>
+
+					<div class="divider divider-small">
+						<hr class="bg-color-grey-scale-4">
+					</div>
+
+					<p class="price mb-3">
+						<span class="sale text-color-dark">@Model.ProductPrice ₺</span>
+						<span class="amount">Ortalama Fiyat</span>
+					</p>
+
+@* 					<p class="text-3-5 mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempus nibh sed elimttis adipiscing. Fusce in hendrerit purus. Lorem ipsum dolor sit amet.</p>
+ *@
+				</div>
+
+			</div>
+		</div>
+		<div class="row mb-4">
+			<div class="col">
+				<div id="description" class="tabs tabs-simple tabs-simple-full-width-line tabs-product tabs-dark mb-2">
+					<ul class="nav nav-tabs justify-content-start">
+						<li class="nav-item"><a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumluYorumlar" data-bs-toggle="tab">İyİ Yorumlar</a></li>
+						<li class="nav-item"><a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumsuzYorumlar" data-bs-toggle="tab">Olumsuz Yorumlar</a></li>
+					</ul>
+					<div class="tab-content p-0">
+						<div class="tab-pane px-0 py-3" id="OlumluYorumlar">
+							<ul class="comments">
+								@foreach (var comment in Model.GroupsComment.Where(x => x.Key == "True").SelectMany(x => x.Value).ToList())
+								{
+									<li>
+										<div class="comment">
+											<div class="img-thumbnail img-thumbnail-no-borders d-none d-sm-block">
+												<img class="avatar" alt="" src="/demo13/src/media/avatars/blank.png">
+											</div>
+											<div class="comment-block">
+												<div class="comment-arrow"></div>
+												<span class="comment-by">
+													<strong></strong>
+													<span class="float-end">
+														<span> <a href="@comment.ProductLink"><i class="fas fa-reply"></i> Ürüne Git</a></span>
+													</span>
+												</span>
+												<p>@comment.CommentText</p>
+												<span class="date float-end"></span>
+											</div>
+										</div>
+									</li>
+								}
+							</ul>
+						</div>
+						<div class="tab-pane px-0 py-3" id="OlumsuzYorumlar">
+							<ul class="comments">
+								@foreach (var comment in Model.GroupsComment.Where(x => x.Key == "False").SelectMany(x => x.Value).ToList())
+								{
+									<li>
+										<div class="comment">
+											<div class="img-thumbnail img-thumbnail-no-borders d-none d-sm-block">
+												<img class="avatar" alt="" src="/demo13/src/media/avatars/blank.png">
+											</div>
+											<div class="comment-block">
+												<div class="comment-arrow"></div>
+												<span class="comment-by">
+													<strong></strong>
+													<span class="float-end">
+														<span> <a href="@comment.ProductLink"><i class="fas fa-reply"></i> Ürüne Git</a></span>
+													</span>
+												</span>
+												<p>@comment.CommentText</p>
+												<span class="date float-end"></span>
+											</div>
+										</div>
+									</li>
+								}
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-
 	</div>
 
 </div>
