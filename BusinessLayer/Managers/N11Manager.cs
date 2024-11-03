@@ -66,13 +66,14 @@ namespace BusinessLayer.Managers
 				ProductDto dto = new ProductDto
 				{
 					CategoryId = request.CategoryId,
-					PlatformId = 1,
+					PlatformId = (int)EntityLayer.Enums.Platform.n11,
 					ProductBrand = "",
 					ProductImage = ProductImage,
 					ProductPrice = ProductPrice,
 					ProductName = ProductName,
 					ProductRating = "4",
 					ProductProperty = null,
+					Status = true,
 					ProductLink = ProductLink,
 					Comment = new List<CommentDto>()
 				};

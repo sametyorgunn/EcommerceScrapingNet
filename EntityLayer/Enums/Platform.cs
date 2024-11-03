@@ -9,7 +9,6 @@ namespace EntityLayer.Enums
 	public enum Platform
 	{
 		trendyol = 0,
-		hepsiburada = 1,
-		n11 = 2
+		n11 = 1,
 	}
 }

@@ -78,6 +78,7 @@ namespace BusinessLayer.Managers
 					ProductName = ProductName,
 					ProductRating = "4",
 					ProductProperty = null,
+					Status = false,
 					ProductLink = ProductLink,
 					Comment = new List<CommentDto>()
 				};
@@ -113,6 +114,7 @@ namespace BusinessLayer.Managers
 					driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
+				 await _productService.CreateProduct(product);
 				 var analyse =await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
 				 var res = _mapper.Map<List<CommentDto>>(analyse);
 

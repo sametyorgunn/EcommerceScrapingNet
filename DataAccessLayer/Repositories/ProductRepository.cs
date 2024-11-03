@@ -58,7 +58,10 @@ namespace DataAccessLayer.Repositories
 
 		public async Task<List<Product>> GetProductsByCategoryId(GetProductByFilterDto request)
 		{
-			var products = _appDbContext.products.Where(x=>x.CategoryId == request.CategoryId).ToList();
+			var products = _appDbContext.products.
+				Where(x=>x.CategoryId == request.CategoryId &&
+				x.Status == true)
+				.ToList();
 			return products;
 		}
 
