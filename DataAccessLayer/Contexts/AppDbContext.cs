@@ -23,7 +23,8 @@ namespace DataAccessLayer.Contexts
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
         public DbSet<Category> categories { get; set; }
-        public DbSet<Comment> comments { get; set; }
+        public DbSet<User> users { get; set; }
+		public DbSet<Comment> comments { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<ProductProperty> productproperty { get; set; }
         public DbSet<TrendyolCategory> trendyolCategories { get; set; }

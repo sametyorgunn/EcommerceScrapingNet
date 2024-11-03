@@ -4,10 +4,11 @@ using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using UI.Areas.Admin.Attiribute;
 namespace UI.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+	[LoginControlAttiribute]
+	[Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -16,8 +17,7 @@ namespace UI.Areas.Admin.Controllers
         {
             _categoryService = categoryService;
         }
-
-        public ActionResult Index()
+		public ActionResult Index()
         {
             return View();
         }
