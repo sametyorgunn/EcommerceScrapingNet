@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.IServices;
 using EntityLayer.Dto;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace UI.Areas.Admin.Controllers
 {
@@ -24,12 +26,22 @@ namespace UI.Areas.Admin.Controllers
 			var login = _userService.SignIn(userDto);
 			if(login.Result.LoginStatus == 1)
 			{
-				HttpContext.Session.SetInt32("id", login.Result.Id);
+                var claims = new List<Claim>
+				{
+					new Claim(ClaimTypes.Name, login.Result.UserName), // Giriş yapan kullanıcının adını ekleyin
+					new Claim("UserId", login.Result.Id.ToString())    // Kullanıcının Id'sini de ekleyebilirsiniz
+				};
+
+                var claimsIdentity = new ClaimsIdentity(claims, "Login");
+
+                HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
+                HttpContext.Session.SetInt32("id", login.Result.Id);
+
 				return RedirectToAction("Index", "ProductComment");
 			}
 			else
 			{
-				return RedirectToAction("SignIn","Login");
+				return RedirectToAction("Index","Login");
 			}
 		}
 	}

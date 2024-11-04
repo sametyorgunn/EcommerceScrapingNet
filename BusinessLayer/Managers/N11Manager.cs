@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 using static BusinessLayer.Managers.TrendyolManager;
 using System.Reflection.Metadata;
 using OpenQA.Selenium.Interactions;
-using DataAccessLayer.Migrations;
 using AutoMapper;
 using System.Xml.Linq;
+using DataAccessLayer.Migrations;
 
 namespace BusinessLayer.Managers
 {
@@ -57,6 +57,7 @@ namespace BusinessLayer.Managers
 				OverlayControl(driver);
 				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(1).ToList();
 
+				var ProductId = driver.FindElement(By.ClassName("btnBasket")).GetAttribute("data-group-id");
 				var ProductName = driver.FindElement(By.CssSelector("h3.productName")).Text;
 				//var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;
 				var ProductPrice = driver.FindElement(By.CssSelector("div.priceContainer ins")).Text;
@@ -65,6 +66,7 @@ namespace BusinessLayer.Managers
 
 				ProductDto dto = new ProductDto
 				{
+					ProductId = ProductId,
 					CategoryId = request.CategoryId,
 					PlatformId = (int)EntityLayer.Enums.Platform.n11,
 					ProductBrand = "",
@@ -104,9 +106,9 @@ namespace BusinessLayer.Managers
 
 				var res = _mapper.Map<List<CommentDto>>(analyse);
 				dto.Comment = res;
-				var result = _productService.CreateProduct(dto);
+				var result = await _productService.CreateProduct(dto);
 				
-				return new ScrapingResponseDto {Description = "Başarılı", ProductId = result.Result.Id,Status = "True" };
+				return new ScrapingResponseDto {Description = "Başarılı", ProductId = result.Id,Status = "True" };
             }
         }
 		public async void OverlayControl(IWebDriver driver)

@@ -2,11 +2,13 @@
 using EntityLayer.Dto.RequestDto;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
+using UI.Areas.Admin.Attiribute;
 
 namespace UI.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	public class ProductController : Controller
+    [LoginControlAttiribute]
+    public class ProductController : Controller
 	{
 		private readonly IProductService _productService;
 

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using UI.Areas.Admin.Attiribute;
 
 namespace UI.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	public class HomeController : Controller
+    [LoginControlAttiribute]
+    public class HomeController : Controller
 	{
 		public IActionResult Index()
 		{

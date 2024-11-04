@@ -113,11 +113,11 @@
 			<div class="col">
 				<div id="description" class="tabs tabs-simple tabs-simple-full-width-line tabs-product tabs-dark mb-2">
 					<ul class="nav nav-tabs justify-content-start">
-						<li class="nav-item"><a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumluYorumlar" data-bs-toggle="tab">İyİ Yorumlar</a></li>
+						<li class="nav-item active"><a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumluYorumlar" data-bs-toggle="tab">İyİ Yorumlar</a></li>
 						<li class="nav-item"><a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumsuzYorumlar" data-bs-toggle="tab">Olumsuz Yorumlar</a></li>
 					</ul>
 					<div class="tab-content p-0">
-						<div class="tab-pane px-0 py-3" id="OlumluYorumlar">
+						<div class="tab-pane px-0 py-3 active" id="OlumluYorumlar">
 							<ul class="comments">
 								@foreach (var comment in Model.GroupsComment.Where(x => x.Key == "True").SelectMany(x => x.Value).ToList())
 								{

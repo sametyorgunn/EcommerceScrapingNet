@@ -5,10 +5,12 @@ using EntityLayer.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
+using UI.Areas.Admin.Attiribute;
 
 namespace UI.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+    [LoginControlAttiribute]
 	public class ProductCommentController : Controller
     {
         private readonly IProductService _productService;
@@ -26,7 +28,6 @@ namespace UI.Areas.Admin.Controllers
             _trendyolservice = trendyolservice;
             _n11Service = n11Service;
         }
-
         public IActionResult Index()
         {
 			return View();

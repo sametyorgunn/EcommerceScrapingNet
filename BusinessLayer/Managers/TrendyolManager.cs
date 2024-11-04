@@ -58,8 +58,8 @@ namespace BusinessLayer.Managers
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
                 var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(1).ToList();
-
-				var ProductLink = driver.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
+                var ProductId = driver.FindElement(By.ClassName("p-card-wrppr")).GetAttribute("data-id");
+                var ProductLink = driver.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
 				var ProductBrand = driver.FindElement(By.CssSelector("span.prdct-desc-cntnr-ttl")).Text;
 				var ProductName = driver.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
 
@@ -70,6 +70,7 @@ namespace BusinessLayer.Managers
 				
 				ProductDto product = new ProductDto
 				{
+					ProductId = ProductId,
 					CategoryId = request.CategoryId,
 					PlatformId = 1,
 					ProductBrand = "",

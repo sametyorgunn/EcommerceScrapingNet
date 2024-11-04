@@ -8,7 +8,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddServiceRouting();
 builder.Services.AddHttpClient();
 builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddAuthentication("CookieAuth")
+       .AddCookie("CookieAuth", config =>
+       {
+           config.LoginPath = "/Login/SignIn"; 
+       });
 
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,9 +27,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
