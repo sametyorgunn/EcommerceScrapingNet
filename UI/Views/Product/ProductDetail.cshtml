@@ -20,7 +20,7 @@
 			</div>
 		</div>
 	</section>
-
+	<input id="prodID" value="@Model.Id" hidden/>
 	<div class="container py-4">
 		<div class="row">
 			<div class="col-md-5 mb-5 mb-md-0">
@@ -167,10 +167,66 @@
 								}
 							</ul>
 						</div>
+						
 					</div>
 				</div>
 			</div>
 		</div>
+		<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+	@* 	<div id="content">
+			<ul id="data-list">
+			</ul>
+		</div>
+		<div id="pagination">
+		</div> *@
+		@* <script>
+			$(document).ready(function () {
+				var itemsPerPage = 5;
+				var currentPage = 1;
+				var ID = Number($("#prodID").val());
+				debugger
+				function displayPage(id,page) {
+					$.ajax({
+						type: "GET",
+						url: "/yorum/" + id,
+						data: { id: id, pageNumber: page, pageSize: itemsPerPage },
+						dataType: "json",
+						success: function (response) {
+							debugger
+							$("#data-list").empty();
+							response.product.comment.forEach(function (item) {
+								$("#data-list").append("<li>" + item.commentText + "</li>");
+							});
+
+							$("#pagination").empty();
+							var totalPages = Math.ceil(response.totalCount / itemsPerPage);
+
+							for (var i = 1; i <= totalPages; i++) {
+								var pageButton = $("<button>")
+									.text(i)
+									.click(function () {
+										currentPage = parseInt($(this).text());
+										displayPage(currentPage);
+									});
+
+								if (i === page) {
+									pageButton.css("font-weight", "bold");
+								}
+
+								$("#pagination").append(pageButton);
+							}
+						},
+						error: function (xhr, status, error) {
+							debugger
+							console.log("Hata: " + error);
+						}
+					});
+				}
+
+				displayPage(ID, currentPage);
+			});
+
+		</script> *@
 	</div>
 
 </div>

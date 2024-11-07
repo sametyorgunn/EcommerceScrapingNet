@@ -33,12 +33,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Product}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
 	name: "Admin",
 	pattern: "{area=Admin}/{controller=ProductComment}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller=Product}/{action=Index}/{id?}");
 
 
 app.Run();

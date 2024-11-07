@@ -16,7 +16,6 @@ using System.Reflection.Metadata;
 using OpenQA.Selenium.Interactions;
 using AutoMapper;
 using System.Xml.Linq;
-using DataAccessLayer.Migrations;
 
 namespace BusinessLayer.Managers
 {

@@ -23,6 +23,7 @@ namespace BusinessLayer.ServiceExtension
             service.AddScoped<ICommentRepository, CommentRepository>();
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<IUserService, UserManager>();
+            service.AddScoped<IAmazonService, AmazonManager>();
 
 
 			service.AddAutoMapper(typeof(ProductProfile));

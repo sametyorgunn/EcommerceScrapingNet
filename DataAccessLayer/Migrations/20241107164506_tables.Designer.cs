@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240922150930_tables")]
+    [Migration("20241107164506_tables")]
     partial class tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,8 +59,14 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Prediction")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductLink")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -87,10 +93,15 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -105,6 +116,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("ProductRating")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -159,6 +173,30 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("TrendyolCategoryId");
 
                     b.ToTable("trendyolCategories");
+                });
+
+            modelBuilder.Entity("EntityLayer.Entity.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("EntityLayer.Entity.Comment", b =>

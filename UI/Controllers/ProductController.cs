@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.IServices;
 using EntityLayer.Dto.RequestDto.Product;
+using EntityLayer.Dto.ResponseDto;
 using Microsoft.AspNetCore.Mvc;
+using static OpenQA.Selenium.PrintOptions;
 
 namespace UI.Controllers
 {
@@ -29,7 +31,7 @@ namespace UI.Controllers
 			return View(products);
 		}
 		[HttpGet("ürün-detay/{id}")]
-		public async Task<IActionResult> ProductDetail(int id)
+		public async Task<IActionResult> ProductDetail(int id, int pageNumber = 1, int pageSize = 5)
 		{
 			var product = await _productService.GetProductWithCommentAndProperties(new GetProductByFilterDto
 			{
@@ -37,7 +39,20 @@ namespace UI.Controllers
 			});
 			var comments = _commentService.GetCommentByPrediction(new EntityLayer.Dto.ResponseDto.CommentDto { ProductId = id });
 			product.GroupsComment = comments.Result;
+		
 			return View(product);
 		}
+		//[HttpGet("yorum/{id}")]
+		//public async Task<IActionResult> CommentPagination(int id, int pageNumber = 1, int pageSize = 5)
+		//{
+		//	var product = await _productService.GetProductWithCommentAndProperties(new GetProductByFilterDto
+		//	{
+		//		Id = id
+		//	});
+		//	var comments = _commentService.GetCommentByPrediction(new EntityLayer.Dto.ResponseDto.CommentDto { ProductId = id });
+		//	product.GroupsComment = comments.Result;
+
+		//	return Json(new { product, totalCount = comments.Result.Count });
+		//}
 	}
 }
