@@ -13,8 +13,7 @@ namespace UI.Areas.Admin.Attiribute
 
 			if (!isAuthenticated)
 			{
-				// Eğer kullanıcı oturum açmamışsa, Login sayfasına yönlendir
-				context.Result = new RedirectToActionResult("Index", "Login", null);
+				context.Result = new RedirectToActionResult("Index", "Login", new { area = "Admin" });
 			}
 
 			// Eğer kontrolcü bazlı ekstra bir işlem yapılacaksa, burada tanımlayın

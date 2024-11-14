@@ -40,7 +40,7 @@ namespace BusinessLayer.Managers
 			using (IWebDriver driver = new ChromeDriver(options))
 			{
 				var jsExecutor = (IJavaScriptExecutor)driver;
-				driver.Navigate().GoToUrl("https://www.amazon.com/");
+				driver.Navigate().GoToUrl("https://www.amazon.com.tr/");
 				var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 				var searchInput = driver.FindElement(By.Id("twotabsearchtextbox"));
 				searchInput.Clear();
@@ -51,11 +51,11 @@ namespace BusinessLayer.Managers
 				//OverlayControl(driver);
 				var ScrapeProduct = driver.FindElements(By.ClassName("sg-col-inner")).Take(1).ToList();
 
-				var ProductId = driver.FindElement(By.ClassName("btnBasket")).GetAttribute("data-group-id");
-				var ProductName = driver.FindElement(By.CssSelector("a.a-link-normal")).Text;
+				var ProductId = driver.FindElement(By.CssSelector("#search > div.s-desktop-width-max.s-desktop-content.s-opposite-dir.s-wide-grid-style.sg-row > div.sg-col-20-of-24.s-matching-dir.sg-col-16-of-20.sg-col.sg-col-8-of-12.sg-col-12-of-16 > div > span.rush-component.s-latency-cf-section > div.s-main-slot.s-result-list.s-search-results.sg-row > div:nth-child(11)")).GetAttribute("data-uuid");
+				var ProductName = driver.FindElement(By.CssSelector("a.a-link-normal span")).Text;
 				//var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;
-				var ProductPrice = driver.FindElement(By.CssSelector("span.a-offscreen")).Text;
-				var ProductImage = driver.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
+				var ProductPrice = driver.FindElement(By.CssSelector("span.a-price-whole")).Text;
+				var ProductImage = driver.FindElement(By.CssSelector("img.s-image")).GetAttribute("src");
 				var ProductLink = driver.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
 
 				ProductDto dto = new ProductDto
@@ -76,7 +76,7 @@ namespace BusinessLayer.Managers
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
 				{
-					var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
+					var Link = Sp.FindElement(By.ClassName("div.title-recipe h2 a")).GetAttribute("href") != null ? "a" : "b";
 
 					//OverlayControl(driver);
 					string originalWindow = driver.CurrentWindowHandle;

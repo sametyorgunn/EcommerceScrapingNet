@@ -15,7 +15,7 @@ namespace UI.Areas.Admin.Controllers
 		{
 			_userService = userService;
 		}
-
+		[HttpGet]
 		public IActionResult Index()
 		{
 			return View();
