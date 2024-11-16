@@ -36,9 +36,9 @@ app.MapControllerRoute(
 	 name: "areas",
 	 pattern: "{area:exists}/{controller=ProductComment}/{action=Index}/{id?}");
 
-//app.MapControllerRoute(
-//	name: "default",
-//	pattern: "{controller=Product}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Product}/{action=Index}/{id?}");
 
 
 
