@@ -76,25 +76,21 @@ namespace BusinessLayer.Managers
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
 				{
-					var Link = Sp.FindElement(By.ClassName("div.title-recipe h2 a")).GetAttribute("href") != null ? "a" : "b";
-
-					//OverlayControl(driver);
+					var Link = "";
+					Sp.Click();
 					string originalWindow = driver.CurrentWindowHandle;
+					var ratings = Sp.FindElement(By.Id("acrCustomerReviewLink"));
+					ratings.Click();
 
-					Actions newTabAction = new Actions(driver);
-					newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.ClassName("acrCustomerReviewLink"))).KeyUp(Keys.Control).Perform();
-					var windowHandles = driver.WindowHandles;
-					wait.Until(d => d.WindowHandles.Count > 1);
-					driver.SwitchTo().Window(windowHandles[1]);
-					Thread.Sleep(1000);
-					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
+					IList<IWebElement> Comments = driver.FindElements(By.ClassName("review-collapsed"));
 					foreach (var comment in Comments)
 					{
-						var a = comment.FindElement(By.CssSelector("p")).Text;
+						var a = comment.FindElement(By.CssSelector("span")).Text;
 						comments.Add(new CommentDto { CommentText = a, ProductId = dto.Id, ProductLink = Link });
 					}
 					driver.Close();
 					driver.SwitchTo().Window(originalWindow);
+
 				}
 				var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
 
