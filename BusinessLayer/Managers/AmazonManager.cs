@@ -51,8 +51,8 @@ namespace BusinessLayer.Managers
 				searchInput.SendKeys(Keys.Enter);
 				Thread.Sleep(1000);
 
-				//OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.ClassName("puis-card-container")).Take(1).ToList();
+				OverlayControl(driver);
+				var ScrapeProduct = driver.FindElements(By.ClassName("puis-card-container")).Take(2).ToList();
 
 				var ProductId = driver.FindElement(By.CssSelector("#search > div.s-desktop-width-max.s-desktop-content.s-opposite-dir.s-wide-grid-style.sg-row > div.sg-col-20-of-24.s-matching-dir.sg-col-16-of-20.sg-col.sg-col-8-of-12.sg-col-12-of-16 > div > span.rush-component.s-latency-cf-section > div.s-main-slot.s-result-list.s-search-results.sg-row > div:nth-child(11)")).GetAttribute("data-uuid");
 				var ProductName = driver.FindElement(By.CssSelector("a.a-link-normal span")).Text;
@@ -79,11 +79,20 @@ namespace BusinessLayer.Managers
 				List<CommentDto> comments = new List<CommentDto>();
                 foreach (var Sp in ScrapeProduct)
                 {
-					var Link = "";
+					var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
                     var originalWindow = driver.CurrentWindowHandle;
+                    Actions newTabAction = new Actions(driver);
+                    newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("h2.a-size-mini a.a-link-normal"))).KeyUp(Keys.Control).Perform();
+                    var windowHandles = driver.WindowHandles;
+                    OverlayControl(driver);
+                    wait.Until(d => d.WindowHandles.Count > 1);
+                    driver.SwitchTo().Window(windowHandles[1]);
 
-                    var button = wait.Until(ExpectedConditions.ElementToBeClickable(Sp.FindElement(By.CssSelector("h2.a-size-mini a.a-link-normal"))));
-                    button.Click();
+
+                    //var button = wait.Until(ExpectedConditions.ElementToBeClickable(Sp.FindElement(By.CssSelector("h2.a-size-mini a.a-link-normal"))));
+                    //button.Click();
+
+                    OverlayControl(driver);
 
                     var ratings = wait.Until(ExpectedConditions.ElementToBeClickable(driver.FindElement(By.Id("acrCustomerReviewLink"))));
                     ratings.Click();
@@ -96,7 +105,7 @@ namespace BusinessLayer.Managers
                     }
 
                     driver.Close();
-                    //driver.SwitchTo().Window(originalWindow);
+                    driver.SwitchTo().Window(originalWindow);
                 }
 
                 var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
@@ -106,5 +115,35 @@ namespace BusinessLayer.Managers
                 return new ScrapingResponseDto { Description = "Başarılı", ProductId = (int)request.ProductId, Status = "True" };
 			}
 		}
-	}
+        public async void OverlayControl(IWebDriver driver)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var overlay = driver.FindElements(By.Id("sp-cc"));
+
+            if (overlay.Count > 0)
+            {
+                try
+                {
+                    var close = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("sp-cc-rejectall-link")));
+                    close.Click();
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    Console.WriteLine("Kapatma butonu zamanında tıklanabilir olmadı.");
+                }
+            }
+            //var layout = driver.FindElements(By.TagName("efilli-layout-dynamic"));
+            //if (layout.Count() > 0)
+            //{
+            //    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            //    js.ExecuteScript(@"
+            //    var element = document.querySelector('efilli-layout-dynamic');
+            //    if (element) {
+            //        element.remove();
+            //    }
+            //");
+            //}
+
+        }
+    }
 }

@@ -89,7 +89,8 @@ namespace BusinessLayer.Managers
 					Actions newTabAction = new Actions(driver);
 					newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("div.pro a"))).KeyUp(Keys.Control).Perform();
 					var windowHandles = driver.WindowHandles;
-					wait.Until(d => d.WindowHandles.Count > 1);
+                    OverlayControl(driver);
+                    wait.Until(d => d.WindowHandles.Count > 1);
 					driver.SwitchTo().Window(windowHandles[1]);
 					Thread.Sleep(1000);
 					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
@@ -127,14 +128,18 @@ namespace BusinessLayer.Managers
 					Console.WriteLine("Kapatma butonu zamanında tıklanabilir olmadı.");
 				}
 			}
-
-			IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-			js.ExecuteScript(@"
+			var layout = driver.FindElements(By.TagName("efilli-layout-dynamic"));
+			if (layout.Count() > 0)
+			{
+                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                js.ExecuteScript(@"
                 var element = document.querySelector('efilli-layout-dynamic');
                 if (element) {
                     element.remove();
                 }
             ");
+            }
+			
 		}
 	}
 }
