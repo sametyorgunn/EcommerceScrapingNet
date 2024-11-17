@@ -62,7 +62,7 @@ namespace BusinessLayer.Managers
 				var ProductPrice = driver.FindElement(By.CssSelector("div.priceContainer ins")).Text;
 				var ProductImage = driver.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
 				var ProductLink = driver.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
-				GetCategories(driver, request.ProductName);
+				//GetCategories(driver, request.ProductName);
                 ProductDto dto = new ProductDto
 				{
 					ProductId = ProductId,

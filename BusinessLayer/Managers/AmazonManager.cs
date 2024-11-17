@@ -97,7 +97,7 @@ namespace BusinessLayer.Managers
                     var ratings = wait.Until(ExpectedConditions.ElementToBeClickable(driver.FindElement(By.Id("acrCustomerReviewLink"))));
                     ratings.Click();
 
-                    IList<IWebElement> Comments = driver.FindElements(By.ClassName("review-text-content"));
+                    IList<IWebElement> Comments = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("review-text-content")));
                     foreach (var comment in Comments)
                     {
                         var a = comment.FindElement(By.CssSelector("span")).Text;
