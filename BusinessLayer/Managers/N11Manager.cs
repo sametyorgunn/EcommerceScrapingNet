@@ -62,8 +62,8 @@ namespace BusinessLayer.Managers
 				var ProductPrice = driver.FindElement(By.CssSelector("div.priceContainer ins")).Text;
 				var ProductImage = driver.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
 				var ProductLink = driver.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
-
-				ProductDto dto = new ProductDto
+				GetCategories(driver, request.ProductName);
+                ProductDto dto = new ProductDto
 				{
 					ProductId = ProductId,
 					CategoryId = request.CategoryId,
@@ -139,6 +139,27 @@ namespace BusinessLayer.Managers
                 }
             ");
             }
+			
+		}
+		public async void GetCategories(IWebDriver driver,string ProdName)
+		{
+			var categoriesFilter = driver.FindElements(By.ClassName("filter"))
+				.Where(x => x.GetAttribute("data-tag-name") == "Model").ToList();
+			var FilterList = categoriesFilter.Select(x => x.FindElement(By.ClassName("filterList")));
+
+			List<IWebElement> catNames = FilterList
+				.SelectMany(x => x.FindElements(By.CssSelector("div.filterItem"))).ToList();
+			
+
+			foreach(var category in catNames)
+			{
+				var catName = category.FindElement(By.ClassName("label")).Text.ToString().ToLower();
+				if (catName.Contains(ProdName.ToLower()))
+				{
+					var checkbox = category.FindElement(By.CssSelector("input.brand-checkbox"));
+					checkbox.Click();
+				}
+			}
 			
 		}
 	}
