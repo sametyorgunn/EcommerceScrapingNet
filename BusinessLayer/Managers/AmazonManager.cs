@@ -52,33 +52,35 @@ namespace BusinessLayer.Managers
 				Thread.Sleep(1000);
 
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.ClassName("puis-card-container")).Take(2).ToList();
+				//var ScrapeProduct = driver.FindElements(By.ClassName("puis-card-container")).Take(2).ToList();
+				var ScrapeProduct = driver.FindElements(By.ClassName("s-result-item")).Take(2).ToList();
 
-				var ProductId = driver.FindElement(By.CssSelector("#search > div.s-desktop-width-max.s-desktop-content.s-opposite-dir.s-wide-grid-style.sg-row > div.sg-col-20-of-24.s-matching-dir.sg-col-16-of-20.sg-col.sg-col-8-of-12.sg-col-12-of-16 > div > span.rush-component.s-latency-cf-section > div.s-main-slot.s-result-list.s-search-results.sg-row > div:nth-child(11)")).GetAttribute("data-uuid");
-				var ProductName = driver.FindElement(By.CssSelector("a.a-link-normal span")).Text;
-				//var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;
-				var ProductPrice = driver.FindElement(By.CssSelector("span.a-price-whole")).Text;
-				var ProductImage = driver.FindElement(By.CssSelector("img.s-image")).GetAttribute("src");
-				var ProductLink = driver.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
+                //var ProductId = driver.FindElement(By.CssSelector("#search > div.s-desktop-width-max.s-desktop-content.s-opposite-dir.s-wide-grid-style.sg-row > div.sg-col-20-of-24.s-matching-dir.sg-col-16-of-20.sg-col.sg-col-8-of-12.sg-col-12-of-16 > div > span.rush-component.s-latency-cf-section > div.s-main-slot.s-result-list.s-search-results.sg-row > div:nth-child(11)")).GetAttribute("data-uuid");
+                //var ProductName = driver.FindElement(By.CssSelector("a.a-link-normal span")).Text;
+                ////var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;
+                //var ProductPrice = driver.FindElement(By.CssSelector("span.a-price-whole")).Text;
+                //var ProductImage = driver.FindElement(By.CssSelector("img.s-image")).GetAttribute("src");
+                //var ProductLink = driver.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
 
-				ProductDto dto = new ProductDto
-				{
-					ProductId = ProductId,
-					CategoryId = request.CategoryId,
-					PlatformId = (int)EntityLayer.Enums.Platform.n11,
-					ProductBrand = "",
-					ProductImage = ProductImage,
-					ProductPrice = ProductPrice,
-					ProductName = ProductName,
-					ProductRating = "4",
-					ProductProperty = null,
-					Status = true,
-					ProductLink = ProductLink,
-					Comment = new List<CommentDto>()
-				};
-				List<CommentDto> comments = new List<CommentDto>();
+                //ProductDto dto = new ProductDto
+                //{
+                //	ProductId = ProductId,
+                //	CategoryId = request.CategoryId,
+                //	PlatformId = (int)EntityLayer.Enums.Platform.n11,
+                //	ProductBrand = "",
+                //	ProductImage = ProductImage,
+                //	ProductPrice = ProductPrice,
+                //	ProductName = ProductName,
+                //	ProductRating = "4",
+                //	ProductProperty = null,
+                //	Status = true,
+                //	ProductLink = ProductLink,
+                //	Comment = new List<CommentDto>()
+                //};
+                List<CommentDto> comments = new List<CommentDto>();
                 foreach (var Sp in ScrapeProduct)
                 {
+                    var prodID = Sp.GetAttribute("data-uuid");
 					var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
                     var originalWindow = driver.CurrentWindowHandle;
                     Actions newTabAction = new Actions(driver);
@@ -87,10 +89,6 @@ namespace BusinessLayer.Managers
                     OverlayControl(driver);
                     wait.Until(d => d.WindowHandles.Count > 1);
                     driver.SwitchTo().Window(windowHandles[1]);
-
-
-                    //var button = wait.Until(ExpectedConditions.ElementToBeClickable(Sp.FindElement(By.CssSelector("h2.a-size-mini a.a-link-normal"))));
-                    //button.Click();
 
                     OverlayControl(driver);
 
@@ -101,7 +99,7 @@ namespace BusinessLayer.Managers
                     foreach (var comment in Comments)
                     {
                         var a = comment.FindElement(By.CssSelector("span")).Text;
-                        comments.Add(new CommentDto { CommentText = a, ProductId = (int)request.ProductId, ProductLink = Link });
+                        comments.Add(new CommentDto { CommentText = a, ProductId = (int)request.ProductId, ProductLink = Link,ProductPlatformID = prodID });
                     }
 
                     driver.Close();

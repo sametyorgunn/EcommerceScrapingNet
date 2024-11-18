@@ -56,14 +56,14 @@ namespace BusinessLayer.Managers
 				OverlayControl(driver);
 				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(1).ToList();
 
-				var ProductId = driver.FindElement(By.ClassName("btnBasket")).GetAttribute("data-group-id");
+				var ProductId = driver.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 				var ProductName = driver.FindElement(By.CssSelector("h3.productName")).Text;
 				//var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;
 				var ProductPrice = driver.FindElement(By.CssSelector("div.priceContainer ins")).Text;
 				var ProductImage = driver.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
 				var ProductLink = driver.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
 				//GetCategories(driver, request.ProductName);
-                ProductDto dto = new ProductDto
+                ProductDto productDto = new ProductDto
 				{
 					ProductId = ProductId,
 					CategoryId = request.CategoryId,
@@ -81,6 +81,7 @@ namespace BusinessLayer.Managers
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
                 {
+					var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
 
 					OverlayControl(driver);
@@ -91,22 +92,22 @@ namespace BusinessLayer.Managers
 					var windowHandles = driver.WindowHandles;
                     OverlayControl(driver);
                     wait.Until(d => d.WindowHandles.Count > 1);
+					Thread.Sleep(1000);
 					driver.SwitchTo().Window(windowHandles[1]);
 					Thread.Sleep(1000);
 					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
 					foreach (var comment in Comments)
 					{
 						var a = comment.FindElement(By.CssSelector("p")).Text;
-						comments.Add(new CommentDto { CommentText = a, ProductId = dto.Id, ProductLink = Link });
+						comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link,ProductPlatformID = Convert.ToString(ProdID) });
 					}
 					driver.Close();
 					driver.SwitchTo().Window(originalWindow);
 				}
 				var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
-
 				var res = _mapper.Map<List<CommentDto>>(analyse);
-				dto.Comment = res;
-				var result = await _productService.CreateProduct(dto);
+                productDto.Comment = res;
+				var result = await _productService.CreateProduct(productDto);
 				
 				return new ScrapingResponseDto {Description = "Başarılı", ProductId = result.Id,Status = "True" };
             }
@@ -121,6 +122,7 @@ namespace BusinessLayer.Managers
 				try
 				{
 					var close = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("dn-slide-deny-btn")));
+					Thread.Sleep(1000);
 					close.Click();
 				}
 				catch (WebDriverTimeoutException)

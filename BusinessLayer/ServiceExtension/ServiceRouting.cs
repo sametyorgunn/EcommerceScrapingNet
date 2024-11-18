@@ -17,7 +17,6 @@ namespace BusinessLayer.ServiceExtension
             service.AddScoped<IProductRepository, ProductRepository>();
             service.AddScoped<ICategoryService, CategoryManager>();
             service.AddScoped<ICategoryRepository, CategoryRepository>();
-            service.AddScoped<ITrendyolCategoriesRepository, TrendyolCategoriesRepository>();
             service.AddScoped<IN11Service, N11Manager>();
             service.AddScoped<ICommentService, CommentManager>();
             service.AddScoped<ICommentRepository, CommentRepository>();
@@ -28,7 +27,6 @@ namespace BusinessLayer.ServiceExtension
 
 			service.AddAutoMapper(typeof(ProductProfile));
 			service.AddAutoMapper(typeof(CategoryProfile));
-			service.AddAutoMapper(typeof(TrendyolCategoryProfile));
 			service.AddAutoMapper(typeof(CommentProfile));
 			service.AddAutoMapper(typeof(UserProfile));
 		}

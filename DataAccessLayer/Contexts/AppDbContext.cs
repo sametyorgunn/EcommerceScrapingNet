@@ -27,20 +27,9 @@ namespace DataAccessLayer.Contexts
 		public DbSet<Comment> comments { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<ProductProperty> productproperty { get; set; }
-        public DbSet<TrendyolCategory> trendyolCategories { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            //modelBuilder.Entity<Category>()
-            // .Property(c => c.Id)
-            // .ValueGeneratedNever();
-
-            modelBuilder.Entity<TrendyolCategory>()
-            .Property(c => c.Id)
-            .ValueGeneratedNever();
-
         }
     }
 }

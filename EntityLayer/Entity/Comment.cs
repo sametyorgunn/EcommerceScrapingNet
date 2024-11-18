@@ -11,6 +11,7 @@ namespace EntityLayer.Entity
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
+        public string ProductPlatformID { get; set; }
         public string CommentText { get; set; }
         public string? ProductLink { get; set; }
         public string? Prediction { get; set; }

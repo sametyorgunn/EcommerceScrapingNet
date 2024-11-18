@@ -47,19 +47,5 @@ namespace UI.Areas.Admin.Controllers
 		{
 			return View();
 		}
-		public async Task<IActionResult> CategoriesUpdate()
-		{
-			var result =await _trendyolservice.UpdateTrendyolCategories();
-			if (result)
-			{
-                return Ok(true);
-            }
-			else
-			{
-				return Ok(false);
-			}
-			
-		}
-
     }
 }
