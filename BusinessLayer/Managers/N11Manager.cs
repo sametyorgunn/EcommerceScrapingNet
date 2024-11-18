@@ -99,7 +99,7 @@ namespace BusinessLayer.Managers
 					foreach (var comment in Comments)
 					{
 						var a = comment.FindElement(By.CssSelector("p")).Text;
-						comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link,ProductPlatformID = Convert.ToString(ProdID) });
+						comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link,ProductPlatformID = ProdID.ToString() });
 					}
 					driver.Close();
 					driver.SwitchTo().Window(originalWindow);
