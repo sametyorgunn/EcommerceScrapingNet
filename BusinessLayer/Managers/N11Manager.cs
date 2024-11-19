@@ -81,20 +81,18 @@ namespace BusinessLayer.Managers
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
                 {
-					var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
+                    string originalWindow = driver.CurrentWindowHandle;
+                    var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
-
 					OverlayControl(driver);
-					string originalWindow = driver.CurrentWindowHandle;
-
 					Actions newTabAction = new Actions(driver);
 					newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("div.pro a"))).KeyUp(Keys.Control).Perform();
 					var windowHandles = driver.WindowHandles;
                     OverlayControl(driver);
                     wait.Until(d => d.WindowHandles.Count > 1);
-					Thread.Sleep(1000);
+					Thread.Sleep(2000);
 					driver.SwitchTo().Window(windowHandles[1]);
-					Thread.Sleep(1000);
+					Thread.Sleep(2000);
 					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
 					foreach (var comment in Comments)
 					{
