@@ -37,10 +37,10 @@ namespace UI.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ScrapeProduct(GetProductAndCommentsDto request)
 		{
-            var resultN11 = await _n11Service.GetProductAndCommentsAsync(request);
+			var resultN11 = await _n11Service.GetProductAndCommentsAsync(request);
             request.ProductId = resultN11.ProductId;
-            var amazon = _amazonService.GetProductAndCommentsAsync(request);
-            var result = await _trendyolservice.GetProductAndCommentsAsync(request);
+			var amazon = _amazonService.GetProductAndCommentsAsync(request);
+			var result = await _trendyolservice.GetProductAndCommentsAsync(request);
 			return Ok(result);
         }
 		public async Task<IActionResult> Categories(int page = 1, int pageSize = 10)

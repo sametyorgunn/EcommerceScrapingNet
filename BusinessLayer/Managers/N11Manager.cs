@@ -54,7 +54,7 @@ namespace BusinessLayer.Managers
 				Thread.Sleep(1000);
 
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(1).ToList();
+				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(2).ToList();
 
 				var ProductId = driver.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 				var ProductName = driver.FindElement(By.CssSelector("h3.productName")).Text;
@@ -81,18 +81,20 @@ namespace BusinessLayer.Managers
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
                 {
-                    string originalWindow = driver.CurrentWindowHandle;
+					Thread.Sleep(1000);
+					string originalWindow = driver.CurrentWindowHandle;
                     var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
+
 					OverlayControl(driver);
 					Actions newTabAction = new Actions(driver);
 					newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("div.pro a"))).KeyUp(Keys.Control).Perform();
 					var windowHandles = driver.WindowHandles;
                     OverlayControl(driver);
                     wait.Until(d => d.WindowHandles.Count > 1);
-					Thread.Sleep(2000);
 					driver.SwitchTo().Window(windowHandles[1]);
-					Thread.Sleep(2000);
+					Thread.Sleep(1000);
+
 					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
 					foreach (var comment in Comments)
 					{
@@ -113,6 +115,7 @@ namespace BusinessLayer.Managers
 		public async void OverlayControl(IWebDriver driver)
 		{
 			var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+			Thread.Sleep(1000);
 			var overlay = driver.FindElements(By.Id("dengage-push-perm-slide"));
 
 			if (overlay.Count > 0)

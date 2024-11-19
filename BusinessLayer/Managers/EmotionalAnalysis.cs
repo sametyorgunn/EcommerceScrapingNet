@@ -17,7 +17,7 @@ namespace BusinessLayer.Managers
             try
             {
                 var context = new MLContext();
-                var dataPath = "C:\\Users\\asame\\Desktop\\githubPersonal\\EcommerceScraping\\UI\\analyse.csv";
+                var dataPath = "C:\\Users\\asame\\OneDrive\\Masaüstü\\projects\\EcommerceScrapingNet\\UI\\analyse.csv";
                 var data = context.Data.LoadFromTextFile<CommentAnalysisDto>(dataPath, separatorChar: '~', hasHeader: true);
 				var pipeline = context.Transforms.Text.FeaturizeText("Features", "CommentText")
 	            .Append(context.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features"));

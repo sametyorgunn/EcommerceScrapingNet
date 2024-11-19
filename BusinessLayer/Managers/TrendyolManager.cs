@@ -55,35 +55,12 @@ namespace BusinessLayer.Managers
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(1).ToList();
-                //var ProductId = driver.FindElement(By.ClassName("p-card-wrppr")).GetAttribute("data-id");
-    //            var ProductLink = driver.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
-				//var ProductBrand = driver.FindElement(By.CssSelector("span.prdct-desc-cntnr-ttl")).Text;
-				//var ProductName = driver.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
-
-				////var ProductRating = driver.FindElement(By.CssSelector("div.rating-line-count")).Text;
-				//var ProductPrice = driver.FindElement(By.CssSelector("div.prc-box-dscntd")).Text;
-				//var ProductImage = driver.FindElement(By.CssSelector("img.p-card-img")).GetAttribute("src");
-				////var ProductProperties = driver.FindElements(By.ClassName("attribute-item"));
-				
-				//ProductDto product = new ProductDto
-				//{
-				//	ProductId = ProductId,
-				//	CategoryId = request.CategoryId,
-				//	PlatformId = 1,
-				//	ProductBrand = "",
-				//	ProductImage = ProductImage,
-				//	ProductPrice = ProductPrice,
-				//	ProductName = ProductName,
-				//	ProductRating = "4",
-				//	ProductProperty = null,
-				//	Status = false,
-				//	ProductLink = ProductLink,
-				//	Comment = new List<CommentDto>()
-				//};
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(2).ToList();
+           
 				List<CommentDto> comments = new List<CommentDto>();	
 				foreach (var Sp in ScrapeProduct)
 				{
+					wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 					var ProdID = Sp.GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
 					string originalWindow = driver.CurrentWindowHandle;
