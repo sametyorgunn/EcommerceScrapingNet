@@ -4,7 +4,7 @@
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class tabls : Migration
+    public partial class tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

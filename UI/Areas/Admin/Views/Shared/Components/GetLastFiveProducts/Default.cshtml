@@ -1,4 +1,5 @@
 ﻿@using EntityLayer.Dto.ResponseDto
+@using EntityLayer.Enums
 @model List<ProductDto>
 <tbody>
 	@foreach(var i in Model)
@@ -18,17 +19,17 @@
 			<td class="text-end text-muted fw-bold">@i.ProductPrice</td>
 			<td class="text-end">
 				@{
-					if (i.PlatformId == 0)
+					if (i.PlatformId == (int)Platform.trendyol)
 					{
 						<span class="badge badge-light-success">Trendyol</span>
 					}
-					else if (i.PlatformId == 1)
-					{
-						<span class="badge badge-light-success">HepsiBurada</span>
-					}
-					else if (i.PlatformId == 2)
+					else if (i.PlatformId == (int)Platform.n11)
 					{
 						<span class="badge badge-light-success">N11</span>
+					}
+					else if (i.PlatformId == (int)Platform.amazon)
+					{
+						<span class="badge badge-light-success">Amazon</span>
 					}
 
 				}

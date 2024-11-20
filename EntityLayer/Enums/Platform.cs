@@ -10,5 +10,6 @@ namespace EntityLayer.Enums
 	{
 		trendyol = 0,
 		n11 = 1,
+		amazon = 2
 	}
 }

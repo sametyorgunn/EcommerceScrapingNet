@@ -16,6 +16,7 @@ using System.Reflection.Metadata;
 using OpenQA.Selenium.Interactions;
 using AutoMapper;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace BusinessLayer.Managers
 {
@@ -62,7 +63,8 @@ namespace BusinessLayer.Managers
 				var ProductPrice = driver.FindElement(By.CssSelector("div.priceContainer ins")).Text;
 				var ProductImage = driver.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
 				var ProductLink = driver.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
-				//GetCategories(driver, request.ProductName);
+                //GetCategories(driver, request.ProductName);
+
                 ProductDto productDto = new ProductDto
 				{
 					ProductId = ProductId,
@@ -81,8 +83,15 @@ namespace BusinessLayer.Managers
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
                 {
-					Thread.Sleep(1000);
+                    Thread.Sleep(1000);
 					string originalWindow = driver.CurrentWindowHandle;
+					var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
+
+                    var isSame = SameControl(request.ProductName, ProdName); 
+					if (isSame == false) { continue; }
+                    //var sameOfPrediction = ComputeSimilarity(request.ProductName, ProdName);
+                    //if(sameOfPrediction < 0.6) { continue; }
+
                     var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
 
@@ -165,5 +174,43 @@ namespace BusinessLayer.Managers
 			}
 			
 		}
-	}
+		public bool SameControl(string RequestProductName,string ScrapeProductName)
+		{
+            List<string> sameOf = new List<string>();
+            var splitProdName = RequestProductName.Split(" ");
+            int index = 0;
+            foreach (var prodName in splitProdName)
+            {
+                var engProdName = ScrapeProductName.ToUpper(new CultureInfo("en-US", false));
+                var engSplitProdName = prodName.ToUpper(new CultureInfo("en-US", false));
+                if (engProdName.Contains(engSplitProdName))
+                {
+                    sameOf.Add(prodName);
+                }
+                index++;
+            }
+            if (sameOf.Count > 1)
+            {
+				return true;
+
+            }
+			else
+			{
+                return false;
+			}
+        }
+        public static double ComputeSimilarity(string source, string target)
+        {
+            var engProdName = source.ToUpper(new CultureInfo("en-US", false));
+            var engSplitProdName = target.ToUpper(new CultureInfo("en-US", false));
+
+            var sourceSet = source.Split(' ').ToHashSet();
+            var targetSet = target.Split(' ').ToHashSet();
+
+            var intersection = sourceSet.Intersect(targetSet).Count();
+            var union = sourceSet.Union(targetSet).Count();
+
+            return (double)intersection / union;
+        }
+    }
 }

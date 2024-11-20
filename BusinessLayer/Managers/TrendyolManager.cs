@@ -12,6 +12,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using PuppeteerSharp;
 using SeleniumExtras.WaitHelpers;
+using System.Globalization;
 
 
 namespace BusinessLayer.Managers
@@ -61,7 +62,10 @@ namespace BusinessLayer.Managers
 				foreach (var Sp in ScrapeProduct)
 				{
 					wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
-					var ProdID = Sp.GetAttribute("data-id");
+					var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
+                    var isSame = SameControl(request.ProductName, ProdName);
+                    if (isSame == false) { continue; }
+                    var ProdID = Sp.GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
 					string originalWindow = driver.CurrentWindowHandle;
 					Sp.Click();
@@ -138,13 +142,52 @@ namespace BusinessLayer.Managers
             if (overlay.Count() > 0 || overlay2.Count() > 0)
 			{
 
-				int windowHeight = driver.Manage().Window.Size.Height;
-				int windowWidth = driver.Manage().Window.Size.Width;
-				int centerX = windowWidth / 2;
-				int centerY = windowHeight / 2;
-				Actions actions = new Actions(driver);
-				actions.MoveByOffset(centerX, centerY).Click().Perform();
+				
+				try
+				{
+                    int windowHeight = driver.Manage().Window.Size.Height;
+                    int windowWidth = driver.Manage().Window.Size.Width;
+                    int centerX = windowWidth / 2;
+                    int centerY = windowHeight / 2;
+                    Actions actions = new Actions(driver);
+                    actions.MoveByOffset(centerX, centerY).Click().Perform();
+                }
+                catch 
+				{
+                    int windowHeight = driver.Manage().Window.Size.Height;
+                    int windowWidth = driver.Manage().Window.Size.Width;
+                    int centerX = windowWidth / 3;
+                    int centerY = windowHeight / 3;
+                    Actions actions = new Actions(driver);
+                    actions.MoveByOffset(centerX, centerY).Click().Perform();
+                }
+
 			}
 		}
+        public bool SameControl(string RequestProductName, string ScrapeProductName)
+        {
+            List<string> sameOf = new List<string>();
+            var splitProdName = RequestProductName.Split(" ");
+            int index = 0;
+            foreach (var prodName in splitProdName)
+            {
+                var engProdName = ScrapeProductName.ToUpper(new CultureInfo("en-US", false));
+                var engSplitProdName = prodName.ToUpper(new CultureInfo("en-US", false));
+                if (engProdName.Contains(engSplitProdName))
+                {
+                    sameOf.Add(prodName);
+                }
+                index++;
+            }
+            if (sameOf.Count > 1)
+            {
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

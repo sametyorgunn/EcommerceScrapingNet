@@ -37,7 +37,7 @@ namespace UI.Areas.Admin.Controllers
                 HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
                 HttpContext.Session.SetInt32("id", login.Result.Id);
 
-				return RedirectToAction("Index", "ProductComment");
+				return RedirectToAction("Index", "Home");
 			}
 			else
 			{

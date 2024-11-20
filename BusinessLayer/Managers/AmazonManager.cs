@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SeleniumExtras.WaitHelpers;
+using System.Globalization;
 
 namespace BusinessLayer.Managers
 {
@@ -58,10 +59,15 @@ namespace BusinessLayer.Managers
 				foreach (var Sp in ScrapeProduct)
 				{
 					Thread.Sleep(1000);
-					var prodID = Sp.GetAttribute("data-uuid");
-					var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
-					var originalWindow = driver.CurrentWindowHandle;
+                    var originalWindow = driver.CurrentWindowHandle;
 
+					var ProdName = Sp.FindElement(By.CssSelector("span.a-text-normal")).Text;
+
+                    var isSame = SameControl(request.ProductName, ProdName);
+                    if (isSame == false) { continue; }
+
+                    var prodID = Sp.GetAttribute("data-uuid");
+					var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
 					Actions newTabAction = new Actions(driver);
 					newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("a.a-link-normal"))).KeyUp(Keys.Control).Perform();
 					Thread.Sleep(1000);
@@ -122,18 +128,31 @@ namespace BusinessLayer.Managers
                     Console.WriteLine("Kapatma butonu zamanında tıklanabilir olmadı.");
                 }
             }
-            //var layout = driver.FindElements(By.TagName("efilli-layout-dynamic"));
-            //if (layout.Count() > 0)
-            //{
-            //    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            //    js.ExecuteScript(@"
-            //    var element = document.querySelector('efilli-layout-dynamic');
-            //    if (element) {
-            //        element.remove();
-            //    }
-            //");
-            //}
+        }
+        public bool SameControl(string RequestProductName, string ScrapeProductName)
+        {
+            List<string> sameOf = new List<string>();
+            var splitProdName = RequestProductName.Split(" ");
+            int index = 0;
+            foreach (var prodName in splitProdName)
+            {
+                var engProdName = ScrapeProductName.ToUpper(new CultureInfo("en-US", false));
+                var engSplitProdName = prodName.ToUpper(new CultureInfo("en-US", false));
+                if (engProdName.Contains(engSplitProdName))
+                {
+                    sameOf.Add(prodName);
+                }
+                index++;
+            }
+            if (sameOf.Count > 1)
+            {
+                return true;
 
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
