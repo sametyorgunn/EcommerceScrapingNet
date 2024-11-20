@@ -34,7 +34,7 @@ namespace UI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategory(AddCategoryDto dto)
         {
-            var result = _categoryService.TAddAsync(new CategoryDto
+            var result =await _categoryService.AddCategory(new CategoryDto
             {
                 Name = dto.CategoryName,
                 ParentId = dto.CategoryId
@@ -46,7 +46,7 @@ namespace UI.Areas.Admin.Controllers
         {
             var category = await _categoryService.TGetByIdAsync(id);
             var result =  _categoryService.TDeleteAsync(category);
-            return Ok(result);
+            return RedirectToAction("Index","Category");
         }
     }
 }

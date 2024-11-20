@@ -25,7 +25,16 @@ namespace BusinessLayer.Managers
             _mapper = mapper;
         }
 
-		public async Task<List<CategoryDto>> GetListAsync()
+		public async Task<CategoryDto> AddCategory(CategoryDto categoryDto)
+		{
+			var payload = _mapper.Map<Category>(categoryDto);
+            var result = await _categoryRepository.AddCategory(payload);
+            var model = _mapper.Map<CategoryDto>(result);
+            return model;
+
+        }
+
+        public async Task<List<CategoryDto>> GetListAsync()
         {
 			var categories = await _categoryRepository.GetListAllAsync();
 			var payload = _mapper.Map<List<CategoryDto>>(categories);
@@ -51,13 +60,6 @@ namespace BusinessLayer.Managers
             return payload;
         }
 
-        public async Task<List<CategoryDto>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
-		{
-			var categories = await _categoryRepository.GetTrendyolCategoriesByPlatform(request);
-			var payload = _mapper.Map<List<CategoryDto>>(categories);
-			return payload;
-		}
-
 		public async Task TAddAsync(CategoryDto t)
         {
 			var payload = _mapper.Map<Category>(t);
@@ -71,12 +73,16 @@ namespace BusinessLayer.Managers
 
         public Task TDeleteAsync(CategoryDto t)
         {
-            throw new NotImplementedException();
+            var payload = _mapper.Map<Category>(t);
+            _categoryRepository.DeleteAsync(payload);
+            return Task.CompletedTask;
         }
 
-        public Task<CategoryDto> TGetByIdAsync(int id)
+        public async Task<CategoryDto> TGetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var category =await _categoryRepository.GetByIdAsync(id);
+            var result = _mapper.Map<CategoryDto>(category);
+            return result;
         }
 
         public Task TUpdateAsync(CategoryDto t)

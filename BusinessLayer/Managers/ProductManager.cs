@@ -58,13 +58,6 @@ namespace BusinessLayer.Managers
             return payload;
 		}
 
-		//public async Task<List<ProductDto>> GetListByFilterAsync(Expression<Func<ProductDto, bool>> filter)
-		//{
-		//	var productFilter = _mapper.Map<Expression<Func<Product, bool>>>(filter);
-		//	var products = await _productRepository.GetListAllFilterAsync(productFilter);
-		//	var payload = _mapper.Map<List<ProductDto>>(products);
-		//	return payload;
-		//}
 
 		public async Task<ProductDto> GetProductById(GetProductById request)
 		{
@@ -72,14 +65,7 @@ namespace BusinessLayer.Managers
 			var payload = _mapper.Map<ProductDto>(product);
 			return payload;
 		}
-
-		//public async Task<ProductDto> GetProductByProductId(GetProductByProductId request)
-		//{
-		//	var product = await _productRepository.GetProductByProductId(request);
-		//	var payload = _mapper.Map<ProductDto>(product);
-		//	return payload;
-		//}
-
+	
 		public async Task<List<ProductDto>> GetProductsByCategoryId(GetProductByFilterDto request)
 		{
 			var products = await _productRepository.GetProductsByCategoryId(request);
@@ -94,7 +80,14 @@ namespace BusinessLayer.Managers
 			return payload;
 		}
 
-		public async Task<ProductDto> GetProductWithCommentAndProperties(GetProductByFilterDto request)
+        public async Task<List<ProductDto>> GetProductsBySearch(string search)
+        {
+            var products =await _productRepository.GetProductsBySearch(search);
+			var result = _mapper.Map<List<ProductDto>>(products);
+			return result;
+        }
+
+        public async Task<ProductDto> GetProductWithCommentAndProperties(GetProductByFilterDto request)
 		{
 			var product = await _productRepository.GetProductWithCommentAndProperties(request);
 			var payload = _mapper.Map<ProductDto>(product);

@@ -37,9 +37,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlatformId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("categories");

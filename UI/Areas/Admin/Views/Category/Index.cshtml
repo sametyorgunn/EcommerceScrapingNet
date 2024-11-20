@@ -144,7 +144,10 @@
 			type: "POST",
 			data: data,
 			success: function (response) {
-			   toastr.success("Kategori Eklendi.")
+			 toastr.success("Kategori Eklendi.")
+				setTimeout(function () {
+					window.location.reload();
+				}, 1000);
 			},
 			error: function (error) {
 				toastr.error("İşlem Başarısız.")

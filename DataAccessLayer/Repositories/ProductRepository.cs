@@ -52,22 +52,41 @@ namespace DataAccessLayer.Repositories
 			return products;
 		}
 
-		//public async Task<Product> GetProductByProductId(GetProductByProductId request)
-		//{
-		//	var product = _appDbContext.products.Where(x => x.ProductId == request.ProductId).FirstOrDefault();
-		//	return product;
-		//}
-
 		public async Task<List<Product>> GetProductsByCategoryId(GetProductByFilterDto request)
 		{
-			var products = _appDbContext.products.
-				Where(x=>x.CategoryId == request.CategoryId &&
-				x.Status == true)
-				.ToList();
+			var subCategoryIds = GetAllSubCategoryIds(request.CategoryId);
+
+			var products = await _appDbContext.products
+				.Where(x => subCategoryIds.Contains(x.CategoryId) && x.Status == true)
+				.ToListAsync();
+
 			return products;
 		}
+		private List<int> GetAllSubCategoryIds(int categoryId)
+		{
+			var categoryIds = new List<int> { categoryId };
 
-		public async Task<Product> GetProductWithCommentAndProperties(GetProductByFilterDto request)
+			var subCategories = _appDbContext.categories
+				.Where(c => c.ParentId == categoryId)
+				.Select(c => c.Id)
+				.ToList();
+
+			foreach (var subCategoryId in subCategories)
+			{
+				categoryIds.AddRange(GetAllSubCategoryIds(subCategoryId));
+			}
+
+			return categoryIds;
+		}
+
+		public async Task<List<Product>> GetProductsBySearch(string search)
+		{
+			var products = await _appDbContext.products
+				.Where(x=>x.ProductName.ToLower().Contains(search.ToLower()))
+				.ToListAsync();
+			return products;
+		}
+        public async Task<Product> GetProductWithCommentAndProperties(GetProductByFilterDto request)
 		{
 			var product = _appDbContext.products.Where(x=>x.Id == request.Id)
 				.Include(x => x.Category)

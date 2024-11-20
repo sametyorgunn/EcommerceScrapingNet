@@ -23,6 +23,23 @@ namespace DataAccessLayer.Repositories
             _appDbContext = appDbContext;
         }
 
+		public async Task<Category> AddCategory(Category category)
+		{
+			if(category.ParentId == null)
+			{
+				category.ParentId = 0;
+				await _appDbContext.categories.AddAsync(category);
+				await _appDbContext.SaveChangesAsync();
+				return category;
+			}
+			else
+			{
+				await _appDbContext.categories.AddAsync(category);
+				await _appDbContext.SaveChangesAsync();
+				return category;
+			}
+		}
+
 		public async Task<List<Category>> GetMainCategories()
 		{
 			var categories = await _appDbContext.categories.Where(x=>x.ParentId == 0).Take(6).ToListAsync();
@@ -36,13 +53,5 @@ namespace DataAccessLayer.Repositories
 			return categories;
         }
 
-        public async Task<List<Category>> GetTrendyolCategoriesByPlatform(GetCategoriesByFilterDto request)
-		{
-			
-			var categories =await _appDbContext.categories.Where(x=>x.PlatformId == request.PlatformId)
-                .ToListAsync();
-            return categories;
-			
-		}
 	}
 }

@@ -1,39 +1,49 @@
 ﻿@using EntityLayer.Dto.ResponseDto
 @model List<CategoryDto>
 
-
 @{
-	void Menus(int? ParentId)
-	{
-		var categories = Model.Where(x => x.ParentId == ParentId).ToList();
-		if (categories.Any())
-		{
-			<ul class="dropdown-menu">
-				@foreach(var i in categories)
-				{
-					<li>
-						<a class="dropdown-item" href="/ürün-listesi/@i.Id">
-						   @i.Name
-						</a>
-					</li>
-				}
-				
-			</ul>
-		}
-	}
-	
+    void RenderMenu(int? parentId)
+    {
+        var categories = Model.Where(x => x.ParentId == parentId).ToList();
+        if (categories.Any())
+        {
+            <ul class="dropdown-menu">
+                @foreach (var category in categories)
+                {
+                    var hasChildren = Model.Any(x => x.ParentId == category.Id);
+
+                    <li class="@(hasChildren ? "dropdown-submenu" : "")">
+                        <a class="dropdown-item @(hasChildren ? "dropdown-toggle" : "")" href="/ürün-listesi/@category.Id">
+                            @category.Name
+                        </a>
+
+                        @if (hasChildren)
+                        {
+                            RenderMenu(category.Id); 
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    }
 }
+
 <nav class="collapse w-100">
-	<ul class="nav nav-pills w-100" id="mainNav">
-	@foreach(var i in Model.Where(x=>x.ParentId == 0)){
-		<li class="dropdown">
-			<a class="dropdown-item dropdown-toggle" href="/ürün-listesi/@i.Id">
-				@i.Name
-			</a>
-			@{
-				Menus(i.Id);
-			}
-		</li>
-	}
-	</ul>
+    <ul class="nav nav-pills w-100" id="mainNav">
+        @foreach (var rootCategory in Model.Where(x => x.ParentId == 0))
+        {
+            var hasChildren = Model.Any(x => x.ParentId == rootCategory.Id);
+
+            <li class="dropdown">
+                <a class="dropdown-item dropdown-toggle" href="/ürün-listesi/@rootCategory.Id">
+                    @rootCategory.Name
+                </a>
+
+                @if (hasChildren)
+                {
+                    RenderMenu(rootCategory.Id); 
+                }
+            </li>
+        }
+    </ul>
 </nav>

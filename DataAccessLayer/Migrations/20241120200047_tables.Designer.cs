@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241120092037_tables")]
+    [Migration("20241120200047_tables")]
     partial class tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,9 +37,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlatformId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

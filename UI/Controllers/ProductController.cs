@@ -21,14 +21,24 @@ namespace UI.Controllers
 			var products = await _productService.GetLastTwelveProduct();
 			return View(products);
 		}
-		[HttpGet("ürün-listesi/{id}")]
-		public async Task<IActionResult> Products(int id)
+		[HttpGet]
+		[Route("ürün-listesi/{id?}")]
+		public async Task<IActionResult> Products(int? id,string search = null)
 		{
-			var products = await _productService.GetProductsByCategoryId(new GetProductByFilterDto
+			if (string.IsNullOrEmpty(search))
 			{
-				CategoryId = id
-			});
-			return View(products);
+                var products = await _productService.GetProductsByCategoryId(new GetProductByFilterDto
+                {
+                    CategoryId = (int)id
+                });
+                return View(products);
+            }
+			else
+			{
+				var products = await _productService.GetProductsBySearch(search);
+				return View(products);
+			}
+			
 		}
 		[HttpGet("ürün-detay/{id}")]
 		public async Task<IActionResult> ProductDetail(int id, int pageNumber = 1, int pageSize = 5)
@@ -42,17 +52,5 @@ namespace UI.Controllers
 		
 			return View(product);
 		}
-		//[HttpGet("yorum/{id}")]
-		//public async Task<IActionResult> CommentPagination(int id, int pageNumber = 1, int pageSize = 5)
-		//{
-		//	var product = await _productService.GetProductWithCommentAndProperties(new GetProductByFilterDto
-		//	{
-		//		Id = id
-		//	});
-		//	var comments = _commentService.GetCommentByPrediction(new EntityLayer.Dto.ResponseDto.CommentDto { ProductId = id });
-		//	product.GroupsComment = comments.Result;
-
-		//	return Json(new { product, totalCount = comments.Result.Count });
-		//}
 	}
 }
