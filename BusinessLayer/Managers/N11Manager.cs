@@ -52,34 +52,18 @@ namespace BusinessLayer.Managers
                 searchInput.Clear();
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
-				Thread.Sleep(1000);
+				Thread.Sleep(1000); 
 
+				var ProductId = "";
+				var ProductName = "";
+				var ProductPrice = "";
+				var ProductImage = "";
+				var ProductLink = "";
+				ProductDto productDto = new ProductDto();
+			
 				OverlayControl(driver);
 				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(2).ToList();
-
-				var ProductId = driver.FindElement(By.ClassName("plink")).GetAttribute("data-id");
-				var ProductName = driver.FindElement(By.CssSelector("h3.productName")).Text;
-				//var ProductRating = driver.FindElement(By.CssSelector("strong.ratingScore")).Text;
-				var ProductPrice = driver.FindElement(By.CssSelector("div.priceContainer ins")).Text;
-				var ProductImage = driver.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
-				var ProductLink = driver.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
-                //GetCategories(driver, request.ProductName);
-
-                ProductDto productDto = new ProductDto
-				{
-					ProductId = ProductId,
-					CategoryId = request.CategoryId,
-					PlatformId = (int)EntityLayer.Enums.Platform.n11,
-					ProductBrand = "",
-					ProductImage = ProductImage,
-					ProductPrice = ProductPrice,
-					ProductName = ProductName,
-					ProductRating = "4",
-					ProductProperty = null,
-					Status = true,
-					ProductLink = ProductLink,
-					Comment = new List<CommentDto>()
-				};
+				
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
                 {
@@ -88,11 +72,28 @@ namespace BusinessLayer.Managers
 					var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
                     var isSame = SameControl(request.ProductName, ProdName); 
-					if (isSame == false) { continue; }
-                    //var sameOfPrediction = ComputeSimilarity(request.ProductName, ProdName);
-                    //if(sameOfPrediction < 0.6) { continue; }
+					if (isSame == false){continue;}
 
-                    var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
+					ProductId = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
+					ProductName = Sp.FindElement(By.CssSelector("h3.productName")).Text;
+					ProductPrice = Sp.FindElement(By.CssSelector("div.priceContainer ins")).Text;
+					ProductImage = Sp.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
+					ProductLink = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
+
+					productDto.ProductId = ProductId;
+					productDto.CategoryId = request.CategoryId;
+					productDto.PlatformId = (int)EntityLayer.Enums.Platform.n11;
+					productDto.ProductBrand = "";
+					productDto.ProductImage = ProductImage;
+					productDto.ProductPrice = ProductPrice;
+					productDto.ProductName = ProductName;
+					productDto.ProductRating = "4";
+					productDto.ProductProperty = null;
+					productDto.Status = true;
+					productDto.ProductLink = ProductLink;
+					productDto.Comment = new List<CommentDto>();
+					
+					var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
 
 					OverlayControl(driver);
