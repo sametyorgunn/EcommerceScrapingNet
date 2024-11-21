@@ -105,7 +105,28 @@ namespace BusinessLayer.Managers
 					driver.SwitchTo().Window(windowHandles[1]);
 					Thread.Sleep(1000);
 
+
 					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
+
+					//var nextPage = driver.FindElements(By.CssSelector("div.pagination a.next")).ToList();
+					//while (nextPage.Count() != 0)
+					//{
+					//	try
+					//	{
+					//		var mew = wait.Until(ExpectedConditions.ElementToBeClickable(nextPage.First()));
+					//		mew.Click();
+
+					//		Thread.Sleep(1000);	
+					//		IList<IWebElement> yorums = driver.FindElements(By.ClassName("comment"));
+					//		Comments = Comments.Concat(yorums).ToList(); 
+					//		nextPage = driver.FindElements(By.CssSelector("a.next")).ToList();
+					//	}
+					//	catch (NoSuchElementException)
+					//	{
+					//		nextPage = null;
+					//	}
+					//}
+
 					foreach (var comment in Comments)
 					{
 						var a = comment.FindElement(By.CssSelector("p")).Text;
