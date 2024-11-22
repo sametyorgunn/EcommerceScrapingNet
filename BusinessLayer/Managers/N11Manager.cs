@@ -17,6 +17,7 @@ using OpenQA.Selenium.Interactions;
 using AutoMapper;
 using System.Xml.Linq;
 using System.Globalization;
+using EntityLayer.Dto.RequestDto.Product;
 
 namespace BusinessLayer.Managers
 {
@@ -25,15 +26,16 @@ namespace BusinessLayer.Managers
         private readonly IProductService _productService;
 		private readonly IMapper _mapper;
 		private readonly IEmotinalAnalysis _emotinalAnalyseService;
+		private readonly IAIService _AIService;
+        public N11Manager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService)
+        {
+            _productService = productService;
+            _mapper = mapper;
+            _emotinalAnalyseService = emotinalAnalyseService;
+            _AIService = aIService;
+        }
 
-		public N11Manager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService)
-		{
-			_productService = productService;
-			_mapper = mapper;
-			_emotinalAnalyseService = emotinalAnalyseService;
-		}
-
-		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+        public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
             //options.AddArgument("--headless");
@@ -71,7 +73,10 @@ namespace BusinessLayer.Managers
 					string originalWindow = driver.CurrentWindowHandle;
 					var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
-                    var isSame = SameControl(request.ProductName, ProdName); 
+					var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName});
+                    if(isTrueProduct == false) { continue; }
+
+					var isSame = SameControl(request.ProductName, ProdName); 
 					if (isSame == false){continue;}
 
 					ProductId = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
