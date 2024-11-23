@@ -21,12 +21,13 @@ namespace BusinessLayer.Managers
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
                 var requestBody = new
                 {
-                    model = "gpt-3.5-turbo", 
+                    model = "gpt-3.5-turbo",
+                    //model = "gpt-4o", 
                     messages = new[]
                     {
                     new { role = "system", content = "Sen bir asistan olarak çalışıyorsun." },
                     new { role = "user", content = $"{dto.ProductName} bu ürün ile {dto.ProductNamePlatform} bu ürün aynı " +
-                    $"ürün mü evet ise True, değil ise False yaz." }
+                    $"ürün mü evet ise True, değil ise False yaz. birebir aynı olmak zorunda değil yüksek benzerlik varsada olur" }
                 },
                     max_tokens = 150, 
                     temperature = 0.7
