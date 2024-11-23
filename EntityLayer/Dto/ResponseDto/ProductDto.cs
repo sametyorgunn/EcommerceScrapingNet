@@ -20,6 +20,7 @@ namespace EntityLayer.Dto.ResponseDto
 		public bool Status { get; set; }
 		public string ProductLink { get; set; }
         public int CategoryId { get; set; }
+        public Category? Category { get; set; }
         public List<ProductProperty>? ProductProperty { get; set; }
 		public List<CommentDto> Comment { get; set; }
         public Dictionary<string,List<CommentDto>>? GroupsComment { get; set; }

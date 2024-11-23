@@ -40,7 +40,7 @@ namespace DataAccessLayer.Repositories
 
 		public async Task<List<Product>> GetLastTwelveProduct()
 		{
-			var products = _appDbContext.products
+			var products = _appDbContext.products.Include(x=>x.Category)
 				.Where(x=>x.Status == true)
 				.OrderByDescending(x => x.Id).Take(12).ToList();
 			return products;
