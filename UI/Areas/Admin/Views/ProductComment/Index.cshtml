@@ -136,26 +136,37 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 <script>
     $("#scrapeProd").click(function () {
-		toastr.success("ürünler çekiliyor lütfen bekleyiniz !!!")
 		var CategoryId = $("#CategoryName").val();
 		var ProductName = $("#ProductName").val();
 		var data = {
 			CategoryId: CategoryId,
             ProductName: ProductName
 		}
-        $.ajax({
+		toastr.options = {
+			timeOut: 0, // Mesaj kaybolmasın
+			extendedTimeOut: 0, // Fare ile üzerine gelinse de kaybolmasın
+			closeButton: false, // Kapatma butonu göstermeyin
+			tapToDismiss: false // Tıklayınca kapanmasın
+		};
+
+		var loadingMessage = toastr.info("Ürünler çekiliyor, lütfen bekleyiniz...");
+
+		$.ajax({
 			url: "/Admin/ProductComment/ScrapeProduct",
             type: "POST",
             data: data,
             success: function (response) {
                 if (response.status == "True") {
+					toastr.clear(loadingMessage);
 					toastr.success("ürünler Başarıyla çekildi.")
 					window.location.reload();
                 } else {
+					toastr.clear(loadingMessage);
 					toastr.error("ürünler çekilemedi.")
                 }
             },
             error: function (error) {
+				toastr.clear(loadingMessage);
                 console.log(error);
             }
         });
