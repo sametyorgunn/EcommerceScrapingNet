@@ -46,23 +46,7 @@
 									<div class="cur-pointer">
 										<img alt="" class="img-fluid" src="@Model.ProductImage">
 									</div>
-								</div>@* <div class="owl-item active" style="width: 101.5px; margin-right: 15px;">
-									<div class="cur-pointer">
-										<img alt="" class="img-fluid" src="img/products/product-grey-7-2.jpg">
-									</div>
-								</div><div class="owl-item active" style="width: 101.5px; margin-right: 15px;">
-									<div class="cur-pointer">
-										<img alt="" class="img-fluid" src="img/products/product-grey-7-3.jpg">
-									</div>
-								</div><div class="owl-item active" style="width: 101.5px; margin-right: 15px;">
-									<div class="cur-pointer">
-										<img alt="" class="img-fluid" src="img/products/product-grey-7-4.jpg">
-									</div>
-								</div><div class="owl-item" style="width: 101.5px; margin-right: 15px;">
-									<div class="cur-pointer">
-										<img alt="" class="img-fluid" src="img/products/product-grey-7-5.jpg">
-									</div>
-								</div> *@
+								</div>
 							</div>
 						</div><div class="owl-nav disabled"><button type="button" role="presentation" class="owl-prev"><span aria-label="Previous">‹</span></button><button type="button" role="presentation" class="owl-next"><span aria-label="Next">›</span></button></div><div class="owl-dots disabled"></div>
 					</div>
@@ -102,9 +86,6 @@
 						<span class="sale text-color-dark">@Model.ProductPrice ₺</span>
 						<span class="amount">Ortalama Fiyat</span>
 					</p>
-
-@* 					<p class="text-3-5 mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempus nibh sed elimttis adipiscing. Fusce in hendrerit purus. Lorem ipsum dolor sit amet.</p>
- *@
 				</div>
 
 			</div>
@@ -112,12 +93,16 @@
 		<div class="row mb-4">
 			<div class="col">
 				<div id="description" class="tabs tabs-simple tabs-simple-full-width-line tabs-product tabs-dark mb-2">
-					<ul class="nav nav-tabs justify-content-start">
-						<li class="nav-item active"><a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumluYorumlar" data-bs-toggle="tab">İyİ Yorumlar</a></li>
-						<li class="nav-item"><a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" href="#OlumsuzYorumlar" data-bs-toggle="tab">Olumsuz Yorumlar</a></li>
+				<ul class="nav nav-tabs justify-content-start">
+						<li class="nav-item">
+							<a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" data-bs-toggle="tab" data-bs-target="#OlumluYorumlar">İyi Yorumlar</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" data-bs-toggle="tab" data-bs-target="#OlumsuzYorumlar">Olumsuz Yorumlar</a>
+						</li>
 					</ul>
 					<div class="tab-content p-0">
-						<div class="tab-pane px-0 py-3 active" id="OlumluYorumlar">
+						<div class="tab-pane fade show active" id="OlumluYorumlar">
 							<ul class="comments">
 								@foreach (var comment in Model.GroupsComment.Where(x => x.Key == "True").SelectMany(x => x.Value).ToList())
 								{
@@ -142,7 +127,7 @@
 								}
 							</ul>
 						</div>
-						<div class="tab-pane px-0 py-3" id="OlumsuzYorumlar">
+						<div class="tab-pane fade" id="OlumsuzYorumlar">
 							<ul class="comments">
 								@foreach (var comment in Model.GroupsComment.Where(x => x.Key == "False").SelectMany(x => x.Value).ToList())
 								{
@@ -167,66 +152,10 @@
 								}
 							</ul>
 						</div>
-						
 					</div>
 				</div>
 			</div>
 		</div>
-		<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-	@* 	<div id="content">
-			<ul id="data-list">
-			</ul>
-		</div>
-		<div id="pagination">
-		</div> *@
-		@* <script>
-			$(document).ready(function () {
-				var itemsPerPage = 5;
-				var currentPage = 1;
-				var ID = Number($("#prodID").val());
-				debugger
-				function displayPage(id,page) {
-					$.ajax({
-						type: "GET",
-						url: "/yorum/" + id,
-						data: { id: id, pageNumber: page, pageSize: itemsPerPage },
-						dataType: "json",
-						success: function (response) {
-							debugger
-							$("#data-list").empty();
-							response.product.comment.forEach(function (item) {
-								$("#data-list").append("<li>" + item.commentText + "</li>");
-							});
-
-							$("#pagination").empty();
-							var totalPages = Math.ceil(response.totalCount / itemsPerPage);
-
-							for (var i = 1; i <= totalPages; i++) {
-								var pageButton = $("<button>")
-									.text(i)
-									.click(function () {
-										currentPage = parseInt($(this).text());
-										displayPage(currentPage);
-									});
-
-								if (i === page) {
-									pageButton.css("font-weight", "bold");
-								}
-
-								$("#pagination").append(pageButton);
-							}
-						},
-						error: function (xhr, status, error) {
-							debugger
-							console.log("Hata: " + error);
-						}
-					});
-				}
-
-				displayPage(ID, currentPage);
-			});
-
-		</script> *@
 	</div>
 
 </div>
