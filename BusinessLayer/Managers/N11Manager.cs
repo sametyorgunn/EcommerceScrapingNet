@@ -64,7 +64,7 @@ namespace BusinessLayer.Managers
 				ProductDto productDto = new ProductDto();
 			
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(2).ToList();
+				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(4).ToList();
 				
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)
