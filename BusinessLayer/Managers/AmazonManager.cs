@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SeleniumExtras.WaitHelpers;
 using System.Globalization;
+using EntityLayer.Dto.RequestDto.Product;
 
 namespace BusinessLayer.Managers
 {
@@ -22,13 +23,15 @@ namespace BusinessLayer.Managers
 		private readonly IMapper _mapper;
 		private readonly IEmotinalAnalysis _emotinalAnalyseService;
         private readonly ICommentService _commentService;
+        private readonly IAIService _AIService;
 
-        public AmazonManager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService, ICommentService commentService)
+        public AmazonManager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService, ICommentService commentService, IAIService aIService)
         {
             _productService = productService;
             _mapper = mapper;
             _emotinalAnalyseService = emotinalAnalyseService;
             _commentService = commentService;
+            _AIService = aIService;
         }
 
         public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
@@ -65,8 +68,10 @@ namespace BusinessLayer.Managers
 
 					var ProdName = Sp.FindElement(By.CssSelector("span.a-text-normal")).Text;
 
-                    var isSame = SameControl(request.ProductName, ProdName);
-                    if (isSame == false) { continue; }
+                    var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+                    if (isTrueProduct == false) { continue; }
+                    //var isSame = SameControl(request.ProductName, ProdName);
+                    //if (isSame == false) { continue; }
 
                     var prodID = Sp.GetAttribute("data-uuid");
 					var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");

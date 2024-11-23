@@ -3,6 +3,7 @@ using BusinessLayer.IServices;
 using DataAccessLayer.IRepositories;
 using DataAccessLayer.Repositories;
 using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
 using Newtonsoft.Json;
@@ -25,19 +26,22 @@ namespace BusinessLayer.Managers
         private readonly ICategoryRepository _categoryrepository;
 		private readonly ICommentService _commentService;
 		private readonly IEmotinalAnalysis _emotinalAnalyseService;
-		public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService,
-			ICategoryRepository categoryrepository,
-			ICommentService commentService, IEmotinalAnalysis emotinalAnalyseService)
-		{
-			_productService = productService;
-			_mapper = mapper;
-			_categoryService = categoryService;
-			_categoryrepository = categoryrepository;
-			_commentService = commentService;
-			_emotinalAnalyseService = emotinalAnalyseService;
-		}
+        private readonly IAIService _AIService;
 
-		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+        public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService,
+            ICategoryRepository categoryrepository,
+            ICommentService commentService, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService)
+        {
+            _productService = productService;
+            _mapper = mapper;
+            _categoryService = categoryService;
+            _categoryrepository = categoryrepository;
+            _commentService = commentService;
+            _emotinalAnalyseService = emotinalAnalyseService;
+            _AIService = aIService;
+        }
+
+        public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 
 			var options = new ChromeOptions();
@@ -65,8 +69,11 @@ namespace BusinessLayer.Managers
 				{
 					wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 					var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
-                    var isSame = SameControl(request.ProductName, ProdName);
-                    if (isSame == false) { continue; }
+
+                    var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+                    if (isTrueProduct == false) { continue; }
+                    //var isSame = SameControl(request.ProductName, ProdName);
+                    //if (isSame == false) { continue; }
                     var ProdID = Sp.GetAttribute("data-id");
 					var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
 					string originalWindow = driver.CurrentWindowHandle;
