@@ -77,8 +77,8 @@ namespace BusinessLayer.Managers
 					var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName});
                     if(isTrueProduct == false) { continue; }
 
-					var isSame = SameControl(request.ProductName, ProdName); 
-					if (isSame == false){continue;}
+					//var isSame = SameControl(request.ProductName, ProdName); 
+					//if (isSame == false){continue;}
 
 					ProductId = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 					ProductName = Sp.FindElement(By.CssSelector("h3.productName")).Text;
