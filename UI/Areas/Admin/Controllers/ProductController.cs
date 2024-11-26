@@ -26,5 +26,11 @@ namespace UI.Areas.Admin.Controllers
 			await _productService.TDeleteAsync(product);
 			return RedirectToAction("Index", "ProductComment");
 		}
+		[HttpPost]
+		public async Task<IActionResult> DeleteCheckedProduct(List<int>ids)
+		{
+			var result = await _productService.DeleteCheckedProducts(ids);
+			return Ok(result);
+		}
 	}
 }

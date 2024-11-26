@@ -21,7 +21,9 @@ namespace DataAccessLayer.IRepositories
 		Task<Product> CreateProduct(Product product);
 		Task<Product> GetProductWithCommentAndProperties(GetProductByFilterDto request);
         Task<List<Product>> GetProductsBySearch(string search);
+		Task<bool> DeleteCheckedProducts(List<int> id);
 
 
-    }
+
+	}
 }

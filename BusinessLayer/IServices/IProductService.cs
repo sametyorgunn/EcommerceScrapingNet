@@ -14,7 +14,6 @@ namespace BusinessLayer.IServices
     public interface IProductService:IGenericService<ProductDto>
     {
         Task<ProductDto> GetProductById(GetProductById request);
-        //Task<ProductDto> GetProductByProductId(GetProductByProductId request);
 		Task<List<ProductDto>> GetProductsByPlatformId(GetProductsByPlatformId request);
 		Task<List<ProductDto>> GetLastFiveProducts();
         Task<List<ProductDto>> GetProductsByCategoryId(GetProductByFilterDto request);
@@ -22,6 +21,7 @@ namespace BusinessLayer.IServices
         Task<ProductDto> GetProductWithCommentAndProperties(GetProductByFilterDto request);
         Task<ProductDto> CreateProduct(ProductDto dto);
         Task<List<ProductDto>> GetProductsBySearch(string search);
+        Task<bool> DeleteCheckedProducts(List<int> id);
 
 
     }

@@ -95,5 +95,21 @@ namespace DataAccessLayer.Repositories
 				.FirstOrDefault();
 			return product;
 		}
+
+		public async Task<bool> DeleteCheckedProducts(List<int> ids)
+		{
+			try
+			{
+				var products = _appDbContext.products.Where(x => ids.Contains(x.Id));
+				_appDbContext.products.RemoveRange(products);
+				await _appDbContext.SaveChangesAsync();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				return false;
+			}
+			
+		}
 	}
 }

@@ -58,7 +58,7 @@ namespace BusinessLayer.Managers
 				Thread.Sleep(1000);
 
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.ClassName("sg-col-4-of-24")).Take(4).ToList();
+				var ScrapeProduct = driver.FindElements(By.ClassName("sg-col-4-of-24")).Take(1).ToList();
 
 				List<CommentDto> comments = new List<CommentDto>();
 				foreach (var Sp in ScrapeProduct)

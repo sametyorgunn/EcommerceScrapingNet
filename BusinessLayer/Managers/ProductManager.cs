@@ -37,6 +37,12 @@ namespace BusinessLayer.Managers
 			return response;
 		}
 
+		public async Task<bool> DeleteCheckedProducts(List<int> ids)
+		{
+			var result = await _productRepository.DeleteCheckedProducts(ids);
+			return result;
+		}
+
 		public async Task<List<ProductDto>> GetLastFiveProducts()
 		{
 			var products = await _productRepository.GetLastFiveProducts();
