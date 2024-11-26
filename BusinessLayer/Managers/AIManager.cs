@@ -27,7 +27,7 @@ namespace BusinessLayer.Managers
                     {
                     new { role = "system", content = "Sen bir asistan olarak çalışıyorsun." },
                     new { role = "user", content = $"{dto.ProductName} bu ürün ile {dto.ProductNamePlatform} bu ürün aynı " +
-                    $"ürün mü evet ise True, değil ise False yaz. birebir aynı olmak zorunda değil yüksek benzerlik varsada olur" }
+                    $"ürün mü evet ise True, değil ise False yaz." }
                 },
                     max_tokens = 150, 
                     temperature = 0.7

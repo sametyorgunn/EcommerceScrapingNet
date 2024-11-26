@@ -1,7 +1,6 @@
 ﻿$("#delete-product").click(function () {
 	const selectedCheckboxes = Array.from(document.querySelectorAll('input[class="procheck form-check-input"]:checked'));
 	var ids = [];
-	debugger
 	selectedCheckboxes.forEach(checkbox => {
 		ids.push(parseInt(checkbox.value));
 	});
@@ -11,7 +10,8 @@
 		type: 'POST',
 		data: {ids:ids},
 		success: function (response) {
-			alert("silimdi");
+			toastr("ürünler silindi");
+			window.location.reload();
 		},
 		error: function (error) {
 			alert('Error: ' + JSON.stringify(error));
