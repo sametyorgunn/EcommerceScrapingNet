@@ -85,9 +85,10 @@ namespace BusinessLayer.Managers
             return result;
         }
 
-        public Task TUpdateAsync(CategoryDto t)
+        public async Task TUpdateAsync(CategoryDto t)
         {
-            throw new NotImplementedException();
+            var payload = _mapper.Map<Category>(t);
+            await _categoryRepository.UpdateAsync(payload);
         }
 
         public Task<bool> TUpdateRangeAsync(List<CategoryDto> t)

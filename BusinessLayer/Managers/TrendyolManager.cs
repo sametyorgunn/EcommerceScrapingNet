@@ -62,7 +62,7 @@ namespace BusinessLayer.Managers
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(1).ToList();
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(3).ToList();
            
 				List<CommentDto> comments = new List<CommentDto>();	
 				foreach (var Sp in ScrapeProduct)

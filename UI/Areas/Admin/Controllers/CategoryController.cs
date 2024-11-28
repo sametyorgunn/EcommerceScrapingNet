@@ -48,5 +48,17 @@ namespace UI.Areas.Admin.Controllers
             var result =  _categoryService.TDeleteAsync(category);
             return RedirectToAction("Index","Category");
         }
+        [HttpPost]
+        public async Task<IActionResult> GetCategoryById(int id)
+        {
+            var category = await _categoryService.TGetByIdAsync(id);
+            return Ok(category);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateCategory(CategoryDto categorydto)
+        {
+            await _categoryService.TUpdateAsync(categorydto);
+            return Ok();
+        }
     }
 }

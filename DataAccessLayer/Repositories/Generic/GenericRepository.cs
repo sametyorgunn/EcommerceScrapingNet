@@ -33,7 +33,7 @@ namespace DataAccessLayer.Repositories.Generic
 
         async Task<T> IGenericRepository<T>.GetByIdAsync(int id)
         {
-            return _appDbContext.Set<T>().Find(id);
+            return await _appDbContext.Set<T>().FindAsync(id);
         }
 
         async Task<List<T>> IGenericRepository<T>.GetListAllAsync()
@@ -61,8 +61,8 @@ namespace DataAccessLayer.Repositories.Generic
 
         async Task IGenericRepository<T>.UpdateAsync(T t)
         {
-            _appDbContext.Update(t);
-            _appDbContext.SaveChanges();
+           _appDbContext.Update(t);
+           await _appDbContext.SaveChangesAsync();
         }
     }
 }

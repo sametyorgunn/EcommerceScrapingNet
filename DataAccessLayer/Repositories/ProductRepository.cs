@@ -56,7 +56,7 @@ namespace DataAccessLayer.Repositories
 		{
 			var subCategoryIds = GetAllSubCategoryIds(request.CategoryId);
 
-			var products = await _appDbContext.products
+			var products = await _appDbContext.products.Include(x=>x.Category)
 				.Where(x => subCategoryIds.Contains(x.CategoryId) && x.Status == true)
 				.ToListAsync();
 

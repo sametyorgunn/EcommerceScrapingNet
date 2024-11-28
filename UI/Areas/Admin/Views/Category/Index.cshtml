@@ -59,7 +59,7 @@
 					</div>
 				</div>
 
-				<button id="categoryUpdate" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_user">
+				<button id="categoryUpdate" type="button" class="btn btn-primary" data-bs-toggle="modal" @* data-bs-target="#kt_modal_add_user" *@>
 					<span class="svg-icon svg-icon-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
 							<rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black"></rect>
@@ -79,7 +79,7 @@
 				<div class="modal-dialog modal-dialog-centered mw-650px">
 					<div class="modal-content">
 						<div class="modal-header" id="kt_modal_add_user_header">
-							<h2 class="fw-bolder">Kategori Ekle</h2>
+							<h2 class="fw-bolder">Kategori Ekle/Düzenle</h2>
 							<div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close">
 								<span class="svg-icon svg-icon-1">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -107,6 +107,15 @@
 									<button type="reset" class="btn btn-light me-3" data-kt-users-modal-action="cancel">Vazgeç</button>
 									<div type="" id="catAdd" class="btn btn-primary">
 										<span class="indicator-label">Kategori ekle</span>
+										<span class="indicator-progress">
+											Lütfen Bekleyin...
+											<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+										</span>
+									</div>
+
+									<input type="text" id="catID" value="" hidden="hidden" />
+									<div type="" id="catUpdate" style="display:none;" class="btn btn-primary">
+										<span class="indicator-label">Kategori Düzenle</span>
 										<span class="indicator-progress">
 											Lütfen Bekleyin...
 											<span class="spinner-border spinner-border-sm align-middle ms-2"></span>

@@ -32,5 +32,25 @@ namespace UI.Areas.Admin.Controllers
 			var result = await _productService.DeleteCheckedProducts(ids);
 			return Ok(result);
 		}
+		public async Task<IActionResult> MakeProductPassive(int id)
+		{
+			var product = await _productService.GetProductById(new GetProductById
+			{
+				Id=id
+			});
+			product.Status = false;
+			await _productService.TUpdateAsync(product);
+			return RedirectToAction("Index", "ProductComment");
+		}
+		public async Task<IActionResult> MakeProductActive(int id)
+		{
+			var product = await _productService.GetProductById(new GetProductById
+			{
+				Id = id
+			});
+			product.Status = true;
+			await _productService.TUpdateAsync(product);
+			return RedirectToAction("Index", "ProductComment");
+		}
 	}
 }
