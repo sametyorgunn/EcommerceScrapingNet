@@ -1,12 +1,11 @@
 ﻿@using EntityLayer.Dto.ResponseDto
 @model List<CategoryDto>
 
-
-<input type="text" placeholder="Search.." class="form-control" id="myInputCategory" onkeyup="filterFunctionCategory()">
-<select id="CategoryName" size="5" name="CategoryId" class="dropdown-content form-control">
-    @foreach (var category in Model)
+<select id="CategoryName" name="CategoryId" class="dropdown-content form-control">
+    @foreach (var category in Model.Where(x => x.ParentId == 0))
     {
         <option value="@category.Id">@category.Name</option>
     }
 </select>
+<div id="selectArea"></div>
 

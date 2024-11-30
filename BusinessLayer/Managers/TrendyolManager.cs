@@ -45,7 +45,7 @@ namespace BusinessLayer.Managers
         {
 
 			var options = new ChromeOptions();
-            options.AddArgument("--headless");
+            //options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
@@ -62,10 +62,23 @@ namespace BusinessLayer.Managers
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(3).ToList();
-           
-				List<CommentDto> comments = new List<CommentDto>();	
-				foreach (var Sp in ScrapeProduct)
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).ToList();
+                var matchedProducts = ScrapeProduct
+                    .Where(product =>
+                    {
+                        try
+                        {
+                            var productName = product.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
+                            return productName.Contains(request.ProductName, StringComparison.OrdinalIgnoreCase);
+                        }
+                        catch (NoSuchElementException)
+                        {
+                            return false;
+                        }
+                    })
+                    .ToList();
+                List<CommentDto> comments = new List<CommentDto>();	
+				foreach (var Sp in matchedProducts)
 				{
 					wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 					var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;

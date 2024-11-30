@@ -37,7 +37,7 @@ namespace BusinessLayer.Managers
         public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
 		{
 			var options = new ChromeOptions();
-            options.AddArgument("--headless");
+            //options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
@@ -58,10 +58,24 @@ namespace BusinessLayer.Managers
 				Thread.Sleep(1000);
 
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.ClassName("sg-col-4-of-24")).Take(3).ToList();
+				var ScrapeProduct = driver.FindElements(By.ClassName("sg-col-4-of-24")).ToList();
+                var matchedProducts = ScrapeProduct
+                   .Where(product =>
+                   {
+                       try
+                       {
+                           var productName = product.FindElement(By.CssSelector("span.a-text-normal")).Text;
+                           return productName.Contains(request.ProductName, StringComparison.OrdinalIgnoreCase);
+                       }
+                       catch (NoSuchElementException)
+                       {
+                           return false;
+                       }
+                   })
+                   .ToList();
 
-				List<CommentDto> comments = new List<CommentDto>();
-				foreach (var Sp in ScrapeProduct)
+                List<CommentDto> comments = new List<CommentDto>();
+				foreach (var Sp in matchedProducts)
 				{
 					Thread.Sleep(1000);
                     var originalWindow = driver.CurrentWindowHandle;

@@ -81,7 +81,7 @@ namespace DataAccessLayer.Repositories
 
 		public async Task<List<Product>> GetProductsBySearch(string search)
 		{
-			var products = await _appDbContext.products
+			var products = await _appDbContext.products.Include(x=>x.Category)
 				.Where(x=>x.ProductName.ToLower().Contains(search.ToLower()))
 				.ToListAsync();
 			return products;

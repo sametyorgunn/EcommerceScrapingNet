@@ -15,7 +15,7 @@
 }
 $("#catAdd").click(function () {
 	var CategoryName = $("#CategoryNames").val();
-	var CategoryID = $("#CategoryName").val();
+	var CategoryID = $("#selectArea .dropdown-content:last").val();
 	var data = {
 		CategoryName: CategoryName,
 		CategoryId: CategoryID
@@ -85,5 +85,46 @@ $("#categoryUpdate").click(function () {
 	$("#catID").val(0);
 	$("#CategoryNames").val("");
 	$("#CategoryName").val(0);
+});
+
+$(document).ready(function () {
+	$(document).on("change", ".dropdown-content", function () {
+		var selectedCategoryId = $(this).val();
+		$.ajax({
+			url: "/Admin/Category/GetSubCategories",
+			type: "GET",
+			data: { categoryId: selectedCategoryId },
+			success: function (response) {
+				if (response && response.length > 0) {
+					var subCategorySelect = $("<select>", {
+						id: "CategoryName_" + selectedCategoryId,
+						name: "CategoryId",
+						class: "dropdown-content form-control",
+					});
+					subCategorySelect.append($("<option>", {
+						value: "",
+						text: "Bir seçenek seçin",
+						disabled: true,
+						selected: true
+					}));
+					response.forEach(function (subCategory) {
+						subCategorySelect.append($("<option>", {
+							value: subCategory.id,
+							text: subCategory.name
+						}));
+					});
+
+					$("#selectArea").append(subCategorySelect);
+
+				} else {
+					toastr.warning("Alt kategori bulunamadı.");
+				//	$("#selectArea").empty();
+				}
+			},
+			error: function () {
+				toastr.error("İşlem başarısız oldu.");
+			}
+		});
+	});
 });
 

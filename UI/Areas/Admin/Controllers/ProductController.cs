@@ -30,9 +30,9 @@ namespace UI.Areas.Admin.Controllers
 		public async Task<IActionResult> DeleteCheckedProduct(List<int>ids)
 		{
 			var result = await _productService.DeleteCheckedProducts(ids);
-			return Ok(result);
-		}
-		public async Task<IActionResult> MakeProductPassive(int id)
+            return RedirectToAction("Index", "ProductComment");
+        }
+        public async Task<IActionResult> MakeProductPassive(int id)
 		{
 			var product = await _productService.GetProductById(new GetProductById
 			{

@@ -48,7 +48,7 @@ namespace DataAccessLayer.Repositories
 
         public async Task<List<Category>> GetSubCategories(GetCategoriesByFilterDto request)
         {
-			var categories = await _appDbContext.categories.Where(x => x.ParentId == request.ParentId)
+			var categories = await _appDbContext.categories.Where(x => x.ParentId == request.Id)
 				.ToListAsync();
 			return categories;
         }

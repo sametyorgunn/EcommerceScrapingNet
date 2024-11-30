@@ -23,12 +23,12 @@ namespace UI.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSubCategories(int parentId)
+        public async Task<IActionResult> GetSubCategories(int categoryID)
         {
             var categories = await _categoryService.GetSubCategories(new GetCategoriesByFilterDto
             {
-                ParentId = parentId
-            });
+                Id = categoryID
+			});
             return Ok(categories);
         }
         [HttpPost]

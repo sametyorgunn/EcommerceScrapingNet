@@ -38,7 +38,7 @@ namespace BusinessLayer.Managers
         public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
-            options.AddArgument("--headless");
+            //options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
@@ -65,17 +65,31 @@ namespace BusinessLayer.Managers
 				ProductDto productDto = new ProductDto();
 			
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(3).ToList();
-				
-				List<CommentDto> comments = new List<CommentDto>();
-				foreach (var Sp in ScrapeProduct)
+				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).ToList();
+                var matchedProducts = ScrapeProduct
+                    .Where(product =>
+                    {
+                        try
+                        {
+                            var productName = product.FindElement(By.ClassName("productName")).Text;
+                            return productName.Contains(request.ProductName, StringComparison.OrdinalIgnoreCase);
+                        }
+                        catch (NoSuchElementException)
+                        {
+                            return false;
+                        }
+                    })
+                    .ToList();
+
+                List<CommentDto> comments = new List<CommentDto>();
+				foreach (var Sp in matchedProducts)
                 {
                     Thread.Sleep(1000);
 					string originalWindow = driver.CurrentWindowHandle;
 					var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
-					var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName});
-                    if(isTrueProduct == false) { continue; }
+					//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName});
+     //               if(isTrueProduct == false) { continue; }
 
 					//var isSame = SameControl(request.ProductName, ProdName); 
 					//if (isSame == false){continue;}

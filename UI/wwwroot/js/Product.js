@@ -15,12 +15,15 @@
 		},
 		error: function (error) {
 			alert('Error: ' + JSON.stringify(error));
+			window.location.reload();
 		}
 	});
 });
 
 $("#scrapeProd").click(function () {
-	var CategoryId = $("#CategoryName").val();
+	var CategoryId = $("#selectArea .dropdown-content:last").val();
+
+	//var CategoryId = $("#CategoryName").val();
 	var ProductName = $("#ProductName").val();
 	var data = {
 				CategoryId: CategoryId,
