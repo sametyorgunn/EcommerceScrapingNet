@@ -27,15 +27,17 @@ namespace BusinessLayer.Managers
 		private readonly IMapper _mapper;
 		private readonly IEmotinalAnalysis _emotinalAnalyseService;
 		private readonly IAIService _AIService;
-        public N11Manager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService)
-        {
-            _productService = productService;
-            _mapper = mapper;
-            _emotinalAnalyseService = emotinalAnalyseService;
-            _AIService = aIService;
-        }
+		private readonly ICategoryService _categoryService;
+		public N11Manager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService, ICategoryService categoryService)
+		{
+			_productService = productService;
+			_mapper = mapper;
+			_emotinalAnalyseService = emotinalAnalyseService;
+			_AIService = aIService;
+			_categoryService = categoryService;
+		}
 
-        public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
             //options.AddArgument("--headless");
@@ -254,5 +256,62 @@ namespace BusinessLayer.Managers
 
             return (double)intersection / union;
         }
-    }
+
+		public async Task<bool> N11CategoryUpdate()
+		{
+			var options = new ChromeOptions();
+			options.AddArgument("--headless");
+			options.AddArgument("--disable-gpu");
+			options.AddArgument("--no-sandbox");
+			options.AddArgument("--disable-dev-shm-usage");
+			options.AddArgument("window-size=1920x1080");
+			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+
+
+			using (IWebDriver driver = new ChromeDriver(options))
+			{
+				var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+				var jsExecutor = (IJavaScriptExecutor)driver;
+				driver.Navigate().GoToUrl("https://www.n11.com/");
+				var CateTree = driver.FindElements(By.CssSelector("li.catMenuItem"));
+
+				foreach (var cat in CateTree)
+				{
+					string originalWindow = driver.CurrentWindowHandle;
+					var maincategory = cat.FindElement(By.CssSelector("a.itemContainer"));
+					var maincatname = maincategory.GetAttribute("title");
+					List<N11CategoryDto> categories = new List<N11CategoryDto>();
+					List<N11SubCategoryDto> subcategories = new List<N11SubCategoryDto>();
+
+					var subcategoriess = cat.FindElements(By.CssSelector("a.subCatMenuItem"));
+					foreach (var sub in subcategoriess)
+					{
+						Actions actions = new Actions(driver);
+						actions.MoveToElement(maincategory).Perform();
+						actions.MoveToElement(sub).KeyDown(Keys.Control).Click().KeyUp(Keys.Control).Perform();
+						var windowHandles = driver.WindowHandles;
+
+						wait.Until(d => d.WindowHandles.Count > 1);
+						Thread.Sleep(1000);
+						driver.SwitchTo().Window(windowHandles[1]);
+
+						var section = driver.FindElement(By.CssSelector("section.filterCategory"));
+						var subcats = section.FindElements(By.CssSelector("li.parent ul.filterList li.filterItem a"));
+						foreach (var subcat in subcats)
+						{
+							var a = subcat.GetAttribute("title");
+							subcategories.Add(new N11SubCategoryDto { CategoryName = a });
+						}
+						driver.Close();
+						driver.SwitchTo().Window(originalWindow);
+					}
+					categories.Add(new N11CategoryDto { CategoryName = maincatname, N11SubCategories = subcategories });
+					await _categoryService.UpdateN11Categories(categories);
+
+				}
+
+				return true;
+			}
+		}
+	}
 }

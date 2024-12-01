@@ -15,7 +15,9 @@ namespace EntityLayer.MappingProfiles
         {
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Category, CategoryResponseDto>().ReverseMap();
-            //CreateMap<Category, CategoryResponse>().ReverseMap();
-        }
+
+            CreateMap<N11Category, N11CategoryDto>().ReverseMap();
+            CreateMap<N11SubCategory, N11SubCategoryDto>().ReverseMap();
+		}
     }
 }

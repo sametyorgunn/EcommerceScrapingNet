@@ -12,11 +12,13 @@ namespace UI.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly IN11Service _n11Service;
 
-        public CategoryController(ICategoryService categoryService)
-        {
-            _categoryService = categoryService;
-        }
+		public CategoryController(ICategoryService categoryService, IN11Service n11Service)
+		{
+			_categoryService = categoryService;
+			_n11Service = n11Service;
+		}
 		public ActionResult Index()
         {
             return View();
@@ -60,5 +62,11 @@ namespace UI.Areas.Admin.Controllers
             await _categoryService.TUpdateAsync(categorydto);
             return Ok();
         }
-    }
+        [HttpGet]
+        public async Task <IActionResult> N11CategoryUpdate()
+        {
+            await _n11Service.N11CategoryUpdate();
+            return Ok();
+        }
+	}
 }

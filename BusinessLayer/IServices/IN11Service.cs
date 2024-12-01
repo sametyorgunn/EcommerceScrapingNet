@@ -11,5 +11,7 @@ namespace BusinessLayer.IServices
     public interface IN11Service
     {
         public Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request);
-    }
+        public Task<bool> N11CategoryUpdate();
+
+	}
 }

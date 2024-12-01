@@ -95,6 +95,12 @@ namespace BusinessLayer.Managers
         {
             throw new NotImplementedException();
         }
-      
-    }
+
+		public async Task<bool> UpdateN11Categories(List<N11CategoryDto> N11categoryDto)
+		{
+            var payload = _mapper.Map<List<N11Category>>(N11categoryDto);
+            var result = await _categoryRepository.UpdateN11Categories(payload);
+            return result;
+		}
+	}
 }

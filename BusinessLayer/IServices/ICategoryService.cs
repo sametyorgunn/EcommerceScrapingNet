@@ -15,5 +15,6 @@ namespace BusinessLayer.IServices
         public Task<List<CategoryDto>> GetMainCategories();
         public Task<List<CategoryDto>> GetSubCategories(GetCategoriesByFilterDto request);
         public Task<CategoryDto> AddCategory(CategoryDto categoryDto);
+        public Task<bool> UpdateN11Categories(List<N11CategoryDto> N11categoryDto);
 	}
 }

@@ -27,9 +27,15 @@ namespace DataAccessLayer.Contexts
 		public DbSet<Comment> comments { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<ProductProperty> productproperty { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		public DbSet<N11Category> N11Categories { get; set; }
+		public DbSet<N11SubCategory> N11SubCategories { get; set; }
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-        }
+			//modelBuilder.Entity<N11Category>()
+		 //  .HasMany(c => c.N11SubCategories)
+		 //  .WithOne(sc => sc.Category)
+		 //  .HasForeignKey(sc => sc.);
+		}
     }
 }

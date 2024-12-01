@@ -128,3 +128,16 @@ $(document).ready(function () {
 	});
 });
 
+$("#n11cat").click(function () {
+	$.ajax({
+		url: "/Admin/Category/N11CategoryUpdate",
+		type: "GET",
+		success: function (response) {
+			toastr.success("güncelleniyor");
+		},
+		error: function (error) {
+			toastr.error("İşlem Başarısız.");
+		}
+	});
+})
+

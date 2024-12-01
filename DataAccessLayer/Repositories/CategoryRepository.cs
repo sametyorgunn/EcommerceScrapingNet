@@ -53,5 +53,35 @@ namespace DataAccessLayer.Repositories
 			return categories;
         }
 
+		public async Task<bool> UpdateN11Categories(List<N11Category> N11category)
+		{
+			foreach(var n11category in N11category)
+			{
+				var exist = _appDbContext.N11Categories.Any(x=>x.CategoryName == n11category.CategoryName);
+				if (exist)
+				{
+					foreach(var subcategory in n11category.N11SubCategories)
+					{
+						var existsubcategories = _appDbContext.N11SubCategories.Any(x => x.CategoryName == subcategory.CategoryName);
+						if (existsubcategories)
+						{
+							continue;
+						}
+						else
+						{
+							await _appDbContext.N11SubCategories.AddAsync(subcategory);
+							await _appDbContext.SaveChangesAsync();
+						}
+					}
+				}
+				else
+				{
+					await _appDbContext.N11Categories.AddRangeAsync(N11category);
+					await _appDbContext.SaveChangesAsync();
+				}
+				
+			}
+			return true;
+		}
 	}
 }
