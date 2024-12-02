@@ -4,6 +4,7 @@ using DataAccessLayer.Repositories.Generic;
 using EntityLayer.Dto.RequestDto.Category;
 using EntityLayer.Dto.ResponseDto;
 using EntityLayer.Entity;
+using EntityLayer.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -53,35 +54,66 @@ namespace DataAccessLayer.Repositories
 			return categories;
         }
 
-		public async Task<bool> UpdateN11Categories(List<N11Category> N11category)
+		public async Task<bool> UpdateN11Categories(List<CategoryMarketPlace> N11category)
 		{
 			foreach(var n11category in N11category)
 			{
-				var exist = _appDbContext.N11Categories.Any(x=>x.CategoryName == n11category.CategoryName);
+				var exist = _appDbContext.categoriesMarketplace.Any(x=>x.CategoryName == n11category.CategoryName && x.PlatformID == (int)Platform.n11);
 				if (exist)
 				{
-					foreach(var subcategory in n11category.N11SubCategories)
+					foreach(var subcategory in n11category.SubCategories)
 					{
-						var existsubcategories = _appDbContext.N11SubCategories.Any(x => x.CategoryName == subcategory.CategoryName);
+						var existsubcategories = _appDbContext.subCategoriesMarketplace.Any(x => x.CategoryName == subcategory.CategoryName && x.PlatformID ==(int)Platform.n11);
 						if (existsubcategories)
 						{
 							continue;
 						}
 						else
 						{
-							await _appDbContext.N11SubCategories.AddAsync(subcategory);
+							await _appDbContext.subCategoriesMarketplace.AddAsync(subcategory);
 							await _appDbContext.SaveChangesAsync();
 						}
 					}
 				}
 				else
 				{
-					await _appDbContext.N11Categories.AddRangeAsync(N11category);
+					await _appDbContext.categoriesMarketplace.AddRangeAsync(N11category);
 					await _appDbContext.SaveChangesAsync();
 				}
 				
 			}
 			return true;
 		}
-	}
+
+        public async Task<bool> UpdateTrendyolCategories(List<CategoryMarketPlace> TrendyolcategoryDto)
+        {
+            foreach (var trendyolCat in TrendyolcategoryDto)
+            {
+                var exist = _appDbContext.categoriesMarketplace.Any(x => x.CategoryName == trendyolCat.CategoryName && x.PlatformID == (int)Platform.trendyol);
+                if (exist)
+                {
+                    foreach (var subcategory in trendyolCat.SubCategories)
+                    {
+                        var existsubcategories = _appDbContext.subCategoriesMarketplace.Any(x => x.CategoryName == subcategory.CategoryName && x.PlatformID == (int)Platform.trendyol);
+                        if (existsubcategories)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            await _appDbContext.subCategoriesMarketplace.AddAsync(subcategory);
+                            await _appDbContext.SaveChangesAsync();
+                        }
+                    }
+                }
+                else
+                {
+                    await _appDbContext.categoriesMarketplace.AddRangeAsync(trendyolCat);
+                    await _appDbContext.SaveChangesAsync();
+                }
+
+            }
+            return true;
+        }
+    }
 }

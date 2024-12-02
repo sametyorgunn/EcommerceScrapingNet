@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 
 namespace EntityLayer.Dto.ResponseDto
 {
-	public class N11CategoryDto
+	public class CategoryMarketPlaceDto
 	{
 		public string CategoryName { get; set; }
-		public List<N11SubCategoryDto> N11SubCategories { get; set; }
+        public int PlatformID { get; set; }
+        public List<SubCategoryMarketPlaceDto> SubCategories { get; set; }
 	}
-	public class N11SubCategoryDto
+	public class SubCategoryMarketPlaceDto
 	{
-		public string CategoryName { get; set; }
+        public int PlatformID { get; set; }
+
+        public string CategoryName { get; set; }
 	}
 }

@@ -211,5 +211,49 @@ namespace BusinessLayer.Managers
                 return false;
             }
         }
+
+        public async Task<bool> TrendyolCategoryUpdate()
+        {
+            var options = new ChromeOptions();
+            //options.AddArgument("--headless");
+            options.AddArgument("--disable-gpu");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
+            options.AddArgument("window-size=1920x1080");
+            options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+
+
+            using (IWebDriver driver = new ChromeDriver(options))
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                var jsExecutor = (IJavaScriptExecutor)driver;
+                driver.Navigate().GoToUrl("https://www.trendyol.com/");
+                var sideMenuBtn = driver.FindElement(By.CssSelector("div.side-menu-button-wrapper"));
+                OverlayControl(driver);
+				sideMenuBtn.Click();
+                var MainMenus = driver.FindElements(By.CssSelector("div.left-side-container"));
+
+                List<CategoryMarketPlaceDto> categories = new List<CategoryMarketPlaceDto>();
+                List<SubCategoryMarketPlaceDto> subcategoriesList = new List<SubCategoryMarketPlaceDto>();
+
+                foreach (var menu in MainMenus)
+                {
+                    var mainMenuName = menu.FindElement(By.CssSelector("span.category-title")).Text;
+                    Actions actions = new Actions(driver);
+                    actions.MoveToElement(menu).Perform();
+                    var windowHandles = driver.WindowHandles;
+
+                    var subcategories = driver.FindElements(By.CssSelector("li.category-sub-title a"));
+                    foreach (var subcategory in subcategories)
+                    {
+                        var sub = subcategory.Text;
+                        subcategoriesList.Add(new SubCategoryMarketPlaceDto { CategoryName = sub, PlatformID = (int)EntityLayer.Enums.Platform.trendyol });
+                    }
+                    categories.Add(new CategoryMarketPlaceDto { CategoryName = mainMenuName, SubCategories = subcategoriesList, PlatformID = (int)EntityLayer.Enums.Platform.trendyol });
+                }
+                await _categoryService.UpdateTrendyolCategories(categories);
+                return true;
+            }
+        }
     }
 }

@@ -96,11 +96,18 @@ namespace BusinessLayer.Managers
             throw new NotImplementedException();
         }
 
-		public async Task<bool> UpdateN11Categories(List<N11CategoryDto> N11categoryDto)
+		public async Task<bool> UpdateN11Categories(List<CategoryMarketPlaceDto> categoryDto)
 		{
-            var payload = _mapper.Map<List<N11Category>>(N11categoryDto);
+            var payload = _mapper.Map<List<CategoryMarketPlace>>(categoryDto);
             var result = await _categoryRepository.UpdateN11Categories(payload);
             return result;
 		}
-	}
+
+        public async Task<bool> UpdateTrendyolCategories(List<CategoryMarketPlaceDto> TrendyolcategoryDto)
+        {
+            var payload = _mapper.Map<List<CategoryMarketPlace>>(TrendyolcategoryDto);
+            var result = await _categoryRepository.UpdateTrendyolCategories(payload);
+            return result;
+        }
+    }
 }

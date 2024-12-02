@@ -141,3 +141,16 @@ $("#n11cat").click(function () {
 	});
 })
 
+$("#trendcat").click(function () {
+	$.ajax({
+		url: "/Admin/Category/TrendyolCategoryUpdate",
+		type: "GET",
+		success: function (response) {
+			toastr.success("güncelleniyor");
+		},
+		error: function (error) {
+			toastr.error("İşlem Başarısız.");
+		}
+	});
+})
+

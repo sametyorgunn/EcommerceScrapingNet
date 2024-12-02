@@ -13,11 +13,13 @@ namespace UI.Areas.Admin.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly IN11Service _n11Service;
+        private readonly ITrendyolService _trendyolService;
 
-		public CategoryController(ICategoryService categoryService, IN11Service n11Service)
+		public CategoryController(ICategoryService categoryService, IN11Service n11Service, ITrendyolService trendyolService)
 		{
 			_categoryService = categoryService;
 			_n11Service = n11Service;
+			_trendyolService = trendyolService;
 		}
 		public ActionResult Index()
         {
@@ -68,5 +70,11 @@ namespace UI.Areas.Admin.Controllers
             await _n11Service.N11CategoryUpdate();
             return Ok();
         }
+		[HttpGet]
+		public async Task<IActionResult> TrendyolCategoryUpdate()
+		{
+			await _trendyolService.TrendyolCategoryUpdate();
+			return Ok();
+		}
 	}
 }

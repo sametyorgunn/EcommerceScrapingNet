@@ -18,6 +18,7 @@ using AutoMapper;
 using System.Xml.Linq;
 using System.Globalization;
 using EntityLayer.Dto.RequestDto.Product;
+using EntityLayer.Enums;
 
 namespace BusinessLayer.Managers
 {
@@ -280,8 +281,8 @@ namespace BusinessLayer.Managers
 					string originalWindow = driver.CurrentWindowHandle;
 					var maincategory = cat.FindElement(By.CssSelector("a.itemContainer"));
 					var maincatname = maincategory.GetAttribute("title");
-					List<N11CategoryDto> categories = new List<N11CategoryDto>();
-					List<N11SubCategoryDto> subcategories = new List<N11SubCategoryDto>();
+					List<CategoryMarketPlaceDto> categories = new List<CategoryMarketPlaceDto>();
+					List<SubCategoryMarketPlaceDto> subcategories = new List<SubCategoryMarketPlaceDto>();
 
 					var subcategoriess = cat.FindElements(By.CssSelector("a.subCatMenuItem"));
 					foreach (var sub in subcategoriess)
@@ -300,12 +301,12 @@ namespace BusinessLayer.Managers
 						foreach (var subcat in subcats)
 						{
 							var a = subcat.GetAttribute("title");
-							subcategories.Add(new N11SubCategoryDto { CategoryName = a });
+							subcategories.Add(new SubCategoryMarketPlaceDto { CategoryName = a,PlatformID = (int)EntityLayer.Enums.Platform.n11 });
 						}
 						driver.Close();
 						driver.SwitchTo().Window(originalWindow);
 					}
-					categories.Add(new N11CategoryDto { CategoryName = maincatname, N11SubCategories = subcategories });
+					categories.Add(new CategoryMarketPlaceDto { CategoryName = maincatname, SubCategories = subcategories, PlatformID = (int)EntityLayer.Enums.Platform.n11 });
 					await _categoryService.UpdateN11Categories(categories);
 
 				}

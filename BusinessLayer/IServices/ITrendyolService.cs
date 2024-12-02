@@ -11,5 +11,7 @@ namespace BusinessLayer.IServices
     public interface ITrendyolService
     {
         public Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request);
+        public Task<bool> TrendyolCategoryUpdate();
+
     }
 }

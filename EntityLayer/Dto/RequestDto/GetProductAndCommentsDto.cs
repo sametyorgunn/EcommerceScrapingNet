@@ -10,6 +10,7 @@ namespace EntityLayer.Dto.RequestDto
     {
         public int CategoryId { get; set; }
         public string ProductName { get; set; }
+        public string N11CategoryName { get; set; }
         public int? ProductId { get; set; }
     }
 }

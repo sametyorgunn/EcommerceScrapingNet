@@ -16,8 +16,9 @@ namespace DataAccessLayer.IRepositories
 		public Task<List<Category>> GetMainCategories();
 		public Task<List<Category>> GetSubCategories(GetCategoriesByFilterDto request);
 		public Task<Category> AddCategory(Category category);
-		public Task<bool> UpdateN11Categories(List<N11Category> N11category);
+		public Task<bool> UpdateN11Categories(List<CategoryMarketPlace> N11category);
+        public Task<bool> UpdateTrendyolCategories(List<CategoryMarketPlace> TrendyolcategoryDto);
 
 
-	}
+    }
 }
