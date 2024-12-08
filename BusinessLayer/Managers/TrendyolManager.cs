@@ -62,29 +62,16 @@ namespace BusinessLayer.Managers
                 var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                 searchInput.SendKeys(request.ProductName);
                 searchInput.SendKeys(Keys.Enter);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).ToList();
-                var matchedProducts = ScrapeProduct
-                    .Where(product =>
-                    {
-                        try
-                        {
-                            var productName = product.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
-                            return productName.Contains(request.ProductName, StringComparison.OrdinalIgnoreCase);
-                        }
-                        catch (NoSuchElementException)
-                        {
-                            return false;
-                        }
-                    })
-                    .ToList();
+                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
+             
                 List<CommentDto> comments = new List<CommentDto>();	
-				foreach (var Sp in matchedProducts)
+				foreach (var Sp in ScrapeProduct)
 				{
 					wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 					var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
 
-                    var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-                    if (isTrueProduct == false) { continue; }
+                    //var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+                    //if (isTrueProduct == false) { continue; }
                     //var isSame = SameControl(request.ProductName, ProdName);
                     //if (isSame == false) { continue; }
                     var ProdID = Sp.GetAttribute("data-id");
@@ -109,12 +96,40 @@ namespace BusinessLayer.Managers
 						driver.SwitchTo().Window(originalWindow);
 						continue;
 					}
-					Comments = driver.FindElements(By.ClassName("comment-text"));
-                    foreach (var element in Comments)
+				
+                    int previousCount = 0;
+
+                    while (true)
                     {
-						comments.Add(new CommentDto { CommentText = element.Text, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = Convert.ToString(ProdID) });
-                    }                    
-					driver.Close();
+                        var Commentss = driver.FindElements(By.ClassName("comment-text"));
+
+                        foreach (var element in Commentss.Skip(previousCount))
+                        {
+                            comments.Add(new CommentDto
+                            {
+                                CommentText = element.Text,
+                                ProductId = (int)request.ProductId,
+                                ProductLink = Link,
+                                ProductPlatformID = Convert.ToString(ProdID)
+                            });
+                        }
+
+                        if (Commentss.Count == previousCount)
+                        {
+                            break;
+                        }
+
+                        previousCount = Commentss.Count;
+
+                        ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
+
+                        Thread.Sleep(2000); 
+                    }
+
+
+
+
+                    driver.Close();
                     driver.SwitchTo().Window(originalWindow);
                 }
 				 var analyse =await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
@@ -228,8 +243,10 @@ namespace BusinessLayer.Managers
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 var jsExecutor = (IJavaScriptExecutor)driver;
                 driver.Navigate().GoToUrl("https://www.trendyol.com/");
-                var sideMenuBtn = driver.FindElement(By.CssSelector("div.side-menu-button-wrapper"));
                 OverlayControl(driver);
+                var sideMenuBtn = driver.FindElement(By.CssSelector("div.side-menu-button-wrapper"));
+                var sideMenuBtn2 = driver.FindElement(By.CssSelector("div.side-menu-button"));
+				OverlayControl(driver);
 				sideMenuBtn.Click();
                 var MainMenus = driver.FindElements(By.CssSelector("div.left-side-container"));
 
@@ -238,6 +255,7 @@ namespace BusinessLayer.Managers
 
                 foreach (var menu in MainMenus)
                 {
+                    OverlayControl(driver);
                     List<SubCategoryMarketPlaceDto> subcategoriesList = new List<SubCategoryMarketPlaceDto>();
 
                     var mainMenuName = menu.FindElement(By.CssSelector("span.category-title")).Text;

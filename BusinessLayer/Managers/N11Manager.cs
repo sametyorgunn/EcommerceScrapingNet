@@ -68,31 +68,18 @@ namespace BusinessLayer.Managers
 				ProductDto productDto = new ProductDto();
 			
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).ToList();
-                var matchedProducts = ScrapeProduct
-                    .Where(product =>
-                    {
-                        try
-                        {
-                            var productName = product.FindElement(By.ClassName("productName")).Text;
-                            return productName.Contains(request.ProductName, StringComparison.OrdinalIgnoreCase);
-                        }
-                        catch (NoSuchElementException)
-                        {
-                            return false;
-                        }
-                    })
-                    .ToList();
+				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(1).ToList();
+              
 
                 List<CommentDto> comments = new List<CommentDto>();
-				foreach (var Sp in matchedProducts)
+				foreach (var Sp in ScrapeProduct)
                 {
                     Thread.Sleep(1000);
 					string originalWindow = driver.CurrentWindowHandle;
 					var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
-					//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName});
-     //               if(isTrueProduct == false) { continue; }
+					//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+					//if (isTrueProduct == false) { continue; }
 
 					//var isSame = SameControl(request.ProductName, ProdName); 
 					//if (isSame == false){continue;}
@@ -128,39 +115,35 @@ namespace BusinessLayer.Managers
 					driver.SwitchTo().Window(windowHandles[1]);
 					Thread.Sleep(1000);
 
-
 					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
-
-					//var nextPage = driver.FindElements(By.CssSelector("div.pagination a.next")).ToList();
-					//while (nextPage.Count() != 0)
-					//{
-					//	try
-					//	{
-					//		var mew = wait.Until(ExpectedConditions.ElementToBeClickable(nextPage.First()));
-					//		mew.Click();
-
-					//		Thread.Sleep(1000);	
-					//		IList<IWebElement> yorums = driver.FindElements(By.ClassName("comment"));
-					//		Comments = Comments.Concat(yorums).ToList(); 
-					//		nextPage = driver.FindElements(By.CssSelector("a.next")).ToList();
-					//	}
-					//	catch (NoSuchElementException)
-					//	{
-					//		nextPage = null;
-					//	}
-					//}
 
 					foreach (var comment in Comments)
 					{
 						var a = comment.FindElement(By.CssSelector("p")).Text;
 						comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link,ProductPlatformID = ProdID.ToString() });
 					}
+
+     //               IWebElement nextpageBtn = driver.FindElement(By.CssSelector("a.next.navigation"));
+     //               ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", nextpageBtn);
+     //               nextpageBtn.Click();
+
+     //               while (nextpageBtn != null)
+					//{
+					//	nextpageBtn.Click();
+					//	Comments = driver.FindElements(By.ClassName("comment-text"));
+					//	foreach (var element in Comments)
+					//	{
+					//		comments.Add(new CommentDto { CommentText = element.Text, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = Convert.ToString(ProdID) });
+					//	}
+					//}
+
 					driver.Close();
 					driver.SwitchTo().Window(originalWindow);
 				}
 				var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
 				var res = _mapper.Map<List<CommentDto>>(analyse);
                 productDto.Comment = res;
+				productDto.CategoryId = request.CategoryId;
 				var result = await _productService.CreateProduct(productDto);
 				
 				return new ScrapingResponseDto {Description = "Başarılı", ProductId = result.Id,Status = "True" };
@@ -279,6 +262,9 @@ namespace BusinessLayer.Managers
 
 				foreach (var cat in CateTree)
 				{
+					var catree = cat.FindElement(By.ClassName("catMenuTree"));
+					jsExecutor.ExecuteScript("arguments[0].className = 'catMenuTree active';", catree);
+
 					string originalWindow = driver.CurrentWindowHandle;
 					var maincategory = cat.FindElement(By.CssSelector("a.itemContainer"));
 					var maincatname = maincategory.GetAttribute("title");
@@ -289,6 +275,7 @@ namespace BusinessLayer.Managers
 					{
 						Thread.Sleep(1000);
                         Actions actions = new Actions(driver);
+						OverlayControl(driver);
 						actions.MoveToElement(maincategory).Perform();
 						actions.MoveToElement(sub).KeyDown(Keys.Control).Click().KeyUp(Keys.Control).Perform();
 
@@ -309,7 +296,7 @@ namespace BusinessLayer.Managers
                         driver.Close();
 						driver.SwitchTo().Window(originalWindow);
 					}
-					categories.Add(new CategoryMarketPlaceDto { CategoryName = subName, SubCategories = subcategories, PlatformID = (int)EntityLayer.Enums.Platform.n11 });
+					 categories.Add(new CategoryMarketPlaceDto { CategoryName = subName, SubCategories = subcategories, PlatformID = (int)EntityLayer.Enums.Platform.n11 });
 					await _categoryService.UpdateN11Categories(categories);
 				}
 				return true;

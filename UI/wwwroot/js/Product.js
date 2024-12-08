@@ -60,18 +60,3 @@ $("#scrapeProd").click(function () {
 			});
 });
 
-$(document).ready(function () {
-	$("#trendBtn").prop("disabled", true);
-	$("#amazonBtn").prop("disabled", true);
-});
-
-$("#n11Btn").on("click", function (event) {
-	event.preventDefault();
-	$("#n11Btn").prop("disabled", true);
-	$("#trendBtn").prop("disabled", false);
-});
-$("#trendBtn").on("click", function (event) {
-	event.preventDefault();
-	$("#trendBtn").prop("disabled", true);
-	$("#amazonBtn").prop("disabled", false);
-});

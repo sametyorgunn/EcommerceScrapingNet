@@ -2,6 +2,8 @@
 @model List<CategoryDto>
 
 <select id="CategoryName" name="CategoryId" class="dropdown-content form-control">
+    <option selected value="">Seçiniz</option>
+
     @foreach (var category in Model.Where(x => x.ParentId == 0))
     {
         <option value="@category.Id">@category.Name</option>

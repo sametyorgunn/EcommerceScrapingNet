@@ -58,32 +58,32 @@ namespace BusinessLayer.Managers
 				Thread.Sleep(1000);
 
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.ClassName("sg-col-4-of-24")).ToList();
-                var matchedProducts = ScrapeProduct
-                   .Where(product =>
-                   {
-                       try
-                       {
-                           var productName = product.FindElement(By.CssSelector("span.a-text-normal")).Text;
-                           return productName.Contains(request.ProductName, StringComparison.OrdinalIgnoreCase);
-                       }
-                       catch (NoSuchElementException)
-                       {
-                           return false;
-                       }
-                   })
-                   .ToList();
+				var ScrapeProduct = driver.FindElements(By.ClassName("sg-col-4-of-24")).Take(5).ToList();
+                //var matchedProducts = ScrapeProduct
+                //   .Where(product =>
+                //   {
+                //       try
+                //       {
+                //           var productName = product.FindElement(By.CssSelector("span.a-text-normal")).Text;
+                //           return productName.Contains(request.ProductName, StringComparison.OrdinalIgnoreCase);
+                //       }
+                //       catch (NoSuchElementException)
+                //       {
+                //           return false;
+                //       }
+                //   })
+                //   .ToList();
 
                 List<CommentDto> comments = new List<CommentDto>();
-				foreach (var Sp in matchedProducts)
+				foreach (var Sp in ScrapeProduct)
 				{
 					Thread.Sleep(1000);
                     var originalWindow = driver.CurrentWindowHandle;
 
 					var ProdName = Sp.FindElement(By.CssSelector("span.a-text-normal")).Text;
 
-                    var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-                    if (isTrueProduct == false) { continue; }
+                    //var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+                    //if (isTrueProduct == false) { continue; }
                     //var isSame = SameControl(request.ProductName, ProdName);
                     //if (isSame == false) { continue; }
 
