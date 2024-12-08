@@ -8,12 +8,14 @@ namespace EntityLayer.Dto.ResponseDto
 {
 	public class CategoryMarketPlaceDto
 	{
-		public string CategoryName { get; set; }
+        public int Id { get; set; }
+        public string CategoryName { get; set; }
         public int PlatformID { get; set; }
         public List<SubCategoryMarketPlaceDto> SubCategories { get; set; }
 	}
 	public class SubCategoryMarketPlaceDto
 	{
+        public int Id { get; set; }
         public int PlatformID { get; set; }
 
         public string CategoryName { get; set; }

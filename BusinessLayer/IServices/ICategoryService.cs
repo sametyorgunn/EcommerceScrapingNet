@@ -17,5 +17,6 @@ namespace BusinessLayer.IServices
         public Task<CategoryDto> AddCategory(CategoryDto categoryDto);
         public Task<bool> UpdateN11Categories(List<CategoryMarketPlaceDto> N11categoryDto);
         public Task<bool> UpdateTrendyolCategories(List<CategoryMarketPlaceDto> TrendyolcategoryDto);
+        public Task<List<CategoryMarketPlaceDto>> GetAllN11Categories();
     }
 }

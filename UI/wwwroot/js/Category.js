@@ -154,3 +154,19 @@ $("#trendcat").click(function () {
 	});
 })
 
+function filterFunctionCategory() {
+	const input = document.getElementById("myInputCategory");
+	const filter = input.value.toUpperCase();
+	const select = document.getElementById("CategoryName");
+	const options = select.getElementsByTagName("option");
+
+	for (let i = 0; i < options.length; i++) {
+		const txtValue = options[i].textContent || options[i].innerText;
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			options[i].style.display = "";
+		} else {
+			options[i].style.display = "none";
+		}
+	}
+}
+

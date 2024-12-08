@@ -34,6 +34,13 @@ namespace BusinessLayer.Managers
 
         }
 
+        public async Task<List<CategoryMarketPlaceDto>> GetAllN11Categories()
+        {
+            var n11categories = await _categoryRepository.GetAllN11Categories();
+            var result = _mapper.Map<List<CategoryMarketPlaceDto>>(n11categories);
+            return result;
+        }
+
         public async Task<List<CategoryDto>> GetListAsync()
         {
 			var categories = await _categoryRepository.GetListAllAsync();

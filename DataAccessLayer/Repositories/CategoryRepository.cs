@@ -41,7 +41,16 @@ namespace DataAccessLayer.Repositories
 			}
 		}
 
-		public async Task<List<Category>> GetMainCategories()
+        public async Task<List<CategoryMarketPlace>> GetAllN11Categories()
+        {
+			var n11categories =await _appDbContext.categoriesMarketplace
+				.Where(x => x.PlatformID == (int)Platform.n11)
+				.Include(x => x.SubCategories)
+				.ToListAsync();
+			return n11categories;
+        }
+
+        public async Task<List<Category>> GetMainCategories()
 		{
 			var categories = await _appDbContext.categories.Where(x=>x.ParentId == 0).Take(6).ToListAsync();
 			return categories;

@@ -233,11 +233,13 @@ namespace BusinessLayer.Managers
 				sideMenuBtn.Click();
                 var MainMenus = driver.FindElements(By.CssSelector("div.left-side-container"));
 
+
                 List<CategoryMarketPlaceDto> categories = new List<CategoryMarketPlaceDto>();
-                List<SubCategoryMarketPlaceDto> subcategoriesList = new List<SubCategoryMarketPlaceDto>();
 
                 foreach (var menu in MainMenus)
                 {
+                    List<SubCategoryMarketPlaceDto> subcategoriesList = new List<SubCategoryMarketPlaceDto>();
+
                     var mainMenuName = menu.FindElement(By.CssSelector("span.category-title")).Text;
                     Actions actions = new Actions(driver);
                     actions.MoveToElement(menu).Perform();

@@ -1,0 +1,11 @@
+﻿@using EntityLayer.Dto.ResponseDto
+@model List<CategoryMarketPlaceDto>
+
+<select id="CategoryName" class="dropdown-content form-control">
+    @foreach (var category in Model.SelectMany(x=>x.SubCategories))
+    {
+        <option value="@category.Id">@category.CategoryName</option>
+    }
+</select>
+@* <div id="selectArea"></div>
+ *@

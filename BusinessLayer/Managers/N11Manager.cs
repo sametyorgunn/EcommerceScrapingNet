@@ -261,7 +261,7 @@ namespace BusinessLayer.Managers
 		public async Task<bool> N11CategoryUpdate()
 		{
 			var options = new ChromeOptions();
-			options.AddArgument("--headless");
+			//options.AddArgument("--headless");
 			options.AddArgument("--disable-gpu");
 			options.AddArgument("--no-sandbox");
 			options.AddArgument("--disable-dev-shm-usage");
@@ -271,25 +271,28 @@ namespace BusinessLayer.Managers
 
 			using (IWebDriver driver = new ChromeDriver(options))
 			{
-				var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+				var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 				var jsExecutor = (IJavaScriptExecutor)driver;
 				driver.Navigate().GoToUrl("https://www.n11.com/");
 				var CateTree = driver.FindElements(By.CssSelector("li.catMenuItem"));
+				List<CategoryMarketPlaceDto> categories = new List<CategoryMarketPlaceDto>();
 
 				foreach (var cat in CateTree)
 				{
 					string originalWindow = driver.CurrentWindowHandle;
 					var maincategory = cat.FindElement(By.CssSelector("a.itemContainer"));
 					var maincatname = maincategory.GetAttribute("title");
-					List<CategoryMarketPlaceDto> categories = new List<CategoryMarketPlaceDto>();
-					List<SubCategoryMarketPlaceDto> subcategories = new List<SubCategoryMarketPlaceDto>();
-
 					var subcategoriess = cat.FindElements(By.CssSelector("a.subCatMenuItem"));
-					foreach (var sub in subcategoriess)
+                    List<SubCategoryMarketPlaceDto> subcategories = new List<SubCategoryMarketPlaceDto>();
+					var subName = "";
+                    foreach (var sub in subcategoriess)
 					{
-						Actions actions = new Actions(driver);
+						Thread.Sleep(1000);
+                        Actions actions = new Actions(driver);
 						actions.MoveToElement(maincategory).Perform();
 						actions.MoveToElement(sub).KeyDown(Keys.Control).Click().KeyUp(Keys.Control).Perform();
+
+						subName = sub.FindElement(By.CssSelector("span")).Text;
 						var windowHandles = driver.WindowHandles;
 
 						wait.Until(d => d.WindowHandles.Count > 1);
@@ -303,14 +306,12 @@ namespace BusinessLayer.Managers
 							var a = subcat.GetAttribute("title");
 							subcategories.Add(new SubCategoryMarketPlaceDto { CategoryName = a,PlatformID = (int)EntityLayer.Enums.Platform.n11 });
 						}
-						driver.Close();
+                        driver.Close();
 						driver.SwitchTo().Window(originalWindow);
 					}
-					categories.Add(new CategoryMarketPlaceDto { CategoryName = maincatname, SubCategories = subcategories, PlatformID = (int)EntityLayer.Enums.Platform.n11 });
+					categories.Add(new CategoryMarketPlaceDto { CategoryName = subName, SubCategories = subcategories, PlatformID = (int)EntityLayer.Enums.Platform.n11 });
 					await _categoryService.UpdateN11Categories(categories);
-
 				}
-
 				return true;
 			}
 		}
