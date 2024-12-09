@@ -19,6 +19,7 @@ using System.Xml.Linq;
 using System.Globalization;
 using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Enums;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BusinessLayer.Managers
 {
@@ -123,19 +124,21 @@ namespace BusinessLayer.Managers
 						comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link,ProductPlatformID = ProdID.ToString() });
 					}
 
-     //               IWebElement nextpageBtn = driver.FindElement(By.CssSelector("a.next.navigation"));
-     //               ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", nextpageBtn);
-     //               nextpageBtn.Click();
-
-     //               while (nextpageBtn != null)
-					//{
-					//	nextpageBtn.Click();
-					//	Comments = driver.FindElements(By.ClassName("comment-text"));
-					//	foreach (var element in Comments)
-					//	{
-					//		comments.Add(new CommentDto { CommentText = element.Text, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = Convert.ToString(ProdID) });
-					//	}
-					//}
+                    IWebElement nextpageBtn2 = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
+                    while (nextpageBtn2 != null)
+					{
+                        bool isElementPresent = driver.FindElements(By.CssSelector("a.next.navigation")).Count > 0;
+						if(!isElementPresent) { nextpageBtn2 = null; break; }
+                        IWebElement nextpageBtn = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", nextpageBtn);
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", nextpageBtn);
+                        IList<IWebElement> CommentsNext = driver.FindElements(By.ClassName("comment"));
+                        foreach (var comment in CommentsNext)
+						{
+                            var a = comment.FindElement(By.CssSelector("p")).Text;
+                            comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
+                        }
+                    }
 
 					driver.Close();
 					driver.SwitchTo().Window(originalWindow);

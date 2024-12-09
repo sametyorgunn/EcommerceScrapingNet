@@ -96,13 +96,11 @@ namespace BusinessLayer.Managers
 						driver.SwitchTo().Window(originalWindow);
 						continue;
 					}
-				
+                    #region GetAllComments
                     int previousCount = 0;
-
                     while (true)
                     {
                         var Commentss = driver.FindElements(By.ClassName("comment-text"));
-
                         foreach (var element in Commentss.Skip(previousCount))
                         {
                             comments.Add(new CommentDto
@@ -113,21 +111,15 @@ namespace BusinessLayer.Managers
                                 ProductPlatformID = Convert.ToString(ProdID)
                             });
                         }
-
                         if (Commentss.Count == previousCount)
                         {
                             break;
                         }
-
                         previousCount = Commentss.Count;
-
                         ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
-
                         Thread.Sleep(2000); 
                     }
-
-
-
+                    #endregion
 
                     driver.Close();
                     driver.SwitchTo().Window(originalWindow);
