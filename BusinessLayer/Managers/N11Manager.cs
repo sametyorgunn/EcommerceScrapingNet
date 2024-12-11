@@ -69,7 +69,7 @@ namespace BusinessLayer.Managers
 				ProductDto productDto = new ProductDto();
 			
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(1).ToList();
+				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
               
 
                 List<CommentDto> comments = new List<CommentDto>();
@@ -79,8 +79,8 @@ namespace BusinessLayer.Managers
 					string originalWindow = driver.CurrentWindowHandle;
 					var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
-					//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-					//if (isTrueProduct == false) { continue; }
+					var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+					if (isTrueProduct == false) { continue; }
 
 					//var isSame = SameControl(request.ProductName, ProdName); 
 					//if (isSame == false){continue;}
@@ -124,23 +124,29 @@ namespace BusinessLayer.Managers
 						comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link,ProductPlatformID = ProdID.ToString() });
 					}
 
-                    IWebElement nextpageBtn2 = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
-                    while (nextpageBtn2 != null)
-					{
-                        bool isElementPresent = driver.FindElements(By.CssSelector("a.next.navigation")).Count > 0;
-						if(!isElementPresent) { nextpageBtn2 = null; break; }
-                        IWebElement nextpageBtn = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
-                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", nextpageBtn);
-                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", nextpageBtn);
-                        IList<IWebElement> CommentsNext = driver.FindElements(By.ClassName("comment"));
-                        foreach (var comment in CommentsNext)
-						{
-                            var a = comment.FindElement(By.CssSelector("p")).Text;
-                            comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
+                    #region GetOtherComment
+                    var nextPageIsExist = driver.FindElements(By.CssSelector("a.next.navigation")).ToList();
+                    if (nextPageIsExist.Count > 0)
+                    {
+                        IWebElement nextpageBtn2 = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
+                        while (nextpageBtn2 != null)
+                        {
+                            bool isElementPresent = driver.FindElements(By.CssSelector("a.next.navigation")).Count > 0;
+                            if (!isElementPresent) { nextpageBtn2 = null; break; }
+                            IWebElement nextpageBtn = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
+                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", nextpageBtn);
+                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", nextpageBtn);
+                            IList<IWebElement> CommentsNext = driver.FindElements(By.ClassName("comment"));
+                            foreach (var comment in CommentsNext)
+                            {
+                                var a = comment.FindElement(By.CssSelector("p")).Text;
+                                comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
+                            }
                         }
                     }
+                    #endregion
 
-					driver.Close();
+                    driver.Close();
 					driver.SwitchTo().Window(originalWindow);
 				}
 				var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);

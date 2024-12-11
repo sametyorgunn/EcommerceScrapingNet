@@ -69,9 +69,8 @@ namespace BusinessLayer.Managers
 				{
 					wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 					var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
-
-                    //var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-                    //if (isTrueProduct == false) { continue; }
+                    var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+                    if (isTrueProduct == false) { continue; }
                     //var isSame = SameControl(request.ProductName, ProdName);
                     //if (isSame == false) { continue; }
                     var ProdID = Sp.GetAttribute("data-id");
@@ -96,7 +95,8 @@ namespace BusinessLayer.Managers
 						driver.SwitchTo().Window(originalWindow);
 						continue;
 					}
-                    #region GetAllComments
+
+                    #region GetOtherComments
                     int previousCount = 0;
                     while (true)
                     {
