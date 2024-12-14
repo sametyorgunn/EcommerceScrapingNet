@@ -10,7 +10,6 @@
 		type: 'POST',
 		data: {ids:ids},
 		success: function (response) {
-			debugger
 			toastr.success("ürünler silindi")
 			window.location.reload()
 		},
