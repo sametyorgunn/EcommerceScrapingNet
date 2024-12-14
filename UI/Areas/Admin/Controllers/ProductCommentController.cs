@@ -18,19 +18,21 @@ namespace UI.Areas.Admin.Controllers
         private readonly ITrendyolService _trendyolservice;
         private readonly IN11Service _n11Service;
         private readonly IAmazonService _amazonService;
-		private readonly HttpClient _httpclient;
+        private readonly IHepsiBuradaService _hepsiBuradaService;
+        private readonly HttpClient _httpclient;
 
-		public ProductCommentController(ICategoryService categoryService, IProductService productService, HttpClient httpclient,
-			ITrendyolService trendyolservice, IN11Service n11Service, IAmazonService amazonService)
-		{
-			_categoryService = categoryService;
-			_productService = productService;
-			_httpclient = httpclient;
-			_trendyolservice = trendyolservice;
-			_n11Service = n11Service;
-			_amazonService = amazonService;
-		}
-		public IActionResult Index()
+        public ProductCommentController(ICategoryService categoryService, IProductService productService, HttpClient httpclient,
+            ITrendyolService trendyolservice, IN11Service n11Service, IAmazonService amazonService, IHepsiBuradaService hepsiBuradaService)
+        {
+            _categoryService = categoryService;
+            _productService = productService;
+            _httpclient = httpclient;
+            _trendyolservice = trendyolservice;
+            _n11Service = n11Service;
+            _amazonService = amazonService;
+            _hepsiBuradaService = hepsiBuradaService;
+        }
+        public IActionResult Index()
         {
 			return View();
         }
@@ -43,7 +45,7 @@ namespace UI.Areas.Admin.Controllers
 				request.ProductName = req;
 				var resultN11 = await _n11Service.GetProductAndCommentsAsync(request);
 				request.ProductId = resultN11.ProductId;
-				//var amazon =await _amazonService.GetProductAndCommentsAsync(request);
+				var amazon =await _amazonService.GetProductAndCommentsAsync(request);
 				var result = await _trendyolservice.GetProductAndCommentsAsync(request);
 			}
 			return Ok();

@@ -96,25 +96,34 @@ $(document).ready(function () {
 			data: { categoryId: selectedCategoryId },
 			success: function (response) {
 				if (response && response.length > 0) {
-					var subCategorySelect = $("<select>", {
-						id: "CategoryName_" + selectedCategoryId,
-						name: "CategoryId",
-						class: "dropdown-content form-control",
-					});
-					subCategorySelect.append($("<option>", {
-						value: "",
-						text: "Bir seçenek seçin",
-						disabled: true,
-						selected: true
-					}));
-					response.forEach(function (subCategory) {
-						subCategorySelect.append($("<option>", {
-							value: subCategory.id,
-							text: subCategory.name
-						}));
-					});
+					//var subCategorySelect = $("<select>", {
+					//	id: "CategoryName_" + selectedCategoryId,
+					//	name: "CategoryId",
+					//	class: "dropdown-content form-control",
+					//});
+					var select = `
+                    <select name="CategoryId" class="dropdown-content form-control" id="CategoryName_${selectedCategoryId}">
+                        <option value="" disabled selected>Bir seçenek seçin</option>
+                        ${response.map(subCategory => `<option value="${subCategory.id}">${subCategory.name}</option>`).join('')}
+                    </select></br>
+                `;
 
-					$("#selectArea").append(subCategorySelect);
+
+					//subCategorySelect.append($("<option>", {
+					//	value: "",
+					//	text: "Bir seçenek seçin",
+					//	disabled: true,
+					//	selected: true
+					//}));
+					//response.forEach(function (subCategory) {
+					//	subCategorySelect.append($("<option>", {
+					//		value: subCategory.id,
+					//		text: subCategory.name
+					//	}));
+					//});
+
+					//$("#selectArea").append(subCategorySelect);
+					$("#selectArea").append(select);
 
 				} else {
 					toastr.warning("Alt kategori bulunamadı.");

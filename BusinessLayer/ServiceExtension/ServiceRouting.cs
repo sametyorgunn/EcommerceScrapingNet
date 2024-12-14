@@ -25,9 +25,10 @@ namespace BusinessLayer.ServiceExtension
             service.AddScoped<IAmazonService, AmazonManager>();
             service.AddScoped<IAIService, AIManager>();
             service.AddScoped<IN11Service, N11Manager>();
+            service.AddScoped<IHepsiBuradaService, HepsiBuradaManager>();
 
 
-			service.AddAutoMapper(typeof(ProductProfile));
+            service.AddAutoMapper(typeof(ProductProfile));
 			service.AddAutoMapper(typeof(CategoryProfile));
 			service.AddAutoMapper(typeof(CommentProfile));
 			service.AddAutoMapper(typeof(UserProfile));

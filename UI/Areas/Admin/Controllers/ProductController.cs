@@ -29,8 +29,8 @@ namespace UI.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteCheckedProduct(List<int>ids)
 		{
-			var result = await _productService.DeleteCheckedProducts(ids);
-            return RedirectToAction("Index", "ProductComment");
+			var result =await _productService.DeleteCheckedProducts(ids);
+			return Ok();
         }
         public async Task<IActionResult> MakeProductPassive(int id)
 		{

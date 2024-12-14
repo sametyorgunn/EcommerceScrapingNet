@@ -10,8 +10,9 @@
 		type: 'POST',
 		data: {ids:ids},
 		success: function (response) {
-			toastr("ürünler silindi");
-			window.location.reload();
+			debugger
+			toastr.success("ürünler silindi")
+			window.location.reload()
 		},
 		error: function (error) {
 			alert('Error: ' + JSON.stringify(error));
@@ -22,8 +23,6 @@
 
 $("#scrapeProd").click(function () {
 	var CategoryId = $("#selectArea .dropdown-content:last").val();
-
-	//var CategoryId = $("#CategoryName").val();
 	var ProductName = $("#ProductName").val();
 	var data = {
 				CategoryId: CategoryId,
@@ -43,14 +42,9 @@ $("#scrapeProd").click(function () {
 		type: "POST",
 		data: data,
 		success: function (response) {
-			// if (response.status == "True") {
 			toastr.clear(loadingMessage);
-		toastr.success("ürünler Başarıyla çekildi.")
-		window.location.reload();
-			//            } else {
-			// toastr.clear(loadingMessage);
-			// toastr.error("ürünler çekilemedi.")
-			//            }
+			toastr.success("ürünler Başarıyla çekildi.")
+			window.location.reload();
 		},
 		error: function (error) {
 			toastr.clear(loadingMessage);
