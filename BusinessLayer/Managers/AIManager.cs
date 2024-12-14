@@ -40,12 +40,8 @@ namespace BusinessLayer.Managers
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("Yanıt:");
-                    Console.WriteLine(responseContent);
-
                     var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
                     string reply = responseObject.choices[0].message.content;
-                    Console.WriteLine("ChatGPT: " + reply);
                     if(reply == "True")
                     {
                         return true;
@@ -57,9 +53,7 @@ namespace BusinessLayer.Managers
                 }
                 else
                 {
-                    Console.WriteLine($"Hata: {response.StatusCode}");
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(errorContent);
                     return false;
                 }
                 return true;
