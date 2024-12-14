@@ -135,13 +135,16 @@ namespace BusinessLayer.Managers
                             if (!isElementPresent) { nextpageBtn2 = null; break; }
                             IWebElement nextpageBtn = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
                             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", nextpageBtn);
+							Thread.Sleep(1000);
                             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", nextpageBtn);
+                            Thread.Sleep(1000);
                             IList<IWebElement> CommentsNext = driver.FindElements(By.ClassName("comment"));
                             foreach (var comment in CommentsNext)
                             {
                                 var a = comment.FindElement(By.CssSelector("p")).Text;
                                 comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
                             }
+							if(comments.Count() >= 100) { break; }
                         }
                     }
                     #endregion

@@ -111,13 +111,13 @@ namespace BusinessLayer.Managers
                                 ProductPlatformID = Convert.ToString(ProdID)
                             });
                         }
-                        if (Commentss.Count == previousCount)
+                        if (Commentss.Count == previousCount || comments.Count() >= 100)
                         {
                             break;
                         }
                         previousCount = Commentss.Count;
                         ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
-                        Thread.Sleep(2000); 
+                        Thread.Sleep(1000); 
                     }
                     #endregion
 
