@@ -4,7 +4,7 @@
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class tables : Migration
+    public partial class mig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,6 +20,20 @@ namespace DataAccessLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "categoriesMarketplace",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlatformID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_categoriesMarketplace", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,6 +75,27 @@ namespace DataAccessLayer.Migrations
                         name: "FK_products_categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "subCategoriesMarketplace",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    PlatformID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_subCategoriesMarketplace", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_subCategoriesMarketplace_categoriesMarketplace_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "categoriesMarketplace",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -123,6 +158,11 @@ namespace DataAccessLayer.Migrations
                 name: "IX_products_CategoryId",
                 table: "products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_subCategoriesMarketplace_CategoryId",
+                table: "subCategoriesMarketplace",
+                column: "CategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -134,10 +174,16 @@ namespace DataAccessLayer.Migrations
                 name: "productproperty");
 
             migrationBuilder.DropTable(
+                name: "subCategoriesMarketplace");
+
+            migrationBuilder.DropTable(
                 name: "users");
 
             migrationBuilder.DropTable(
                 name: "products");
+
+            migrationBuilder.DropTable(
+                name: "categoriesMarketplace");
 
             migrationBuilder.DropTable(
                 name: "categories");
