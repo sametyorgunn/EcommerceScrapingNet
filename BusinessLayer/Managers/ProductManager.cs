@@ -71,7 +71,13 @@ namespace BusinessLayer.Managers
 			var payload = _mapper.Map<ProductDto>(product);
 			return payload;
 		}
-	
+
+		public async Task<bool> GetProductByMarketPlaceID(GetProductByMarketPlaceId marketPlaceId)
+		{
+			var product = await _productRepository.GetProductByMarketPlaceID(marketPlaceId);
+			return product;
+		}
+
 		public async Task<List<ProductDto>> GetProductsByCategoryId(GetProductByFilterDto request)
 		{
 			var products = await _productRepository.GetProductsByCategoryId(request);

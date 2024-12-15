@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using SeleniumExtras.WaitHelpers;
 using System.Globalization;
 using EntityLayer.Dto.RequestDto.Product;
+using EntityLayer.Entity;
 
 namespace BusinessLayer.Managers
 {
@@ -37,7 +38,7 @@ namespace BusinessLayer.Managers
         public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
 		{
 			var options = new ChromeOptions();
-            //options.AddArgument("--headless");
+            options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
@@ -74,6 +75,9 @@ namespace BusinessLayer.Managers
                     //if (isSame == false) { continue; }
 
                     var prodID = Sp.GetAttribute("data-uuid");
+					var isExistProduct = await
+					_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductId = prodID });
+					if (isExistProduct == false) { break; }
 					var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
 					Actions newTabAction = new Actions(driver);
 					newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("a.a-link-normal"))).KeyUp(Keys.Control).Perform();

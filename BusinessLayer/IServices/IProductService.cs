@@ -22,6 +22,7 @@ namespace BusinessLayer.IServices
         Task<ProductDto> CreateProduct(ProductDto dto);
         Task<List<ProductDto>> GetProductsBySearch(string search);
         Task<bool> DeleteCheckedProducts(List<int> id);
+        Task<bool> GetProductByMarketPlaceID(GetProductByMarketPlaceId marketPlaceId);
 
 
     }

@@ -21,8 +21,8 @@ namespace BusinessLayer.Managers
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
                 var requestBody = new
                 {
-                    model = "gpt-3.5-turbo",
-                    //model = "gpt-4o", 
+                    //model = "gpt-3.5-turbo",
+                    model = "gpt-4o", 
                     messages = new[]
                     {
                     new { role = "system", content = "Sen bir asistan olarak çalışıyorsun." },
@@ -31,7 +31,7 @@ namespace BusinessLayer.Managers
                     $"ona istinaden değer döndür. evet ise True, değil ise False yaz." }
                 },
                     max_tokens = 150, 
-                    temperature = 1.0
+                    temperature = 0.7
                 };
 
                 var jsonRequest = JsonConvert.SerializeObject(requestBody);

@@ -95,10 +95,10 @@
 				<div id="description" class="tabs tabs-simple tabs-simple-full-width-line tabs-product tabs-dark mb-2">
 				<ul class="nav nav-tabs justify-content-start">
 						<li class="nav-item">
-							<a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" data-bs-toggle="tab" data-bs-target="#OlumluYorumlar">İyi Yorumlar</a>
+							<a class="nav-link active font-weight-bold text-3 text-uppercase py-2 px-3" data-bs-toggle="tab" data-bs-target="#OlumluYorumlar">İyi Yorumlar (@Model.Comment.Where(x => x.Prediction == "True").Count())</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" data-bs-toggle="tab" data-bs-target="#OlumsuzYorumlar">Olumsuz Yorumlar</a>
+							<a class="nav-link font-weight-bold text-3 text-uppercase py-2 px-3" data-bs-toggle="tab" data-bs-target="#OlumsuzYorumlar">Olumsuz Yorumlar (@Model.Comment.Where(x => x.Prediction == "False").Count())</a>
 						</li>
 					</ul>
 					<div class="tab-content p-0">

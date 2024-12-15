@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace EntityLayer.Dto.RequestDto
 {
-	public class GetProductByProductId
+	public class GetProductByMarketPlaceId
 	{
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
     }
 }

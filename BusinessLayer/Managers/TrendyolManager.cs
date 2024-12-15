@@ -45,7 +45,7 @@ namespace BusinessLayer.Managers
         {
 
 			var options = new ChromeOptions();
-            //options.AddArgument("--headless");
+            options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
@@ -74,6 +74,10 @@ namespace BusinessLayer.Managers
                     //var isSame = SameControl(request.ProductName, ProdName);
                     //if (isSame == false) { continue; }
                     var ProdID = Sp.GetAttribute("data-id");
+					var isExistProduct = await
+					_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductId = ProdID });
+					if (isExistProduct == false) { break; }
+
 					var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
 					string originalWindow = driver.CurrentWindowHandle;
 					Sp.Click();
@@ -111,7 +115,7 @@ namespace BusinessLayer.Managers
                                 ProductPlatformID = Convert.ToString(ProdID)
                             });
                         }
-                        if (Commentss.Count == previousCount || comments.Count() >= 100)
+                        if (Commentss.Count == previousCount || comments.Count() >= 200)
                         {
                             break;
                         }

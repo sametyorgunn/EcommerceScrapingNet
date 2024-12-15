@@ -42,7 +42,7 @@ namespace BusinessLayer.Managers
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
             var options = new ChromeOptions();
-            //options.AddArgument("--headless");
+            options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
@@ -69,7 +69,7 @@ namespace BusinessLayer.Managers
 				ProductDto productDto = new ProductDto();
 			
 				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(1).ToList();
+				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
               
 
                 List<CommentDto> comments = new List<CommentDto>();
@@ -86,6 +86,15 @@ namespace BusinessLayer.Managers
 					//if (isSame == false){continue;}
 
 					ProductId = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
+					var isExistProduct = await
+						_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId
+						{ ProductId = ProductId});
+
+					if (isExistProduct == false) {  break; }
+
+
+
+
 					ProductName = Sp.FindElement(By.CssSelector("h3.productName")).Text;
 					ProductPrice = Sp.FindElement(By.CssSelector("div.priceContainer ins")).Text;
 					ProductImage = Sp.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
@@ -144,7 +153,7 @@ namespace BusinessLayer.Managers
                                 var a = comment.FindElement(By.CssSelector("p")).Text;
                                 comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
                             }
-							if(comments.Count() >= 100) { break; }
+							if(comments.Count() >= 200) { break; }
                         }
                     }
                     #endregion
