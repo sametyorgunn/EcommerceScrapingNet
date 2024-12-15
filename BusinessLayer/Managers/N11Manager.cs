@@ -9,6 +9,8 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Globalization;
+using WebDriverManager.DriverConfigs.Impl;
+using WebDriverManager;
 
 namespace BusinessLayer.Managers
 {
@@ -30,17 +32,17 @@ namespace BusinessLayer.Managers
 
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
-            var options = new ChromeOptions();
-            options.AddArgument("--headless");
+			new DriverManager().SetUpDriver(new ChromeConfig());
+			var options = new ChromeOptions();
+            //options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("window-size=1920x1080");
             options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-
-            using (IWebDriver driver = new ChromeDriver(options))
-            {
+			using (IWebDriver driver = new ChromeDriver(options))
+			{
                 var jsExecutor = (IJavaScriptExecutor)driver;
                 driver.Navigate().GoToUrl("https://www.n11.com/");
 				var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));

@@ -14,8 +14,12 @@
     }
 }
 $("#catAdd").click(function () {
+	debugger
 	var CategoryName = $("#CategoryNames").val();
 	var CategoryID = $("#selectArea .dropdown-content:last").val();
+	if (CategoryID == null) {
+		CategoryID = $("#CategoryName").val();
+	}
 	var data = {
 		CategoryName: CategoryName,
 		CategoryId: CategoryID
