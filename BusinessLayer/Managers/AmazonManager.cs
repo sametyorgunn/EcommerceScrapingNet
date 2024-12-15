@@ -1,20 +1,14 @@
 ﻿using AutoMapper;
 using BusinessLayer.IServices;
 using EntityLayer.Dto.RequestDto;
+using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SeleniumExtras.WaitHelpers;
 using System.Globalization;
-using EntityLayer.Dto.RequestDto.Product;
-using EntityLayer.Entity;
 
 namespace BusinessLayer.Managers
 {

@@ -114,7 +114,7 @@ namespace DataAccessLayer.Repositories
 
 		public async Task<bool> GetProductByMarketPlaceID(GetProductByMarketPlaceId marketPlaceId)
 		{
-			var product = _appDbContext.products.Where(x => Convert.ToInt32(x.ProductId) == Convert.ToInt32(marketPlaceId.Id));
+			var product = _appDbContext.products.Where(x => Convert.ToInt32(x.ProductId) == Convert.ToInt32(marketPlaceId.ProductId));
 			if(product != null)
 			{
 				return true;

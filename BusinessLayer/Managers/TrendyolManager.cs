@@ -1,17 +1,13 @@
 ﻿using AutoMapper;
 using BusinessLayer.IServices;
 using DataAccessLayer.IRepositories;
-using DataAccessLayer.Repositories;
 using EntityLayer.Dto.RequestDto;
 using EntityLayer.Dto.RequestDto.Product;
 using EntityLayer.Dto.ResponseDto;
-using EntityLayer.Entity;
-using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-using PuppeteerSharp;
 using SeleniumExtras.WaitHelpers;
 using System.Globalization;
 

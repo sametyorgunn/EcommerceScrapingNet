@@ -1,29 +1,18 @@
-﻿using BusinessLayer.IServices;
+﻿using AutoMapper;
+using BusinessLayer.IServices;
 using EntityLayer.Dto.RequestDto;
-using EntityLayer.Dto.ResponseDto;
-using EntityLayer.Entity;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium;
-using SeleniumExtras.WaitHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static BusinessLayer.Managers.TrendyolManager;
-using System.Reflection.Metadata;
-using OpenQA.Selenium.Interactions;
-using AutoMapper;
-using System.Xml.Linq;
-using System.Globalization;
 using EntityLayer.Dto.RequestDto.Product;
-using EntityLayer.Enums;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using EntityLayer.Dto.ResponseDto;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
+using System.Globalization;
 
 namespace BusinessLayer.Managers
 {
-    public class N11Manager : IN11Service
+	public class N11Manager : IN11Service
     {
         private readonly IProductService _productService;
 		private readonly IMapper _mapper;
