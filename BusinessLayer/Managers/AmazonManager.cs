@@ -37,20 +37,20 @@ namespace BusinessLayer.Managers
 		{
 			new DriverManager().SetUpDriver(new ChromeConfig());
 			var options = new ChromeOptions();
-			//options.AddArgument("--headless");
-			//options.AddArgument("--disable-gpu");
-			//options.AddArgument("--no-sandbox");
-			//options.AddArgument("--disable-dev-shm-usage");
-			//options.AddArgument("--profile-directory=Default");
+			options.AddArgument("--headless");
+			options.AddArgument("--disable-gpu");
+			options.AddArgument("--no-sandbox");
+			options.AddArgument("--disable-dev-shm-usage");
+			options.AddArgument("--profile-directory=Default");
 			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
 			options.AddArgument("window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
-
 
 			try
 			{
 				using (IWebDriver driver = new ChromeDriver(options))
 				{
+					driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
 					var jsExecutor = (IJavaScriptExecutor)driver;
 					driver.Navigate().GoToUrl("https://www.amazon.com.tr/");
 					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));

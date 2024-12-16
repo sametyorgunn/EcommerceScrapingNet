@@ -39,12 +39,11 @@ namespace BusinessLayer.Managers
 		{
 			new DriverManager().SetUpDriver(new ChromeConfig());
 			var options = new ChromeOptions();
-			//options.AddArgument("--headless");
-			//options.AddArgument("--disable-gpu");
-			//options.AddArgument("--no-sandbox");
-			//options.AddArgument("--profile-directory=Default");
-			//options.AddArgument("--disable-dev-shm-usage");
-
+			options.AddArgument("--headless");
+			options.AddArgument("--disable-gpu");
+			options.AddArgument("--no-sandbox");
+			options.AddArgument("--profile-directory=Default");
+			options.AddArgument("--disable-dev-shm-usage");
 			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
 			options.AddArgument("window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
@@ -54,10 +53,13 @@ namespace BusinessLayer.Managers
 				using (IWebDriver driver = new ChromeDriver(options))
 				{
 					//driver.Navigate().Refresh();
+					driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
 					var jsExecutor = (IJavaScriptExecutor)driver;
 					driver.Navigate().GoToUrl("https://www.n11.com/");
 					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-					var searchInput = driver.FindElement(By.Id("searchData"));
+
+					var searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("searchData")));
+					//var searchInput =  driver.FindElement(By.Id("searchData"));
 					searchInput.Clear();
 					searchInput.SendKeys(request.ProductName);
 					searchInput.SendKeys(Keys.Enter);
@@ -71,15 +73,16 @@ namespace BusinessLayer.Managers
 					ProductDto productDto = new ProductDto();
 
 					OverlayControl(driver);
+					var ScrapeProductIsExist = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("li.column")));
 					var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
-
 
 					List<CommentDto> comments = new List<CommentDto>();
 					foreach (var Sp in ScrapeProduct)
 					{
 						Thread.Sleep(1000);
 						string originalWindow = driver.CurrentWindowHandle;
-						var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
+						var ProdName = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("productName"))).Text;
+						//var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
 						var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
 						if (isTrueProduct == false) { continue; }
