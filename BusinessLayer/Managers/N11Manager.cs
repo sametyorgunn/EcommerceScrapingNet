@@ -34,16 +34,31 @@ namespace BusinessLayer.Managers
         {
 			new DriverManager().SetUpDriver(new ChromeConfig());
 			var options = new ChromeOptions();
-            options.AddArgument("--headless");
+			options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
-            options.AddArgument("window-size=1920x1080");
-            options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
+			options.AddArgument("window-size=1920,1080");
+			options.AddArgument("--disable-blink-features=AutomationControlled");
+			options.AddArgument("user-data-dir=C:\\Users\\samet\\AppData\\Local\\Google\\Chrome\\User Data");
+			options.AddArgument("--profile-directory=Default");
 
 			using (IWebDriver driver = new ChromeDriver(options))
 			{
-                var jsExecutor = (IJavaScriptExecutor)driver;
+				var cookies = new List<Cookie>
+					{
+						new Cookie("__cf_bm", "zNnsav2mMEBG5xYxAmBnXUcN0Zf4IS.kybz9tttr.1Y-1734308009-1.0.1.1-mCgDcZ5kK2g_gAZ_xQecSSEmxPgNvq8_Xf0ltMWEQRgyG0kLmdT4zikkzcJ5yfgzKF953y3ndNkrJacu4z9wEg", ".n11.com", "/", DateTime.Now.AddDays(1))
+					};
+
+				foreach (var cookie in cookies)
+				{
+					driver.Manage().Cookies.AddCookie(cookie);
+				}
+
+				driver.Navigate().Refresh();
+
+				var jsExecutor = (IJavaScriptExecutor)driver;
                 driver.Navigate().GoToUrl("https://www.n11.com/");
 				var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 				var searchInput = driver.FindElement(By.Id("searchData"));
