@@ -13,6 +13,7 @@ using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager;
 using System;
 using System.Net;
+using OpenQA.Selenium.Firefox;
 
 namespace BusinessLayer.Managers
 {
@@ -52,7 +53,7 @@ namespace BusinessLayer.Managers
 			{
 				using (IWebDriver driver = new ChromeDriver(options))
 				{
-					driver.Navigate().Refresh();
+					//driver.Navigate().Refresh();
 					var jsExecutor = (IJavaScriptExecutor)driver;
 					driver.Navigate().GoToUrl("https://www.n11.com/");
 					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
