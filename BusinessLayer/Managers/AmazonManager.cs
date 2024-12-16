@@ -74,8 +74,8 @@ namespace BusinessLayer.Managers
 						//var ProdName = Sp.FindElement(By.CssSelector("span.a-text-normal")).Text;
 						var ProdName = Sp.FindElement(By.CssSelector("a.a-link-normal h2 span")).Text;
 
-						var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-						if (isTrueProduct == false) { continue; }
+						//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+						//if (isTrueProduct == false) { continue; }
 
 						//var isSame = SameControl(request.ProductName, ProdName);
 						//if (isSame == false) { continue; }

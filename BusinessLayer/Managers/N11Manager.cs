@@ -88,8 +88,8 @@ namespace BusinessLayer.Managers
 						var ProdName = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("productName"))).Text;
 						//var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
-						var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-						if (isTrueProduct == false) { continue; }
+						//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+						//if (isTrueProduct == false) { continue; }
 
 						//var isSame = SameControl(request.ProductName, ProdName); 
 						//if (isSame == false){continue;}
