@@ -53,8 +53,13 @@ namespace BusinessLayer.Managers
             options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
 			options.AddArgument("window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
+			options.AddArgument("--start-maximized");
+			options.AddArgument("--disable-extensions");
+			options.AddArgument("--disable-infobars");
+			options.AddArgument("--disable-notifications");
+			options.AddArgument("--disable-popup-blocking");
 
-            try
+			try
             {
                 using (IWebDriver driver = new ChromeDriver(options))
                 {
@@ -67,7 +72,7 @@ namespace BusinessLayer.Managers
                     var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                     searchInput.SendKeys(request.ProductName);
                     searchInput.SendKeys(Keys.Enter);
-                    var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
+                    var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(3).ToList();
 
                     List<CommentDto> comments = new List<CommentDto>();
                     foreach (var Sp in ScrapeProduct)

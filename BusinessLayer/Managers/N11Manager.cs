@@ -47,12 +47,20 @@ namespace BusinessLayer.Managers
 			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
 			options.AddArgument("window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
-
+			options.AddArgument("--start-maximized");
+			options.AddArgument("--disable-extensions");
+			options.AddArgument("--disable-infobars");
+			options.AddArgument("--disable-notifications");
+			options.AddArgument("--disable-popup-blocking");
 			try
 			{
+				var service = ChromeDriverService.CreateDefaultService();
+				service.EnableVerboseLogging = true;
+				service.LogPath = "chromedriver.log";
+
 				using (IWebDriver driver = new ChromeDriver(options))
 				{
-					//driver.Navigate().Refresh();
+					//driver.Navigate().Refresh();					
 					driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
 					var jsExecutor = (IJavaScriptExecutor)driver;
 					driver.Navigate().GoToUrl("https://www.n11.com/");
@@ -74,7 +82,7 @@ namespace BusinessLayer.Managers
 
 					OverlayControl(driver);
 					var ScrapeProductIsExist = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("li.column")));
-					var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
+					var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(3).ToList();
 
 					List<CommentDto> comments = new List<CommentDto>();
 					foreach (var Sp in ScrapeProduct)
