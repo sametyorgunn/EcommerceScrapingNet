@@ -13,6 +13,12 @@ builder.Services.AddAuthentication("CookieAuth")
        {
            config.LoginPath = "/Login/SignIn"; 
        });
+builder.Services.AddSession(options =>
+{
+	options.IdleTimeout = TimeSpan.FromMinutes(300);
+	options.Cookie.HttpOnly = true;
+	options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddSession();
 var app = builder.Build();
@@ -27,10 +33,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
+
 
 app.MapControllerRoute(
 	 name: "areas",
