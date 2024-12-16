@@ -11,6 +11,9 @@ using SeleniumExtras.WaitHelpers;
 using System.Globalization;
 using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager;
+using HtmlAgilityPack;
+using System;
+using System.Net;
 
 namespace BusinessLayer.Managers
 {
@@ -33,17 +36,18 @@ namespace BusinessLayer.Managers
 		}
 
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
-        {
+		{
 			new DriverManager().SetUpDriver(new ChromeConfig());
 			var options = new ChromeOptions();
-			options.AddArgument("--headless");
-            options.AddArgument("--disable-gpu");
-            options.AddArgument("--no-sandbox");
-            options.AddArgument("--disable-dev-shm-usage");
-			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
+			//options.AddArgument("--headless");
+			//options.AddArgument("--disable-gpu");
+			//options.AddArgument("--no-sandbox");
+			//options.AddArgument("--profile-directory=Default");
+			//options.AddArgument("--disable-dev-shm-usage");
+
+			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
 			options.AddArgument("window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
-			options.AddArgument("--profile-directory=Default");
 
 			try
 			{
@@ -89,9 +93,6 @@ namespace BusinessLayer.Managers
 							{ ProductId = ProductId });
 
 						if (isExistProduct == false) { break; }
-
-
-
 
 						ProductName = Sp.FindElement(By.CssSelector("h3.productName")).Text;
 						ProductPrice = Sp.FindElement(By.CssSelector("div.priceContainer ins")).Text;
@@ -168,7 +169,7 @@ namespace BusinessLayer.Managers
 					return new ScrapingResponseDto { Description = "Başarılı", ProductId = result.Id, Status = "True" };
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				LogDto dto = new LogDto
 				{
@@ -179,6 +180,7 @@ namespace BusinessLayer.Managers
 				return new ScrapingResponseDto { Description = "Başarısız", ProductId = 0, Status = "False" };
 			}
 		}
+
 		public async void OverlayControl(IWebDriver driver)
 		{
 			var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
