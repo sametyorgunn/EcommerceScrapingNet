@@ -11,7 +11,6 @@ using SeleniumExtras.WaitHelpers;
 using System.Globalization;
 using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager;
-using HtmlAgilityPack;
 using System;
 using System.Net;
 
