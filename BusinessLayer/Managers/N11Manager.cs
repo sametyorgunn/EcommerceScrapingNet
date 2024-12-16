@@ -21,13 +21,15 @@ namespace BusinessLayer.Managers
 		private readonly IEmotinalAnalysis _emotinalAnalyseService;
 		private readonly IAIService _AIService;
 		private readonly ICategoryService _categoryService;
-		public N11Manager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService, ICategoryService categoryService)
+		private readonly ILogService _logService;
+		public N11Manager(IProductService productService, IMapper mapper, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService, ICategoryService categoryService, ILogService logService)
 		{
 			_productService = productService;
 			_mapper = mapper;
 			_emotinalAnalyseService = emotinalAnalyseService;
 			_AIService = aIService;
 			_categoryService = categoryService;
+			_logService = logService;
 		}
 
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
@@ -41,141 +43,142 @@ namespace BusinessLayer.Managers
 			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
 			options.AddArgument("window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
-			options.AddArgument("user-data-dir=C:\\Users\\samet\\AppData\\Local\\Google\\Chrome\\User Data");
 			options.AddArgument("--profile-directory=Default");
 
-			using (IWebDriver driver = new ChromeDriver(options))
+			try
 			{
-				var cookies = new List<Cookie>
-					{
-						new Cookie("__cf_bm", "zNnsav2mMEBG5xYxAmBnXUcN0Zf4IS.kybz9tttr.1Y-1734308009-1.0.1.1-mCgDcZ5kK2g_gAZ_xQecSSEmxPgNvq8_Xf0ltMWEQRgyG0kLmdT4zikkzcJ5yfgzKF953y3ndNkrJacu4z9wEg", ".n11.com", "/", DateTime.Now.AddDays(1))
-					};
-
-				foreach (var cookie in cookies)
+				using (IWebDriver driver = new ChromeDriver(options))
 				{
-					driver.Manage().Cookies.AddCookie(cookie);
-				}
-
-				driver.Navigate().Refresh();
-
-				var jsExecutor = (IJavaScriptExecutor)driver;
-                driver.Navigate().GoToUrl("https://www.n11.com/");
-				var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-				var searchInput = driver.FindElement(By.Id("searchData"));
-                searchInput.Clear();
-                searchInput.SendKeys(request.ProductName);
-                searchInput.SendKeys(Keys.Enter);
-				Thread.Sleep(1000); 
-
-				var ProductId = "";
-				var ProductName = "";
-				var ProductPrice = "";
-				var ProductImage = "";
-				var ProductLink = "";
-				ProductDto productDto = new ProductDto();
-			
-				OverlayControl(driver);
-				var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
-              
-
-                List<CommentDto> comments = new List<CommentDto>();
-				foreach (var Sp in ScrapeProduct)
-                {
-                    Thread.Sleep(1000);
-					string originalWindow = driver.CurrentWindowHandle;
-					var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
-
-					var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-					if (isTrueProduct == false) { continue; }
-
-					//var isSame = SameControl(request.ProductName, ProdName); 
-					//if (isSame == false){continue;}
-
-					ProductId = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
-					var isExistProduct = await
-						_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId
-						{ ProductId = ProductId});
-
-					if (isExistProduct == false) {  break; }
-
-
-
-
-					ProductName = Sp.FindElement(By.CssSelector("h3.productName")).Text;
-					ProductPrice = Sp.FindElement(By.CssSelector("div.priceContainer ins")).Text;
-					ProductImage = Sp.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
-					ProductLink = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
-
-					productDto.ProductId = ProductId;
-					productDto.CategoryId = request.CategoryId;
-					productDto.PlatformId = (int)EntityLayer.Enums.Platform.n11;
-					productDto.ProductBrand = "";
-					productDto.ProductImage = ProductImage;
-					productDto.ProductPrice = ProductPrice;
-					productDto.ProductName = ProductName;
-					productDto.ProductRating = "4";
-					productDto.ProductProperty = null;
-					productDto.Status = true;
-					productDto.ProductLink = ProductLink;
-					productDto.Comment = new List<CommentDto>();
-					
-					var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
-					var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
-
-					OverlayControl(driver);
-					Actions newTabAction = new Actions(driver);
-					newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("div.pro a"))).KeyUp(Keys.Control).Perform();
-					var windowHandles = driver.WindowHandles;
-                    OverlayControl(driver);
-                    wait.Until(d => d.WindowHandles.Count > 1);
-					driver.SwitchTo().Window(windowHandles[1]);
+					driver.Navigate().Refresh();
+					var jsExecutor = (IJavaScriptExecutor)driver;
+					driver.Navigate().GoToUrl("https://www.n11.com/");
+					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+					var searchInput = driver.FindElement(By.Id("searchData"));
+					searchInput.Clear();
+					searchInput.SendKeys(request.ProductName);
+					searchInput.SendKeys(Keys.Enter);
 					Thread.Sleep(1000);
 
-					IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
+					var ProductId = "";
+					var ProductName = "";
+					var ProductPrice = "";
+					var ProductImage = "";
+					var ProductLink = "";
+					ProductDto productDto = new ProductDto();
 
-					foreach (var comment in Comments)
+					OverlayControl(driver);
+					var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(5).ToList();
+
+
+					List<CommentDto> comments = new List<CommentDto>();
+					foreach (var Sp in ScrapeProduct)
 					{
-						var a = comment.FindElement(By.CssSelector("p")).Text;
-						comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link,ProductPlatformID = ProdID.ToString() });
+						Thread.Sleep(1000);
+						string originalWindow = driver.CurrentWindowHandle;
+						var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
+
+						var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+						if (isTrueProduct == false) { continue; }
+
+						//var isSame = SameControl(request.ProductName, ProdName); 
+						//if (isSame == false){continue;}
+
+						ProductId = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
+						var isExistProduct = await
+							_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId
+							{ ProductId = ProductId });
+
+						if (isExistProduct == false) { break; }
+
+
+
+
+						ProductName = Sp.FindElement(By.CssSelector("h3.productName")).Text;
+						ProductPrice = Sp.FindElement(By.CssSelector("div.priceContainer ins")).Text;
+						ProductImage = Sp.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
+						ProductLink = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
+
+						productDto.ProductId = ProductId;
+						productDto.CategoryId = request.CategoryId;
+						productDto.PlatformId = (int)EntityLayer.Enums.Platform.n11;
+						productDto.ProductBrand = "";
+						productDto.ProductImage = ProductImage;
+						productDto.ProductPrice = ProductPrice;
+						productDto.ProductName = ProductName;
+						productDto.ProductRating = "4";
+						productDto.ProductProperty = null;
+						productDto.Status = true;
+						productDto.ProductLink = ProductLink;
+						productDto.Comment = new List<CommentDto>();
+
+						var ProdID = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
+						var Link = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
+
+						OverlayControl(driver);
+						Actions newTabAction = new Actions(driver);
+						newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("div.pro a"))).KeyUp(Keys.Control).Perform();
+						var windowHandles = driver.WindowHandles;
+						OverlayControl(driver);
+						wait.Until(d => d.WindowHandles.Count > 1);
+						driver.SwitchTo().Window(windowHandles[1]);
+						Thread.Sleep(1000);
+
+						IList<IWebElement> Comments = driver.FindElements(By.ClassName("comment"));
+
+						foreach (var comment in Comments)
+						{
+							var a = comment.FindElement(By.CssSelector("p")).Text;
+							comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
+						}
+
+						#region GetOtherComment
+						var nextPageIsExist = driver.FindElements(By.CssSelector("a.next.navigation")).ToList();
+						if (nextPageIsExist.Count > 0)
+						{
+							IWebElement nextpageBtn2 = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
+							while (nextpageBtn2 != null)
+							{
+								bool isElementPresent = driver.FindElements(By.CssSelector("a.next.navigation")).Count > 0;
+								if (!isElementPresent) { nextpageBtn2 = null; break; }
+								IWebElement nextpageBtn = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
+								((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", nextpageBtn);
+								Thread.Sleep(1000);
+								((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", nextpageBtn);
+								Thread.Sleep(1000);
+								IList<IWebElement> CommentsNext = driver.FindElements(By.ClassName("comment"));
+								foreach (var comment in CommentsNext)
+								{
+									var a = comment.FindElement(By.CssSelector("p")).Text;
+									comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
+								}
+								if (comments.Count() >= 200) { break; }
+							}
+						}
+						#endregion
+
+						driver.Close();
+						driver.SwitchTo().Window(originalWindow);
 					}
+					var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
+					var res = _mapper.Map<List<CommentDto>>(analyse);
+					productDto.Comment = res;
+					productDto.CategoryId = request.CategoryId;
+					var result = await _productService.CreateProduct(productDto);
 
-                    #region GetOtherComment
-                    var nextPageIsExist = driver.FindElements(By.CssSelector("a.next.navigation")).ToList();
-                    if (nextPageIsExist.Count > 0)
-                    {
-                        IWebElement nextpageBtn2 = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
-                        while (nextpageBtn2 != null)
-                        {
-                            bool isElementPresent = driver.FindElements(By.CssSelector("a.next.navigation")).Count > 0;
-                            if (!isElementPresent) { nextpageBtn2 = null; break; }
-                            IWebElement nextpageBtn = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("a.next.navigation")));
-                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", nextpageBtn);
-							Thread.Sleep(1000);
-                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", nextpageBtn);
-                            Thread.Sleep(1000);
-                            IList<IWebElement> CommentsNext = driver.FindElements(By.ClassName("comment"));
-                            foreach (var comment in CommentsNext)
-                            {
-                                var a = comment.FindElement(By.CssSelector("p")).Text;
-                                comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
-                            }
-							if(comments.Count() >= 200) { break; }
-                        }
-                    }
-                    #endregion
-
-                    driver.Close();
-					driver.SwitchTo().Window(originalWindow);
+					return new ScrapingResponseDto { Description = "Başarılı", ProductId = result.Id, Status = "True" };
 				}
-				var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
-				var res = _mapper.Map<List<CommentDto>>(analyse);
-                productDto.Comment = res;
-				productDto.CategoryId = request.CategoryId;
-				var result = await _productService.CreateProduct(productDto);
-				
-				return new ScrapingResponseDto {Description = "Başarılı", ProductId = result.Id,Status = "True" };
-            }
-        }
+			}
+			catch(Exception ex)
+			{
+				LogDto dto = new LogDto
+				{
+					CreatedDate = DateTime.Now,
+					Message = ex.Message,
+				};
+				await _logService.AddLog(dto);
+				return new ScrapingResponseDto { Description = "Başarısız", ProductId = 0, Status = "False" };
+			}
+		}
 		public async void OverlayControl(IWebDriver driver)
 		{
 			var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));

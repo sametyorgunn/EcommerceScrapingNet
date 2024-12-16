@@ -28,14 +28,11 @@ namespace DataAccessLayer.Contexts
         public DbSet<Product> products { get; set; }
         public DbSet<ProductProperty> productproperty { get; set; }
 		public DbSet<CategoryMarketPlace> categoriesMarketplace { get; set; }
+		public DbSet<Log> Logs { get; set; }
 		public DbSet<SubCategoryMarketPlace> subCategoriesMarketplace { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-			//modelBuilder.Entity<N11Category>()
-		 //  .HasMany(c => c.N11SubCategories)
-		 //  .WithOne(sc => sc.Category)
-		 //  .HasForeignKey(sc => sc.);
 		}
     }
 }

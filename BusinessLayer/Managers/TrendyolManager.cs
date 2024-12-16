@@ -25,21 +25,23 @@ namespace BusinessLayer.Managers
 		private readonly ICommentService _commentService;
 		private readonly IEmotinalAnalysis _emotinalAnalyseService;
         private readonly IAIService _AIService;
+		private readonly ILogService _logService;
 
-        public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService,
-            ICategoryRepository categoryrepository,
-            ICommentService commentService, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService)
-        {
-            _productService = productService;
-            _mapper = mapper;
-            _categoryService = categoryService;
-            _categoryrepository = categoryrepository;
-            _commentService = commentService;
-            _emotinalAnalyseService = emotinalAnalyseService;
-            _AIService = aIService;
-        }
+		public TrendyolManager(IProductService productService, IMapper mapper, ICategoryService categoryService,
+			ICategoryRepository categoryrepository,
+			ICommentService commentService, IEmotinalAnalysis emotinalAnalyseService, IAIService aIService, ILogService logService)
+		{
+			_productService = productService;
+			_mapper = mapper;
+			_categoryService = categoryService;
+			_categoryrepository = categoryrepository;
+			_commentService = commentService;
+			_emotinalAnalyseService = emotinalAnalyseService;
+			_AIService = aIService;
+			_logService = logService;
+		}
 
-        public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
+		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 			new DriverManager().SetUpDriver(new ChromeConfig());
 			var options = new ChromeOptions();
@@ -50,90 +52,102 @@ namespace BusinessLayer.Managers
 			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
 			options.AddArgument("window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
-			options.AddArgument("user-data-dir=C:\\Users\\samet\\AppData\\Local\\Google\\Chrome\\User Data");
 			options.AddArgument("--profile-directory=Default");
+            try
+            {
+                using (IWebDriver driver = new ChromeDriver(options))
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                    var jsExecutor = (IJavaScriptExecutor)driver;
 
-			using (IWebDriver driver = new ChromeDriver(options))
-			{
-				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-				var jsExecutor = (IJavaScriptExecutor)driver;
+                    driver.Navigate().GoToUrl("https://www.trendyol.com/");
+                    Thread.Sleep(1000);
+                    var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
+                    searchInput.SendKeys(request.ProductName);
+                    searchInput.SendKeys(Keys.Enter);
+                    var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
 
-				driver.Navigate().GoToUrl("https://www.trendyol.com/");
-                var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
-                searchInput.SendKeys(request.ProductName);
-                searchInput.SendKeys(Keys.Enter);
-                var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(5).ToList();
-             
-                List<CommentDto> comments = new List<CommentDto>();	
-				foreach (var Sp in ScrapeProduct)
-				{
-					wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
-					var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
-                    var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-                    if (isTrueProduct == false) { continue; }
-                    //var isSame = SameControl(request.ProductName, ProdName);
-                    //if (isSame == false) { continue; }
-                    var ProdID = Sp.GetAttribute("data-id");
-					var isExistProduct = await
-					_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductId = ProdID });
-					if (isExistProduct == false) { break; }
-
-					var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
-					string originalWindow = driver.CurrentWindowHandle;
-					Sp.Click();
-                    var windowHandles = driver.WindowHandles;
-					driver.SwitchTo().Window(windowHandles[1]);
-
-					OverlayControl(driver);
-					IList<IWebElement> Comments = new List<IWebElement>();
-					OverlayControl(driver);
-					var ratingIsExist = driver.FindElements(By.ClassName("rvw-cnt-tx"));
-					if(ratingIsExist.Count > 0)
-					{
-						IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
-						ratings.Click();
-					}
-					else
-					{
-						driver.Close();
-						driver.SwitchTo().Window(originalWindow);
-						continue;
-					}
-
-                    #region GetOtherComments
-                    int previousCount = 0;
-                    while (true)
+                    List<CommentDto> comments = new List<CommentDto>();
+                    foreach (var Sp in ScrapeProduct)
                     {
-                        var Commentss = driver.FindElements(By.ClassName("comment-text"));
-                        foreach (var element in Commentss.Skip(previousCount))
+                        wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
+                        var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
+                        var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+                        if (isTrueProduct == false) { continue; }
+                        //var isSame = SameControl(request.ProductName, ProdName);
+                        //if (isSame == false) { continue; }
+                        var ProdID = Sp.GetAttribute("data-id");
+                        var isExistProduct = await
+                        _productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductId = ProdID });
+                        if (isExistProduct == false) { break; }
+
+                        var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");
+                        string originalWindow = driver.CurrentWindowHandle;
+                        Sp.Click();
+                        var windowHandles = driver.WindowHandles;
+                        driver.SwitchTo().Window(windowHandles[1]);
+
+                        OverlayControl(driver);
+                        IList<IWebElement> Comments = new List<IWebElement>();
+                        OverlayControl(driver);
+                        var ratingIsExist = driver.FindElements(By.ClassName("rvw-cnt-tx"));
+                        if (ratingIsExist.Count > 0)
                         {
-                            comments.Add(new CommentDto
+                            IWebElement ratings = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("rvw-cnt-tx")));
+                            ratings.Click();
+                        }
+                        else
+                        {
+                            driver.Close();
+                            driver.SwitchTo().Window(originalWindow);
+                            continue;
+                        }
+
+                        #region GetOtherComments
+                        int previousCount = 0;
+                        while (true)
+                        {
+                            var Commentss = driver.FindElements(By.ClassName("comment-text"));
+                            foreach (var element in Commentss.Skip(previousCount))
                             {
-                                CommentText = element.Text,
-                                ProductId = (int)request.ProductId,
-                                ProductLink = Link,
-                                ProductPlatformID = Convert.ToString(ProdID)
-                            });
+                                comments.Add(new CommentDto
+                                {
+                                    CommentText = element.Text,
+                                    ProductId = (int)request.ProductId,
+                                    ProductLink = Link,
+                                    ProductPlatformID = Convert.ToString(ProdID)
+                                });
+                            }
+                            if (Commentss.Count == previousCount || comments.Count() >= 200)
+                            {
+                                break;
+                            }
+                            previousCount = Commentss.Count;
+                            ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
+                            Thread.Sleep(1000);
                         }
-                        if (Commentss.Count == previousCount || comments.Count() >= 200)
-                        {
-                            break;
-                        }
-                        previousCount = Commentss.Count;
-                        ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
-                        Thread.Sleep(1000); 
+                        #endregion
+
+                        driver.Close();
+                        driver.SwitchTo().Window(originalWindow);
                     }
-                    #endregion
+                    var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
+                    var res = _mapper.Map<List<CommentDto>>(analyse);
 
-                    driver.Close();
-                    driver.SwitchTo().Window(originalWindow);
+                    var result = await _commentService.TAddRangeAsync(res);
+                    return new ScrapingResponseDto { Description = "Başarılı", ProductId = (int)request.ProductId, Status = "True" };
+
                 }
-				 var analyse =await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
-				 var res = _mapper.Map<List<CommentDto>>(analyse);
-
-				 var result = await _commentService.TAddRangeAsync(res);
-				 return new ScrapingResponseDto { Description = "Başarılı", ProductId = (int)request.ProductId, Status = "True" };
-
+            }
+			catch (Exception ex)
+			{
+				LogDto dto = new LogDto
+				{
+					CreatedDate = DateTime.Now,
+					Message = ex.Message,
+				};
+				await _logService.AddLog(dto);
+				return new ScrapingResponseDto { Description = "Başarısız", ProductId = 0, Status = "False" };
 			}
 		}
 

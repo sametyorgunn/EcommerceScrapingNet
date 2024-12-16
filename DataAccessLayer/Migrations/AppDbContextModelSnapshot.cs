@@ -94,6 +94,26 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("comments");
                 });
 
+            modelBuilder.Entity("EntityLayer.Entity.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("EntityLayer.Entity.Product", b =>
                 {
                     b.Property<int>("Id")
