@@ -57,7 +57,7 @@ namespace BusinessLayer.Managers
 					driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
 					var jsExecutor = (IJavaScriptExecutor)driver;
 					driver.Navigate().GoToUrl("https://www.amazon.com.tr/");
-					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 					var searchInput = driver.FindElement(By.Id("twotabsearchtextbox"));
 					searchInput.Clear();
 					searchInput.SendKeys(request.ProductName);

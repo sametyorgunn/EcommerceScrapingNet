@@ -64,7 +64,7 @@ namespace BusinessLayer.Managers
                 using (IWebDriver driver = new ChromeDriver(options))
                 {
 					driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
-					WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+					WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                     var jsExecutor = (IJavaScriptExecutor)driver;
 
                     driver.Navigate().GoToUrl("https://www.trendyol.com/");

@@ -60,7 +60,7 @@ namespace BusinessLayer.Managers
 					driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
 					var jsExecutor = (IJavaScriptExecutor)driver;
 					driver.Navigate().GoToUrl("https://www.n11.com/");
-					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
 					var searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("searchData")));
 					//var searchInput =  driver.FindElement(By.Id("searchData"));
