@@ -243,11 +243,13 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Entity.Comment", b =>
                 {
-                    b.HasOne("EntityLayer.Entity.Product", null)
+                    b.HasOne("EntityLayer.Entity.Product", "Product")
                         .WithMany("Comment")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("EntityLayer.Entity.Product", b =>

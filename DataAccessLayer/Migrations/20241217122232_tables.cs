@@ -72,7 +72,7 @@ namespace DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductMarketPlaceId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductBrand = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductRating = table.Column<string>(type: "nvarchar(max)", nullable: false),
