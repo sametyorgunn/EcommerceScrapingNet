@@ -8,6 +8,6 @@ namespace EntityLayer.Dto.RequestDto
 {
 	public class GetProductByMarketPlaceId
 	{
-        public string ProductId { get; set; }
+        public string ProductMarketPlaceId { get; set; }
     }
 }

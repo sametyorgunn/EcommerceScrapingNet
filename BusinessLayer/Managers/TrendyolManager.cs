@@ -86,7 +86,7 @@ namespace BusinessLayer.Managers
                         //if (isSame == false) { continue; }
                         var ProdID = Sp.GetAttribute("data-id");
                         var isExistProduct = await
-                        _productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductId = ProdID });
+                        _productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductMarketPlaceId = ProdID });
                         if (isExistProduct == false) { break; }
 
                         var Link = Sp.FindElement(By.CssSelector("div.p-card-chldrn-cntnr a")).GetAttribute("href");

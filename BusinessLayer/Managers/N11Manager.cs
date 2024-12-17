@@ -97,7 +97,7 @@ namespace BusinessLayer.Managers
 						ProductId = Sp.FindElement(By.ClassName("plink")).GetAttribute("data-id");
 						var isExistProduct = await
 							_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId
-							{ ProductId = ProductId });
+							{ ProductMarketPlaceId = ProductId });
 
 						if (isExistProduct == false) { break; }
 
@@ -106,7 +106,7 @@ namespace BusinessLayer.Managers
 						ProductImage = Sp.FindElement(By.CssSelector("img.cardImage")).GetAttribute("src");
 						ProductLink = Sp.FindElement(By.CssSelector("div.pro a")).GetAttribute("href");
 
-						productDto.ProductId = ProductId;
+						productDto.ProductMarketPlaceId = ProductId;
 						productDto.CategoryId = request.CategoryId;
 						productDto.PlatformId = (int)EntityLayer.Enums.Platform.n11;
 						productDto.ProductBrand = "";

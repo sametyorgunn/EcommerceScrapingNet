@@ -82,7 +82,7 @@ namespace BusinessLayer.Managers
 
 						var prodID = Sp.GetAttribute("data-uuid");
 						var isExistProduct = await
-						_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductId = prodID });
+						_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductMarketPlaceId = prodID });
 						if (isExistProduct == false) { break; }
 						var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
 						Actions newTabAction = new Actions(driver);
