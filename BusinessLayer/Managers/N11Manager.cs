@@ -157,7 +157,7 @@ namespace BusinessLayer.Managers
 								foreach (var comment in CommentsNext)
 								{
 									var a = comment.FindElement(By.CssSelector("p")).Text;
-									comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
+									comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID });
 								}
 								if (comments.Count() >= 200) { break; }
 							}

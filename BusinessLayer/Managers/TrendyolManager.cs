@@ -69,7 +69,8 @@ namespace BusinessLayer.Managers
 
                     driver.Navigate().GoToUrl("https://www.trendyol.com/");
                     Thread.Sleep(1000);
-                    var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
+					wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("V8wbcUhU")));
+					var searchInput = driver.FindElement(By.ClassName("V8wbcUhU"));
                     searchInput.SendKeys(request.ProductName);
                     searchInput.SendKeys(Keys.Enter);
                     var ScrapeProduct = driver.FindElements(By.CssSelector("div.p-card-wrppr ")).Take(3).ToList();

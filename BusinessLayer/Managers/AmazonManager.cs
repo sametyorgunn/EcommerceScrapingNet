@@ -94,6 +94,7 @@ namespace BusinessLayer.Managers
 						driver.SwitchTo().Window(windowHandles[1]);
 						Thread.Sleep(1000);
 						OverlayControl(driver);
+						wait.Until(ExpectedConditions.ElementIsVisible(By.Id("acrCustomerReviewLink")));
 						var ratingIsExist = driver.FindElements(By.Id("acrCustomerReviewLink"));
 						if (ratingIsExist.Count > 0)
 						{
