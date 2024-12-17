@@ -80,9 +80,9 @@ Theme Version:	9.1.0
 }
 
 /* Quick View Popup Fix (When Close) */
-html.lightbox-beforeclose .quick-view {
+/*html.lightbox-beforeclose .quick-view {
 	display: none !important;
-}
+}*/
 
 .masonry-loader-showing .products {
 	opacity: 0;
