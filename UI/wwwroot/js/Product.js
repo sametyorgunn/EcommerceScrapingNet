@@ -48,7 +48,7 @@ $("#scrapeProd").click(function () {
 		error: function (error) {
 			toastr.clear(loadingMessage);
 			console.log(error);
-			toastr.error("ürünler çekilemedi.")
+			toastr.error("ürünler çekilemedi." + error)
 				}
 			});
 });

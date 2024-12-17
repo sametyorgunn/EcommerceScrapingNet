@@ -36,6 +36,7 @@ namespace BusinessLayer.Managers
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
 		{
 			new DriverManager().SetUpDriver(new ChromeConfig());
+			//var options = new ChromeOptions();
 			var options = new ChromeOptions();
 			//options.AddArgument("--headless");
 			options.AddArgument("--disable-gpu");
@@ -43,7 +44,7 @@ namespace BusinessLayer.Managers
 			options.AddArgument("--disable-dev-shm-usage");
 			//options.AddArgument("--profile-directory=Default");
 			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
-			options.AddArgument("window-size=1920,1080");
+			options.AddArgument("--window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
 			//options.AddArgument("--start-maximized");
 			//options.AddArgument("--disable-extensions");
@@ -83,7 +84,7 @@ namespace BusinessLayer.Managers
 
 						var prodID = Sp.GetAttribute("data-uuid");
 						var isExistProduct = await
-						_productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductMarketPlaceId = prodID });
+						 _productService.GetProductByMarketPlaceID(new GetProductByMarketPlaceId { ProductMarketPlaceId = prodID });
 						if (isExistProduct == false) { break; }
 						var Link = Sp.FindElement(By.CssSelector("a.a-link-normal")).GetAttribute("href");
 						Actions newTabAction = new Actions(driver);
@@ -95,7 +96,7 @@ namespace BusinessLayer.Managers
 						driver.SwitchTo().Window(windowHandles[1]);
 						Thread.Sleep(1000);
 						OverlayControl(driver);
-						wait.Until(ExpectedConditions.ElementIsVisible(By.Id("acrCustomerReviewLink")));
+						//wait.Until(ExpectedConditions.ElementIsVisible(By.Id("acrCustomerReviewLink")));
 						var ratingIsExist = driver.FindElements(By.Id("acrCustomerReviewLink"));
 						if (ratingIsExist.Count > 0)
 						{
@@ -132,6 +133,7 @@ namespace BusinessLayer.Managers
 				{
 					CreatedDate = DateTime.Now,
 					Message = ex.Message,
+					Source = ex.Source
 				};
 				await _logService.AddLog(dto);
 				return new ScrapingResponseDto { Description = "Başarısız", ProductId = 0, Status = "False" };

@@ -44,14 +44,15 @@ namespace BusinessLayer.Managers
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 			new DriverManager().SetUpDriver(new ChromeConfig());
+			//var options = new ChromeOptions();
 			var options = new ChromeOptions();
-            //options.AddArgument("--headless");
-            options.AddArgument("--disable-gpu");
+			//options.AddArgument("--headless");
+			options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             //options.AddArgument("--profile-directory=Default");
             options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
-			options.AddArgument("window-size=1920,1080");
+			options.AddArgument("--window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
 			//options.AddArgument("--start-maximized");
 			//options.AddArgument("--disable-extensions");
@@ -153,6 +154,7 @@ namespace BusinessLayer.Managers
 				{
 					CreatedDate = DateTime.Now,
 					Message = ex.Message,
+					Source = ex.Source
 				};
 				await _logService.AddLog(dto);
 				return new ScrapingResponseDto { Description = "Başarısız", ProductId = 0, Status = "False" };

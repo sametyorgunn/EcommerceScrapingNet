@@ -45,7 +45,7 @@ namespace BusinessLayer.Managers
 			//options.AddArgument("--profile-directory=Default");
 			options.AddArgument("--disable-dev-shm-usage");
 			options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36");
-			options.AddArgument("window-size=1920,1080");
+			options.AddArgument("--window-size=1920,1080");
 			options.AddArgument("--disable-blink-features=AutomationControlled");
 			//options.AddArgument("--start-maximized");
 			//options.AddArgument("--disable-extensions");
@@ -62,8 +62,8 @@ namespace BusinessLayer.Managers
 					driver.Navigate().GoToUrl("https://www.n11.com/");
 					var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
-					var searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("searchData")));
-					//var searchInput =  driver.FindElement(By.Id("searchData"));
+					wait.Until(ExpectedConditions.ElementIsVisible(By.Id("searchData")));
+					var searchInput =  driver.FindElement(By.Id("searchData"));
 					searchInput.Clear();
 					searchInput.SendKeys(request.ProductName);
 					searchInput.SendKeys(Keys.Enter);
@@ -77,7 +77,7 @@ namespace BusinessLayer.Managers
 					ProductDto productDto = new ProductDto();
 
 					OverlayControl(driver);
-					var ScrapeProductIsExist = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("li.column")));
+					wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("li.column")));
 					var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(3).ToList();
 
 					List<CommentDto> comments = new List<CommentDto>();
@@ -167,13 +167,20 @@ namespace BusinessLayer.Managers
 						driver.Close();
 						driver.SwitchTo().Window(originalWindow);
 					}
-					var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
-					var res = _mapper.Map<List<CommentDto>>(analyse);
-					productDto.Comment = res;
-					productDto.CategoryId = request.CategoryId;
-					var result = await _productService.CreateProduct(productDto);
+					if(productDto != null)
+					{
+						var analyse = await _emotinalAnalyseService.GetEmotionalAnalysis(comments);
+						var res = _mapper.Map<List<CommentDto>>(analyse);
+						productDto.Comment = res;
+						productDto.CategoryId = request.CategoryId;
+						var result = await _productService.CreateProduct(productDto);
+						return new ScrapingResponseDto { Description = "Başarılı", ProductId = result.Id, Status = "True" };
+					}
+					else
+					{
+						return new ScrapingResponseDto { Description = "Başarısız", ProductId = 0, Status = "False" };
+					}
 
-					return new ScrapingResponseDto { Description = "Başarılı", ProductId = result.Id, Status = "True" };
 				}
 			}
 			catch (Exception ex)
@@ -182,6 +189,7 @@ namespace BusinessLayer.Managers
 				{
 					CreatedDate = DateTime.Now,
 					Message = ex.Message,
+					Source = ex.Source
 				};
 				await _logService.AddLog(dto);
 				return new ScrapingResponseDto { Description = "Başarısız", ProductId = 0, Status = "False" };

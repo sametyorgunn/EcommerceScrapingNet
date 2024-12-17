@@ -44,6 +44,10 @@ namespace UI.Areas.Admin.Controllers
 			{
 				request.ProductName = req;
 				var resultN11 = await _n11Service.GetProductAndCommentsAsync(request);
+                if(resultN11.Status == "False")
+                {
+                    return BadRequest("ürün çekilemedi");
+                }
 				request.ProductId = resultN11.ProductId;
 				var amazon =await _amazonService.GetProductAndCommentsAsync(request);
 				var result = await _trendyolservice.GetProductAndCommentsAsync(request);
