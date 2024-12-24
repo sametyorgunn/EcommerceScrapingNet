@@ -44,9 +44,8 @@ namespace BusinessLayer.Managers
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
         {
 			new DriverManager().SetUpDriver(new ChromeConfig());
-			//var options = new ChromeOptions();
 			var options = new ChromeOptions();
-			//options.AddArgument("--headless");
+			options.AddArgument("--headless");
 			options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
