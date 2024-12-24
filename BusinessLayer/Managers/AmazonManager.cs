@@ -36,9 +36,8 @@ namespace BusinessLayer.Managers
 		public async Task<ScrapingResponseDto> GetProductAndCommentsAsync(GetProductAndCommentsDto request)
 		{
 			new DriverManager().SetUpDriver(new ChromeConfig());
-			//var options = new ChromeOptions();
 			var options = new ChromeOptions();
-			options.AddArgument("--headless");
+			//options.AddArgument("--headless");
 			options.AddArgument("--disable-gpu");
 			options.AddArgument("--no-sandbox");
 			options.AddArgument("--disable-dev-shm-usage");
@@ -76,8 +75,8 @@ namespace BusinessLayer.Managers
 						//var ProdName = Sp.FindElement(By.CssSelector("span.a-text-normal")).Text;
 						var ProdName = Sp.FindElement(By.CssSelector("a.a-link-normal h2 span")).Text;
 
-						//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-						//if (isTrueProduct == false) { continue; }
+						var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+						if (isTrueProduct == false) { continue; }
 
 						//var isSame = SameControl(request.ProductName, ProdName);
 						//if (isSame == false) { continue; }
@@ -96,25 +95,49 @@ namespace BusinessLayer.Managers
 						driver.SwitchTo().Window(windowHandles[1]);
 						Thread.Sleep(1000);
 						OverlayControl(driver);
-						//wait.Until(ExpectedConditions.ElementIsVisible(By.Id("acrCustomerReviewLink")));
+
 						var ratingIsExist = driver.FindElements(By.Id("acrCustomerReviewLink"));
 						if (ratingIsExist.Count > 0)
 						{
 							var ratings = wait.Until(ExpectedConditions.ElementToBeClickable(driver.FindElement(By.Id("acrCustomerReviewLink"))));
 							ratings.Click();
+							IList<IWebElement> Comments = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("review-text-content")));
+							foreach (var comment in Comments)
+							{
+								var a = comment.FindElement(By.CssSelector("span")).Text;
+								comments.Add(new CommentDto { CommentText = a, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = prodID });
+							}
+
+							var moreComments = driver.FindElements(By.CssSelector("div#reviews-medley-footer a.a-link-emphasis"));
+							if (moreComments.Count > 0)
+							{
+								moreComments.FirstOrDefault().Click();
+								LoginAmazonForComments(driver);
+								Thread.Sleep(1000);
+								var NextPage = driver.FindElements(By.ClassName("a-last"));
+								if(NextPage.Count > 0)
+								{
+									IWebElement NextPageBtn = driver.FindElement(By.ClassName("a-last"));
+									while (NextPageBtn != null) 
+									{
+										IList<IWebElement> CommentsNext = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("review-text-content")));
+										foreach (var commentNetx in CommentsNext)
+										{
+											var cmnt = commentNetx.FindElement(By.CssSelector("span")).Text;
+											comments.Add(new CommentDto { CommentText = cmnt, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = prodID });
+										}
+										IWebElement NextPageBtnControl = driver.FindElement(By.ClassName("a-last"));
+										if (NextPageBtnControl.Enabled == false) { NextPageBtn = null;continue; }
+										NextPageBtnControl.Click();
+									}
+								}
+							}
 						}
 						else
 						{
 							driver.Close();
 							driver.SwitchTo().Window(originalWindow);
 							continue;
-						}
-
-						IList<IWebElement> Comments = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("review-text-content")));
-						foreach (var comment in Comments)
-						{
-							var a = comment.FindElement(By.CssSelector("span")).Text;
-							comments.Add(new CommentDto { CommentText = a, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = prodID });
 						}
 						driver.Close();
 						driver.SwitchTo().Window(originalWindow);
@@ -182,5 +205,16 @@ namespace BusinessLayer.Managers
                 return false;
             }
         }
+		public void LoginAmazonForComments(IWebDriver driver)
+		{
+			var mail = driver.FindElement(By.Id("ap_email"));
+			mail.SendKeys("alefhigh18@gmail.com");
+			var continueBtn = driver.FindElement(By.Id("continue"));
+			continueBtn.Click();
+			var password = driver.FindElement(By.Id("ap_password"));
+			password.SendKeys("1q2w3e4rA*");
+			var loginbtn = driver.FindElement(By.Id("signInSubmit"));
+			loginbtn.Click();
+		}
     }
 }

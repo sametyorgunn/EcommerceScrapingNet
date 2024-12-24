@@ -25,12 +25,12 @@ namespace BusinessLayer.Managers
                     model = "gpt-4o", 
                     messages = new[]
                     {
-                    new { role = "system", content = "Sen bir asistan olarak çalışıyorsun." },
+                    //new { role = "system", content = "Sen bir asistan olarak çalışıyorsun." },
                     new { role = "user", content = $"{dto.ProductName} bu ürün ile {dto.ProductNamePlatform} bu ürün aynı " +
-                    $"ürün mü? ürünün aynı ürün olması yeterli,kıyaslanan ürün yüksek yada düşük özelliklerde ürün olabilir" +
-                    $"ona istinaden değer döndür. evet ise True, değil ise False yaz." }
+                    $"ürün mü? ürünlerin aynı modelde ürün olması yeterli,kıyaslanan ürün yüksek yada düşük özelliklerde ürün olabilir" +
+                    $"evet ise True, değil ise False yaz." }
                 },
-                    max_tokens = 150, 
+                    max_tokens = 350, 
                     temperature = 0.7
                 };
 

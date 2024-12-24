@@ -46,7 +46,7 @@ namespace BusinessLayer.Managers
 			new DriverManager().SetUpDriver(new ChromeConfig());
 			//var options = new ChromeOptions();
 			var options = new ChromeOptions();
-			options.AddArgument("--headless");
+			//options.AddArgument("--headless");
 			options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
@@ -81,8 +81,9 @@ namespace BusinessLayer.Managers
                     {
                         wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
                         var ProdName = Sp.FindElement(By.CssSelector("span.prdct-desc-cntnr-name")).Text;
-                        //var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-                        //if (isTrueProduct == false) { continue; }
+                        var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+                        if (isTrueProduct == false) { continue; }
+
                         //var isSame = SameControl(request.ProductName, ProdName);
                         //if (isSame == false) { continue; }
                         var ProdID = Sp.GetAttribute("data-id");

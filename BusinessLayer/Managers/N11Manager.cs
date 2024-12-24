@@ -39,7 +39,7 @@ namespace BusinessLayer.Managers
 		{
 			new DriverManager().SetUpDriver(new ChromeConfig());
 			var options = new ChromeOptions();
-			options.AddArgument("--headless");
+			//options.AddArgument("--headless");
 			options.AddArgument("--disable-gpu");
 			options.AddArgument("--no-sandbox");
 			options.AddArgument("--profile-directory=Default");
@@ -76,7 +76,7 @@ namespace BusinessLayer.Managers
 					var ProductLink = "";
 					ProductDto productDto = new ProductDto();
 
-					OverlayControl(driver);
+				    OverlayControl(driver);
 					wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("li.column")));
 					var ScrapeProduct = driver.FindElements(By.CssSelector("li.column")).Take(3).ToList();
 
@@ -85,11 +85,11 @@ namespace BusinessLayer.Managers
 					{
 						Thread.Sleep(1000);
 						string originalWindow = driver.CurrentWindowHandle;
-						var ProdName = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("productName"))).Text;
-						//var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
+						//var ProdName = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("productName"))).Text;
+						var ProdName = Sp.FindElement(By.ClassName("productName")).Text;
 
-						//var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
-						//if (isTrueProduct == false) { continue; }
+						var isTrueProduct = await _AIService.isTrueProduct(new isTrueProductDto { ProductName = request.ProductName, ProductNamePlatform = ProdName });
+						if (isTrueProduct == false) { continue; }
 
 						//var isSame = SameControl(request.ProductName, ProdName); 
 						//if (isSame == false){continue;}
@@ -124,7 +124,13 @@ namespace BusinessLayer.Managers
 
 						OverlayControl(driver);
 						Actions newTabAction = new Actions(driver);
-						newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("div.pro a"))).KeyUp(Keys.Control).Perform();
+						Thread.Sleep(1000);
+						//newTabAction.KeyDown(Keys.Control).Click(Sp.FindElement(By.CssSelector("div.pro a"))).KeyUp(Keys.Control).Perform();
+						newTabAction.KeyDown(Keys.Control)
+					   .Click(Sp.FindElement(By.CssSelector("div.pro a")))
+					   .KeyUp(Keys.Control)
+					   .Perform();
+
 						var windowHandles = driver.WindowHandles;
 						OverlayControl(driver);
 						wait.Until(d => d.WindowHandles.Count > 1);
@@ -196,7 +202,7 @@ namespace BusinessLayer.Managers
 			}
 		}
 
-		public async void OverlayControl(IWebDriver driver)
+		public void OverlayControl(IWebDriver driver)
 		{
 			var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 			Thread.Sleep(1000);
