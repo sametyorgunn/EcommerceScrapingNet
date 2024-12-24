@@ -107,7 +107,7 @@ namespace BusinessLayer.Managers
 								var a = comment.FindElement(By.CssSelector("span")).Text;
 								comments.Add(new CommentDto { CommentText = a, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = prodID });
 							}
-
+							#region GetOtherComments
 							var moreComments = driver.FindElements(By.CssSelector("div#reviews-medley-footer a.a-link-emphasis"));
 							if (moreComments.Count > 0)
 							{
@@ -115,10 +115,10 @@ namespace BusinessLayer.Managers
 								LoginAmazonForComments(driver);
 								Thread.Sleep(1000);
 								var NextPage = driver.FindElements(By.ClassName("a-last"));
-								if(NextPage.Count > 0)
+								if (NextPage.Count > 0)
 								{
 									IWebElement NextPageBtn = driver.FindElement(By.ClassName("a-last"));
-									while (NextPageBtn != null) 
+									while (NextPageBtn != null)
 									{
 										IList<IWebElement> CommentsNext = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("review-text-content")));
 										foreach (var commentNetx in CommentsNext)
@@ -127,11 +127,12 @@ namespace BusinessLayer.Managers
 											comments.Add(new CommentDto { CommentText = cmnt, ProductId = (int)request.ProductId, ProductLink = Link, ProductPlatformID = prodID });
 										}
 										IWebElement NextPageBtnControl = driver.FindElement(By.ClassName("a-last"));
-										if (NextPageBtnControl.Enabled == false) { NextPageBtn = null;continue; }
+										if (NextPageBtnControl.Enabled == false) { NextPageBtn = null; continue; }
 										NextPageBtnControl.Click();
 									}
 								}
 							}
+							#endregion
 						}
 						else
 						{
