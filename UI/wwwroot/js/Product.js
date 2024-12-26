@@ -53,3 +53,28 @@ $("#scrapeProd").click(function () {
 			});
 });
 
+
+function GetProductDetail(id) {
+	$("#catAdd").css({ display: "none" });
+	$("#catUpdate").css({ display: "inline-block" });
+	$.ajax({
+		url: "/Admin/Category/GetCategoryById",
+		type: "POST",
+		data: { id: id },
+		success: function (response) {
+			$("#kt_modal_add_user").modal("show");
+			$("#CategoryNames").val(response.name);
+			$("#CategoryName").val(response.parentId);
+			$("#catID").val(response.id);
+		},
+		error: function (error) {
+			toastr.error("İşlem Başarısız.")
+		}
+	});
+}
+function editProduct(param, event) {
+	debugger
+	event.preventDefault();
+	$("#kt_modal_add_user").modal("show");
+}
+

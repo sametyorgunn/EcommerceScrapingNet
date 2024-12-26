@@ -44,7 +44,7 @@
 							<div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all; width: 583px;">
 								<div class="owl-item active selected" style="width: 101.5px; margin-right: 15px;">
 									<div class="cur-pointer">
-										<img alt="" class="img-fluid" src="@Model.ProductImage">
+										<img alt="" class="img-fluid" src="@(!Model.ProductImage.EndsWith(".jpg") && !Model.ProductImage.EndsWith(".jpeg") && !Model.ProductImage.EndsWith(".png") ? "/Front/img/project-portfolio-4-2.jpg" : Model.ProductImage)">
 									</div>
 								</div>
 							</div>
@@ -109,7 +109,7 @@
 									<li>
 										<div class="comment">
 											<div class="img-thumbnail img-thumbnail-no-borders d-none d-sm-block">
-												<img class="avatar" alt="" src="/demo13/src/media/avatars/blank.png">
+												<img class="avatar" alt="" src="/Front/img/blank.png">
 											</div>
 											<div class="comment-block">
 												<div class="comment-arrow"></div>
@@ -136,7 +136,7 @@
 									<li>
 										<div class="comment">
 											<div class="img-thumbnail img-thumbnail-no-borders d-none d-sm-block">
-												<img class="avatar" alt="" src="/demo13/src/media/avatars/blank.png">
+												<img class="avatar" alt="" src="/Front/img/blank.png">
 											</div>
 											<div class="comment-block">
 												<div class="comment-arrow"></div>

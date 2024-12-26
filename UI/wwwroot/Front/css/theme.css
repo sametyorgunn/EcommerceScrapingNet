@@ -108,16 +108,16 @@ pre {
 	z-index: 1030;
 }
 
-#header .header-body {
-	display: flex;
-	flex-direction: column;
-	background: #FFF;
-	transition: min-height 0.3s ease;
-	width: 100%;
-	border-top: 3px solid #EDEDED;
-	border-bottom: 1px solid transparent;
-	z-index: 1001;
-}
+	#header .header-body {
+		display: flex;
+		flex-direction: column;
+		background: /*#FFF*/ aliceblue;
+		transition: min-height 0.3s ease;
+		width: 100%;
+		border-top: 3px solid #EDEDED;
+		border-bottom: 1px solid transparent;
+		z-index: 1001;
+	}
 
 #header .header-body.header-body-bottom-border-fixed {
 	border-bottom: 1px solid rgba(234, 234, 234, 0.5) !important;

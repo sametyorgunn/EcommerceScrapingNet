@@ -52,5 +52,9 @@ namespace UI.Areas.Admin.Controllers
 			await _productService.TUpdateAsync(product);
 			return RedirectToAction("Index", "ProductComment");
 		}
+		public async Task<IActionResult> EditProduct()
+		{
+			return Ok();
+		}
 	}
 }

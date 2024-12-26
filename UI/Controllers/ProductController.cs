@@ -25,7 +25,7 @@ namespace UI.Controllers
 		[Route("ürün-listesi/{id?}")]
 		public async Task<IActionResult> Products(int? id,string search = null)
 		{
-			if (string.IsNullOrEmpty(search))
+			if (string.IsNullOrEmpty(search) && id != null)
 			{
                 var products = await _productService.GetProductsByCategoryId(new GetProductByFilterDto
                 {
@@ -33,15 +33,19 @@ namespace UI.Controllers
                 });
                 return View(products);
             }
-			else
+			else if(id == null && !string.IsNullOrEmpty(search))
 			{
 				var products = await _productService.GetProductsBySearch(search);
 				return View(products);
 			}
+			else
+			{
+				return RedirectToAction("Index","Product");
+			}
 			
 		}
 		[HttpGet("ürün-detay/{id}")]
-		public async Task<IActionResult> ProductDetail(int id, int pageNumber = 1, int pageSize = 5)
+		public async Task<IActionResult> ProductDetail(int id)
 		{
 			var product = await _productService.GetProductWithCommentAndProperties(new GetProductByFilterDto
 			{

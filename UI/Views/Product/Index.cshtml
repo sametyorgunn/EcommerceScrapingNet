@@ -29,8 +29,8 @@
 							</a>
 							<a href="/ürün-detay/@i.Id">
 								<div class="product-thumb-info-image">
-									<img alt="" class="img-fluid" src="@i.ProductImage">
-								</div>
+								<img alt="" class="img-fluid" src="@(!i.ProductImage.EndsWith(".jpg") && !i.ProductImage.EndsWith(".jpeg") && !i.ProductImage.EndsWith(".png") ? "/Front/img/project-portfolio-4-2.jpg" : i.ProductImage)">
+							</div>
 							</a>
 						</div>
 						<div class="d-flex justify-content-between">
