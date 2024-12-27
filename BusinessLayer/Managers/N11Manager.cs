@@ -141,8 +141,9 @@ namespace BusinessLayer.Managers
 
 						foreach (var comment in Comments)
 						{
-							var a = comment.FindElement(By.CssSelector("p")).Text;
-							comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString() });
+							var CommentID = comment.GetAttribute("data-reviewid");
+							var CommentText = comment.FindElement(By.CssSelector("p")).Text;
+							comments.Add(new CommentDto { CommentText = CommentText, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID.ToString(),CommentMarketPlaceId = CommentID });
 						}
 
 						#region GetOtherComment
@@ -162,8 +163,9 @@ namespace BusinessLayer.Managers
 								IList<IWebElement> CommentsNext = driver.FindElements(By.ClassName("comment"));
 								foreach (var comment in CommentsNext)
 								{
-									var a = comment.FindElement(By.CssSelector("p")).Text;
-									comments.Add(new CommentDto { CommentText = a, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID });
+									var CommentID = comment.GetAttribute("data-reviewid");
+									var CommentText = comment.FindElement(By.CssSelector("p")).Text;
+									comments.Add(new CommentDto { CommentText = CommentText, ProductId = productDto.Id, ProductLink = Link, ProductPlatformID = ProdID,CommentMarketPlaceId = CommentID });
 								}
 								if (comments.Count() >= 200) { break; }
 							}

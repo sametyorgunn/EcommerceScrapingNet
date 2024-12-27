@@ -14,6 +14,7 @@ namespace EntityLayer.Dto.ResponseDto
         public string CommentText { get; set; }
 		public string? ProductLink { get; set; }
 		public string? Prediction { get; set; }
+        public string? CommentMarketPlaceId { get; set; }
 
-	}
+    }
 }
