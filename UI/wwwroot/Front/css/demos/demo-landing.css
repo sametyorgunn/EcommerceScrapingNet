@@ -34,7 +34,7 @@ p {
 		bottom: 0;
 		right: 10px;
 		width: 45vw;
-		background-image: linear-gradient(150deg, #0088cc 0%, #0088cc 30%, #0169fe 70%, #0169fe 100%);
+		background-image: linear-gradient(150deg, #ff7e00 0%, #ff7e00 30%, #0169fe 70%, #0169fe 100%);
 		border-radius: 4px;
 		box-shadow: 0 0 60px rgba(0, 0, 0, 0.06);
 }
@@ -73,5 +73,5 @@ p {
 }
 
 .owl-carousel.carousel-center-active-item-2 .owl-item.active > div {
-		background-image: linear-gradient(150deg, #0088cc 0%, #0088cc 30%, #0169fe 70%, #0169fe 100%) !important;
+		background-image: linear-gradient(150deg, #ff7e00 0%, #ff7e00 30%, #0169fe 70%, #0169fe 100%) !important;
 }
